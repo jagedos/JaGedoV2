@@ -1,0 +1,93 @@
+{% include 'layouts/header.html' %}
+{% load static %}
+{% load avatar %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">All_Shops</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="shop section">
+        <div class="container">
+        <div class="row">
+            {% for i in products %}
+        <div class="col-lg-4 mb-4">
+        <a href="{% url 'vendor_store' i.id|encrypt_id %}">
+        <div class="shop-single">
+        <img src="{{ i.vendor.email|gravat:50 }}" alt="">
+        <div>
+        <h6>{{ i.name }}</h6>
+        <div class="shop-rating">
+            <input id="input-21c" value="{{i.id|savg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="sm"
+            disabled>
+        </div>
+        <div class="shop-info">
+        <p>({{i.id|srev_total}}) Verified Product Reviews</p>
+        <p><b>Owner:</b> {{i.vendor.first_name}} {{i.vendor.last_name}}</p>
+       
+        </div>
+        </div>
+        </div>
+        </a>
+        </div>
+        {% endfor %}
+        </div>
+        <div class="col-12">
+    
+        {% if products.has_other_pages %}
+        <div class="pagination center mt-2">
+        <ul class="pagination-list">
+            {% if products.has_previous %}
+        <li><a href="?page={{ products.previous_page_number }}"><i class="ti-arrow-left"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-left"></i></a></li>
+        {% endif %}
+        {% for i in products.paginator.page_range %}
+        {% if products.number == i %}
+        
+        <li class="active"><a href="#">{{ i }}</a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if products.has_next %}
+        <li><a href="?page={{ products.next_page_number }}"><i class="ti-arrow-right"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-right"></i></a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+    
+    </div>
+        </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% include 'layouts/footer.html' %}

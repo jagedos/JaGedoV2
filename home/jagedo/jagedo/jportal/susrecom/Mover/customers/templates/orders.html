@@ -1,0 +1,109 @@
+{% extends 'layout/layoutc.html' %}
+{% block title %} 
+{{ title }} Orders
+{% endblock %}
+
+{% block small %} 
+{{ title }} Orders
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{ title }} Orders</h3>
+
+      <div class="card-tools">
+       
+        
+
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="products_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Purchased Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                           
+                        </tr>
+                    </thead>
+                {% for a in actives %}
+                </tr>
+                <tr class="account-order-list">
+                <td><b>{{ a.id }}</b></td>
+                <td>{{ a.created_at|date:'d/m/y' }}</td>
+                <td>Ksh. {{ a.final_price|floatformat:2|intcomma }}</td>
+                <td>{% if a.status == 0 %}<span class="badge bg-secondary">Pending</span>
+                {% elif  a.status == 1  %}
+                <span class="badge bg-warning">Dispatched</span>
+                {% elif  a.status == 2  %}
+                <span class="badge bg-success">Delivered</span>
+                {% elif  a.status == 3  %}
+                <span class="badge bg-danger">Cancelled</span>
+                {% endif %}
+                
+                </td>
+                <td class="text-center"><a href="{% url 'order_summary' a.serial %}" class="content-action"><i class="far fa-eye"></i></a></td>
+                </tr>
+               {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+       
+        <div class="col-12">
+            {% if actives.has_other_pages %}
+        <div >
+        <ul class="pagination justify-content-center">
+            {% if actives.has_previous %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.previous_page_number }}">«</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">«</a></li>
+        {% endif %}
+        {% for i in actives.paginator.page_range %}
+        {% if actives.number == i %}
+        
+        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if actives.has_next %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.next_page_number }}">»</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">»</a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+        </div>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        {{ title }} Orders
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

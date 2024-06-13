@@ -1,0 +1,189 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+My_Profile
+{% endblock %}
+
+{% block small %} 
+My_Profile
+{% endblock %}
+
+{% block content %}
+{% load avatar %}
+{% load encode_filter %} 
+ <!-- Main content -->
+ <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+
+          <!-- Profile Image -->
+          <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+              <div class="text-center">
+                <img class="profile-user-img img-fluid img-circle"
+                     src="{{ user|gravatar:50 }}"
+                     alt="User profile picture">
+              </div>
+            <span id="p_details">
+              <h3 class="profile-username text-center">{{ user.first_name }} {{ user.last_name }}</h3>
+
+              <p class="text-muted text-center">{% if user.is_vendor %} Vendor {% elif user.is_manager %} Manager {% endif %}</p>
+
+              <ul class="list-group list-group-unbordered mb-3">
+                <li class="list-group-item">
+                  <b>Email</b> <a class="float-right">{{ user.email }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Phone</b> <a class="float-right">{{ user.phone_number }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>National_id</b> <a class="float-right">{{ user.national_id }}</a>
+                </li>
+              </ul>
+            </span>
+             
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+
+          
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+          <div class="card">
+            <div class="card-header p-2">
+              <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">EDIT PROFILE</a></li>
+               
+              </ul>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+              <div class="tab-content">
+                <div class="active tab-pane" id="activity">
+                    <form method="get" id="sample_form"  enctype="multipart/form-data">        
+                        {% csrf_token %}
+            
+                       
+                        <div class="row" id="c_details">
+                            
+            
+            
+                               <div class="form-group col-md-6 col-xs-12">
+                                <label for="exampleInputEmail1">First_Name</label>
+                                <input type="text" class=" form-control" name="first_name" id="first_name" value="{{ user.first_name }}"  required>
+                              </div>
+                     
+            
+            
+                              <div class="form-group col-md-6 col-xs-12">
+                                <label for="exampleInputEmail1">Last_Name</label>
+                                <input type="text" class=" form-control" name="last_name" id="last_name" value="{{ user.last_name }}"  required>
+                              </div>
+
+
+                              <div class="form-group col-md-6 col-xs-12">
+                                <label for="exampleInputEmail1">National_id</label>
+                                <input type="text" class=" form-control" name="national_id" id="national_id" value="{{ user.national_id }}" placeholder=""  required>
+                              </div>
+                     
+            
+            
+                              <div class="form-group col-md-6 col-xs-12">
+                                <label for="exampleInputEmail1">Email</label>
+                                <input type="email" class=" form-control" name="email" id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  value="{{ user.email}}" placeholder=""  required>
+                              </div>
+
+
+                              <div class="form-group col-md-6 col-xs-12">
+                                <label for="exampleInputEmail1">Phone</label>
+                                <input type="text" class=" form-control" name="phone" id="phone" minLength="10" maxLength="10" pattern="[0]{1}[0-9]{9}" value="{{ user.phone_number}}" placeholder=""  required>
+                              </div>
+                    
+                    
+                            </div>
+                    
+                               <div class="form-group col-md-12">
+                               
+                          <input type="submit" name="action" id="action" class="btn btn-block btn-warning" value="Save_Changes" />
+                                                </div>
+                              </form>
+
+
+
+
+
+                  
+                </div>
+               
+
+                
+              </div>
+              <!-- /.tab-content -->
+            </div><!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+  <script>
+    $(function () {
+    $('#sample_form').on('submit', function(event){
+          event.preventDefault();
+          $(':input[type="submit"]').prop('disabled', true);
+         
+          if($('#action').val() == 'Save_Changes')
+          {
+            $('#action').val('Updating, please wait...');
+           $.ajax({
+            url: "{% url 'update_manager_details' %}",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+                     {
+                        $(':input[type="submit"]').prop('disabled', false);
+                        $('#action').val('Save_Changes');
+                       html = data.errors ;
+                      
+                    
+                     }
+             if(data.success)
+             {
+              html =  data.success ;
+            
+              $(':input[type="submit"]').prop('disabled', false);
+              $('#action').val('Save_Changes');
+             $('#c_details').load(' #c_details');
+             $('#p_details').load(' #p_details');
+    
+                   }
+             if(data.success)
+             {    
+            toastr.success(html);
+             } else {
+            toastr.error(html);
+    
+             }
+            }
+           })
+          }
+         
+         
+         });
+
+
+        })
+         </script>
+ 
+{% endblock %}

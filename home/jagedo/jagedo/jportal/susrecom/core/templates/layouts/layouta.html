@@ -1,0 +1,42 @@
+{% include 'layouts/header.html' %}
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">{% block title %} {% endblock %}</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="product-area shop-sidebar shop section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-3 col-md-4 col-12">
+    <div class="shop-sidebar">
+        {% block side %} 
+    
+    {% endblock %}
+    </div>
+    </div>
+    <div class="col-lg-9 col-md-8 col-12">
+        {% block content %} 
+
+
+
+        {% endblock %} 
+    
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+
+{% include 'layouts/footer.html' %}

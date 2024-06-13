@@ -1,0 +1,356 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block small %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+{% load vendor_filter %}
+{% load metrics_filter %}  
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{ ptitle }}</h3>
+
+      <div class="card-tools">
+       
+       
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <span class="row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Job_Category</label>
+                    <select class="form-control select2" required="True" name="category" id="category" style="width: 100%;">
+                      <option selected="selected" disabled>Select_Category</option>
+                      {% for x in  cats %}
+                      <option value="{{ x.id }}">{{ x.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                   <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Product</label>
+                    <input type="text" class="form-control" name="name" id="name" readonly>
+                  </div>
+                  
+                    <label for="exampleInputEmail1" class="col-12">Job_Duration</label>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Start</label>
+                    <input type="date" class="form-control" name="start" id="start" onfocus="showPicker()" required>
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">End</label>
+                    <input type="date" class="form-control" name="end" id="end" onfocus="showPicker()" required>
+                  </div>
+                  <div class="form-group col-md-12 col-xs-12">
+                    <label for="exampleInputEmail1">Description</label>
+                    <textarea name="description" id="description" class="form-control" rows="10"></textarea>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Key_Skill</label>
+                    <select class="form-control select2" required="True" name="skill" id="skill" style="width: 100%;">
+                      <option selected="selected" disabled>Select_Skill</option>
+                      {% for s in  skills %}
+                      <option value="{{ s.id }}">{{ s.name }} ( Field: {{ s.field.name }} )</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                 
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Assign_Expert</label>
+                    <select class="form-control sel2" name="expert" id="expert" style="width: 100%;">
+                      <option selected="selected" disabled>Select_Expert</option>
+                      {% for e in  experts %}
+                      <option value="{{ e.id }}">{{ e.first_name }} {{ e.last_name }} (Phone: {{ e.phone_number }})</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Quote_Request</label>
+                    <select class="form-control select2" required="True" name="bid" id="bid" style="width: 100%;">
+                     
+                      <option value="0">Pending</option>
+                      <option value="1">Quote_Requests</option>
+                     
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12">
+                    <label for="exampleInputEmail1">Uploaded_File</label>
+                    <span id="uploadsfile" ></span>
+
+                  </div>
+
+                </span>  
+        
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" id="mtable" >
+            <table id="brands_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        
+        <tr>
+            <th>Title</th>
+            <th>Work_Done</th>
+            <th>Fee</th>
+            <th>Status</th>
+           
+           
+        </tr>
+                    </thead>
+                    {% for a in  gigs %}
+                    <tr>
+                        <td>{{ a.milestone.name }}</td>
+                        <td>{{ a.work }}
+                        </td>
+                        <td>{{ a.fee|floatformat:2|intcomma }}</br>
+                            {% if  a.is_active and not a.is_paid  %}
+                            <span class="mpay badge bg-warning text-dark" id="{{ a.id }}" ><b>Make_Payment</b></span>
+                            {% endif %}
+                        
+                        </td>
+                        <td>
+                       {% if a.is_active and a.is_paid %}
+                       <span class="badge bg-success"><b>Active</b></span>
+                       {% elif  a.is_active and not a.is_paid  %}
+                       <span class="badge bg-primary"><b>Pending_Payment</b></span>
+                       {% else  %}
+                       <span class="badge bg-secondary"><b>Pending</b></span>
+                       {%  endif %}
+    
+                        </td>
+                        
+                        
+            
+                        </tr>
+
+       
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div class="modal fade" id="PformModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="pform_result"></span>
+           <form method="post" id="psample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="form-group col-12">
+              <label for="exampleInputEmail1"><b>A/C_ No. | <span id="macc"></span></b></label></br>
+              <label for="exampleInputEmail1"><b>Amount. | <span id="mamt"></span></b></label></br>
+              
+          
+              </div>
+              <div class="form-group col-12 mnotice">
+               <h3 class="text-danger" style="font-size: 18px;"><b>Kindly Confirm Payment By Clicking Button Below, Once Completed !</b></h3>
+              </div>
+                   <div class="form-group col-12 numbox">
+                    <label for="exampleInputEmail1"><b>Mpesa_Number </b><span class="text-danger"><i>(Change if not your mpesa number)</i></span></label>
+                    <input type="text" class="form-control" name="mphone" id="mphone" maxlength="10" minlength="10" value="{{ user.phone_number }}" pattern="[0]{1}[0-9]{9}" oninvalid="this.setCustomValidity('Please Use Requested Format Ex: 0722000000. First digit must be zero , followed by nine digits')"
+                    oninput="setCustomValidity('')" required>
+                  </div>
+          
+          
+                 
+          
+                   <div class="form-group col-md-12">
+                   </br>
+                    <input type="hidden" name="paction" id="paction" />
+              <input type="hidden" name="phidden_id" id="phidden_id" />
+              <input type="submit" name="paction_button" id="paction_button" class="btn col-12" style="background-color: #32b87d;color: white;" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+          
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->
+    
+   
+
+          <script language="javascript">
+
+            $(function () {
+            
+        
+           
+            
+            
+                $(document).on('click', '.mpay', function(){
+          user_id = $(this).attr('id');
+          $.ajax({
+            url:"{% url 'epayloader' 1 %}".replace('1', user_id),
+          
+           success:function(html)
+           {
+            $('#macc').html(html.pcode);
+            $('#mamt').html(html.fee);
+            $('#mpaid').html(html.fee);
+            $('.mnotice').hide();
+            $('.numbox').show();
+    
+            $('#phidden_id').val(html.id);
+            $('.modal-title').text("Mpesa_Express_Payment");
+            
+              $('#paction_button').val("Make_Payment");
+              $('#paction').val("Pay");
+            
+    
+           
+            $('#PformModal').modal('show');
+           
+           }
+          })
+         });
+        
+         $('#psample_form').on('submit', function(event){
+          event.preventDefault();
+         
+          $('#paction_button').prop('disabled', true);
+          if($('#paction').val() == 'Pay')
+          {
+            $('#paction_button').val(' Submitting, please wait...');
+           $.ajax({
+            url: "{% url 'epushpay' %}",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+             {
+              $('#paction_button').prop('disabled', false);
+              $('#paction_button').val(' Make_Payment');
+              $('.mnotice').hide();
+              $('.numbox').show();
+              toastr.error(data.errors);
+             
+             }
+             if(data.success)
+             {
+              $('#paction_button').prop('disabled', false);
+              $('#paction_button').val("Confirm_Payment");
+              $('#paction').val("Pconfirm");
+              $('.mnotice').show();
+              $('.numbox').hide();
+              toastr.success(data.success);
+                   }
+             
+            }
+           })
+          }
+    
+    
+          if($('#paction').val() == 'Pconfirm')
+          {
+            $('#paction_button').val(' Submitting, please wait...');
+           $.ajax({
+            url: "{% url 'epushconf' %}",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+             {
+              $('#paction_button').prop('disabled', false);
+              $('#paction_button').val(' Confirm_Payment');
+              $('.mnotice').show();
+              $('.numbox').hide();
+              toastr.error(data.errors);
+             
+             }
+             if(data.success)
+             {
+              $('#mtable').load(' #mtable');
+              $('#PformModal').modal('hide');
+              toastr.success(data.success);
+                   }
+             
+            }
+           })
+          }
+    
+        });
+           
+          });
+        </script>
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      {{ ptitle }}
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

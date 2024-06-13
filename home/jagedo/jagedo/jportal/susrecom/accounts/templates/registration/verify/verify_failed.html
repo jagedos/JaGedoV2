@@ -1,0 +1,40 @@
+{% include 'layouts/header.html' %}
+{% load crispy_forms_tags %}
+
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Email Sent</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+  
+    
+    <section class="mail-success section page">
+        <div class="container">
+        <div class="row">
+        <div class="col-lg-6 offset-lg-3 col-12">
+        <div class="mail-inner">
+        <i class="fal fa-user-shield" aria-hidden="true" style="color: red;"></i>
+        <h2><span>Account Verification Failed </span></h2>
+        <p>Validation failed, possibly because the account is already activated. You may go ahead and log in now.</p>
+        <div class="button">
+        <a class="btn primary" href="/login">Log_In</a>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </section>
+    
+
+{% include 'layouts/footer.html' %}

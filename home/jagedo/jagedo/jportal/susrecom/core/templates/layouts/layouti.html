@@ -1,0 +1,21 @@
+{% include 'layouts/header.html' %}
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">{% block title %} {% endblock %}</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    {% block content %} 
+    
+    {% endblock %}
+
+{% include 'layouts/footer.html' %}

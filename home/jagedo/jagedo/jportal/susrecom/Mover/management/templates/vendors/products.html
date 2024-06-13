@@ -1,0 +1,517 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ shop }}
+{% endblock %}
+
+{% block small %} 
+{{ shop }}
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Products</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Add">
+          NEW PRODUCT
+        </button>
+        <a href="#"  class="export btn btn-xs bg-navy">Export_Excel</a>
+        <a href="#"  class="upload-data btn btn-xs bg-pink">Import_Excel</a>
+        {% if temp == 'v' %}
+        <a href="{% url 'vvproducts_filter' %}"  class="btn btn-xs btn-primary">Back</a>
+        {% else %}
+       <a href="{% url 'vproducts_filter' %}"  class="btn btn-xs btn-primary">Back</a>
+       {% endif %}
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+<div class="row">
+    <div class="form-group col-md-6 col-xs-12">
+        <label for="exampleInputEmail1">Shop</label>
+        <select class="form-control select2" name="shop" id="shop" required="true" style="width: 100%;">
+          <option selected="selected" disabled value="">Select_Shop</option>
+          {% if temp == 'v' %}
+
+          {% for s in  dukas %}
+          <option value="{{ s.id }}"  >{{ s.name }}</option>
+          {% endfor %}
+          
+          {% else %}
+          {% for s in  dukas %}
+          <option value="{{ s.id }}" {% if s.id == temp %} selected {% endif %} >{{ s.name }}</option>
+          {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+            <div class="form-group col-md-6 col-xs-12">
+                <label for="exampleInputEmail1">Product</label>
+                <select class="form-control select2" name="product" id="product" required="true" style="width: 100%;">
+                  <option selected="selected" disabled value="">Select_Product</option>
+                  {% for x in  items %}
+                  <option value="{{ x.id }}">{{ x.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+
+
+
+
+                   <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Price</label>
+                    <input type="number" class="form-control" name="price" id="price" autocomplete="off" required>
+                  </div>
+        
+                 
+                    <input type="hidden" class="form-control" value="0" name="stock" id="stock" onkeydown="if(event.key==='.'){event.preventDefault();}"  oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" autocomplete="off" required>
+                  
+
+                 
+                    <input type="hidden" class="form-control" name="discount" id="discount" value="0" autocomplete="off" required>
+                   
+        
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Status</label>
+                    <select class="form-control select2" name="status" id="status" required="true" style="width: 100%;">
+
+                      <option value="True">Active</option>
+                      <option value="False">Deactivated</option>
+                     
+                    </select>
+                  </div>
+                </div>
+                 
+                   <div class="form-group col-md-12 col-xs-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        
+        <div class="table-responsive">
+            <table id="products_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                           
+                          <th>#</th>
+                            <th>Product</th>
+                            <th>Shop</th>
+                            <th>Cost</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                   
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="uploadModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                     
+                      <h2 class="modal-title">Upload_Data</h2>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="upload-form" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="row">
+                        <div class="form-group col-12">
+                          <label for="exampleInputEmail1">Upload_Excel_Document</label>
+                          <input type="file" id="file-input" name="file" class="form-control col-12" required>
+                        </div>
+              
+                        <div class="form-group col-md-12 col-xs-12" >
+                      <button type="submit" id="usub" class="btn btn-block btn-info">Upload</button>
+                        </div>
+                    </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                  
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+    <input type="hidden" name="shop" id="ishop" value="{{mshop}}" />
+    <input type="hidden" name="vshop" id="vshop" value="{{vendorid}}" />
+    <input type="hidden" name="temp" id="temp" value="{{temp}}" />
+    <script language="javascript">
+
+    $(function () {
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+   
+    var temp = $('#temp').val();
+    if (temp == 'v'){
+      var shop = $('#vshop').val();
+    }else{
+      var shop = $('#ishop').val();
+    }
+
+   
+    
+    $('#products_table').DataTable({
+        "serverSide": true,
+        "ordering": false,
+        "lengthMenu": [
+            [10, 25, 50, 100, 200000], // The number of records to display per page. Add a large number to show all records
+            [10, 25, 50, 100, "All"] // The text to display for the corresponding option
+        ],
+        "ajax": {
+            "url": "{% url 'mvproducts-table' %}",
+            "type": "POST" ,
+            "headers": { "X-CSRFToken": csrf_token },
+            "data": {
+                'shop': shop,
+                'temp': temp,
+                
+            },
+        },
+        "columns": [
+            { "data": "cover_image", "orderable": true, "searchable": true },
+            { "data": "product", "orderable": true, "searchable": true },
+            { "data": "shop", "orderable": true, "searchable": true },
+            {
+             "data": "cost",
+             "orderable": true,
+             "searchable": false,
+             "render": function (data, type, row) {
+                  return parseFloat(data).toLocaleString();
+              }
+            },
+            {
+             "data": "price",
+             "orderable": true,
+             "searchable": false,
+             "render": function (data, type, row) {
+                  return parseFloat(data).toLocaleString();
+              }
+            },
+            
+            { "data": "status",
+              "render": function (data, type, row) {
+                if (row.status == 'True') {
+                  return "<span class='badge bg-green' >Active</span>";
+                } else {
+                  return "<span class='badge bg-gray' >Deactivated</span>";
+                }
+              },
+              "orderable": true, "searchable": false
+            },
+
+            
+
+            { "data": "id",
+              "render": function (data, type, row) {
+                 
+                
+                  return "<button type='button' name='edit' id='"+data+"' class='edit btn btn-xs  btn-primary btn-sm'>Edit</button> | <button type='button' name='delete' id='"+data+"' class='delete btn btn-xs btn-danger btn-sm'>Delete</button>";
+                
+              },
+              "orderable": true, "searchable": false 
+            },
+           
+        
+            
+
+        
+            
+           
+        ]
+    });
+});
+</script>
+
+<script>
+  $(function () {
+    $('#create_record').click(function(){
+
+      $('.modal-title').text("New Product");
+         $('#action_button').val("Add");
+         $('#action').val("Add");
+         $('#product').select2().val('').trigger("change");
+         $('#sample_form')[0].reset();
+         $('#formModal').modal('show');
+     });
+
+
+      $('.upload-data').click(function(){
+        $('#uploadModal').modal('show');
+      });
+
+
+     
+    
+    $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      $(':input[type="submit"]').prop('disabled', true);
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'vstorproducts' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#product').select2().val('').trigger("change");
+          $('#status').select2().val('').trigger("change");
+          $('#shop').select2().val('').trigger("change");
+          $(':input[type="submit"]').prop('disabled', false);
+          $('#products_table').datatable().api().ajax.reload();
+
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'vupdateproducts' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#product').select2().val('').trigger("change");
+          $('#status').select2().val('').trigger("change");
+          $('#shop').select2().val('').trigger("change");
+          $(':input[type="submit"]').prop('disabled', false);
+           $('#products_table').datatable().api().ajax.reload();
+          
+         }
+         $('#form_result').html(html);
+        }
+       });
+      }
+     });
+    
+     $(document).on('click', '.edit', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'vproductsedit' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('#product').select2().val(html.product).trigger("change");
+        $('#price').val(html.price);
+        $('#stock').val(html.stock);
+        $('#discount').val(html.discount);
+        if (html.status) {
+        $('#status').select2().val('True').trigger("change");
+        } else {
+
+        $('#status').select2().val('False').trigger("change");
+            
+        }
+        $('#shop').select2().val(html.shop).trigger("change");
+         $('#hidden_id').val(html.id);
+        $('.modal-title').text("Edit  Record");
+        $('#action_button').val("Edit");
+        $('#action').val("Edit");
+        $('#formModal').modal('show');
+       }
+      })
+     });
+
+    // export on click
+    $(document).on('click', '.export', function() {
+    var temp = $('#temp').val();  
+    if (temp == 'v') {
+      var id = $('#vshop').val();
+      var url = "{% url 'export-vproducts-vendor' 1 %}".replace('1', id);
+    } else {
+      var id = $('#ishop').val();
+      var url = "{% url 'export-vproducts' 1 %}".replace('1', id);
+    }
+    
+    window.location.href = url;
+     });   
+
+
+
+     // your_script.js
+  $(document).ready(function() {
+  $('#upload-form').on('submit', function(e) {
+    e.preventDefault();
+
+    // Assuming your submit button has an id of 'submit-button'
+    var submitButton = $('#usub');
+    
+    // Disable the button and change its text
+    submitButton.prop('disabled', true);
+    submitButton.text('Uploading ....');
+
+    var url = "{% url 'upload-vproducts'  %}";
+    var formData = new FormData(this);
+
+    $.ajax({
+      url: url,
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+        // Enable the button and change its text back to 'Upload'
+        submitButton.prop('disabled', false);
+        submitButton.text('Upload');
+        $('#products_table').dataTable().api().ajax.reload();
+        $('#file-input').val('');
+        $('#uploadModal').modal('hide');
+        toastr.success(response.success, 'Data Upload Successful', {timeOut: 5000});
+      },
+      error: function(response) {
+        // Enable the button and change its text back to 'Upload'
+        submitButton.prop('disabled', false);
+        submitButton.text('Upload');
+        toastr.error(response.responseJSON.error, 'Data Upload Failed', {timeOut: 5000});
+      }
+    });
+  });
+});
+
+    
+    
+     var user_id;
+    
+     $(document).on('click', '.delete', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete Product");
+      $('#confirmModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'vdeleteproducts' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+          $('#products_table').datatable().api().ajax.reload();
+        }, 2);
+       }
+      })
+     });
+   
+  });
+</script>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      My_products
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

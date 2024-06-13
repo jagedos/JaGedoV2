@@ -1,0 +1,427 @@
+{% extends 'layout/layoutx.html' %}
+{% block title %} 
+Examples Of Work /Products
+{% endblock %}
+
+{% block small %} 
+Examples Of Work /Products
+{% endblock %}
+
+{% block content %}
+{% load template_filter %}
+{% load static %}
+
+{% load operations_filter %} 
+
+{% load vendor_filter %}
+{% load humanize %}
+
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Examples Of Work /Products</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+          NEW 
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <span class="row">
+                   <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Title <i class="text-success">(Work/Project Title OR Product Name )</i></label>
+                    <input type="text" class="form-control" name="name" id="name" autocomplete="off" required>
+                  </div>
+        
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Product_Category</label>
+                    <select class="form-control select2" name="category" id="category" style="width: 100%;">
+                      <option selected="selected" disabled>Select_Category</option>
+                      {% for x in  cats %}
+                      <option value="{{ x.id }}">{{ x.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Price <i class="text-success">(Provide Price If Applicable. If not, price should be left as 0 )</i></label>
+                    <input type="nember" class="form-control" name="price" id="price" autocomplete="off" value="0" required>
+                  </div>
+                 
+                </span>
+
+
+                <div class="form-group col-md-12 col-xs-12">
+                  <label for="exampleInputEmail1">Description</label>
+                    <textarea name="description" class="form-control"  id="description"  rows="5" required></textarea>
+                </div>
+
+
+                
+
+                 
+
+                  <div class="form-group  col-md-12 col-xs-12">
+                    <label for="exampleInputFile">Upload_Product_Images</label>
+                   
+                        
+                        <script type="text/javascript">
+
+                          function add_row()
+                          {
+                           $rowno=$("#employee_table tr").length;
+                           $rowno=$rowno+1;
+                           var lx=$rowno;
+                           $("#employee_table tr:last").after("<tr id='row"+$rowno+"'><td><input type='file'  name='cover' class='form-control' style='width: 100%;' autocomplete='off' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_row('row"+$rowno+"')></td></tr>");
+                                            
+                                $('.select2').select2()
+                          
+                                
+                             
+                          
+                          }
+                          
+                          function delete_row(rowno)
+                          {
+                           $('#'+rowno).remove();
+                          }
+                          </script>          
+                        <table id="employee_table" class="table table-striped table-bordered table-hover">
+                          <thead>
+                            <tr>
+                
+                     <th>Image</th> 
+                    <th>Add</th> 
+                            </tr>
+                    
+                    
+                          </thead>
+                       <tr id="row1">
+                        
+                   
+                      <td> <input type="file"  name="cover" class="form-control" value="" autocomplete="off" /></td>
+                      
+                     
+                        <td><input type="button" onclick="add_row();" class="btn btn-info" value="+"></td>
+                       </tr>
+                      </table>
+                      
+                    
+                  </div>
+
+                 </span>
+
+               
+        
+                   <div class="form-group col-md-12 col-xs-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+
+                  <span class="ims col-md-12 col-xs-12">
+                <h5><B>Uploaded_Images</B></h5>
+                    <span id="images"></span>
+                              
+                           </span>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="works_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                          <th>#</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for x in  items %}
+                   
+                    <tr>
+                    <td>{{ x.id|pcover_image|safe}}</td>
+                    <td>{{ x.name }}</td>
+                    <td>{{ x.category}}</td>
+                    <td>{{ x.price|floatformat:2|intcomma }}</td>
+                    <td><button type="button" name="edit" id="{{ x.id }}" class="edit btn btn-xs  btn-primary btn-sm">Edit</button> | <button type="button" name="delete" id="{{ x.id }}" class="delete btn btn-xs btn-danger btn-sm">Delete</button></td>
+        
+                    </tr>
+                    
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="confModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_but" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        
+    <script language="javascript">
+
+    $(function () {
+    $("#works_table").DataTable({
+        
+        pageLength: 10,
+        lengthChange: true,
+        autoWidth: true,
+        searching: true,
+        bInfo: true,
+        bSort: true,
+        
+     
+    });
+
+    $('#create_record').click(function(){
+      $('.modal-title').text("New Product");
+         $('.ims').hide();
+         $('#action_button').val("Add");
+         $('#action').val("Add");
+         $('#sample_form')[0].reset();
+         $('#formModal').modal('show');
+     });
+    
+    $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'estoreproduct' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+        $('#category').select2().val('').trigger("change");
+        $('#brand').select2().val('').trigger("change");
+        $('#units').select2().val('').trigger("change");
+              $('#works_table').load(' #works_table');
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'eupdateproduct' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#category').select2().val('').trigger("change");
+          $('#brand').select2().val('').trigger("change");
+          $('#units').select2().val('').trigger("change");
+         
+          $('#works_table').load(' #works_table');
+         }
+         $('#form_result').html(html);
+        }
+       });
+      }
+     });
+    
+     $(document).on('click', '.edit', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'eproductedit' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('#name').val(html.mymember.name);
+        $('#category').select2().val(html.mymember.category).trigger("change");
+        $('#description').val(html.mymember.description);
+        $('#price').val(html.mymember.price);
+        $('.ims').show();
+        $('#images').html(html.img);
+        $('#hidden_id').val(html.mymember.id);
+        $('.modal-title').text("Edit  Record");
+        $('#action_button').val("Edit");
+        $('#action').val("Edit");
+        $('#formModal').modal('show');
+       }
+      })
+     });
+
+     var i_id;
+    
+     $(document).on('click', '.idel', function(){
+      i_id = $(this).attr('id');
+      $('.modal-title').text("Delete_Images");
+      $('#confModal').modal('show');
+     });
+    
+     $('#ok_but').click(function(){
+      $.ajax({
+        url:"{% url 'edelpimages' 1 %}".replace('1', i_id),
+       beforeSend:function(){
+        $('#ok_but').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+          $('#images').html(data.img);
+         $('#confModal').modal('hide');
+         $('#ok_but').text('OK');
+         
+        }, 2);
+       }
+      })
+     });
+    
+    
+     var user_id;
+    
+     $(document).on('click', '.delete', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete Product");
+      $('#confirmModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'edeleteproduct' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#works_table').load(' #works_table');
+        }, 2);
+       }
+      })
+     });
+   
+  });
+</script>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      Examples Of Work /Products
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

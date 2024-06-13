@@ -1,0 +1,315 @@
+{% include 'layouts/header.html' %}
+{% load static %}
+{% load humanize %}
+{% load avatar %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">{{ current.name }}</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="product-area shop-sidebar shop section">
+    <div class="container">
+        <div class="col-12">
+            <div class="shop-banner-area">
+            <div style="background: url('/static/assets/img/shop-banner.jpg') center center / cover;height: 202px;"></div>
+            <div class="shop-banner-info">
+            <div class="shop-banner-logo">
+            <img src="{{ current.vendor.email|gravat:50 }}" alt="">
+            </div>
+            <div class="shop-banner-area-top">
+            <div class="banner-area-top-content">
+            <div>
+            <h4>{{ current.name }}</h4>
+            <div class="shop-info">
+                <a href="{% url 'vendor_store' current.id|encrypt_id %}"><i class="fal fa-home"></i> Shop_Home</a>
+             
+            </div>
+            </div>
+            <div>
+            <div class="shop-rating">
+                <input id="input-21c" value="{{current.id|savg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="sm"
+                disabled>
+            </div>
+            <div class="shop-social">
+                <a href="#" class="total-review">({{current.id|srev_total}}) Verified Product Reviews</a>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+    <div class="row">
+    <div class="col-lg-3 col-md-4 col-12">
+    <div class="shop-sidebar">
+    
+    <div class="single-widget category">
+    <h3 class="title">Categories</h3>
+    <ul class="categor-list">
+        {% for cat in cats %}
+    <li><a href="{% url 'shop_product_listings' current.id|encrypt_id cat.id|encrypt_id %}">{{ cat.name }} <span>({{cat.id|scat_total:current.id}})</span></a></li>
+    {% endfor %}
+    </ul>
+    </div>
+    
+    
+    
+     
+    
+    
+    
+    
+    <div class="single-widget category">
+        <h3 class="title">Other Vendors</h3>
+        <ul class="categor-list">
+            {% for shop in shops %}
+        <li><a href="{% url 'vendor_store' shop.id|encrypt_id %}">{{ shop.name }} <span>({{shop.id|shop_total}})</span></a></li>
+        {% endfor  %}
+
+        <li><a href="{% url 'all_vendors'  %}">All_Vendors</a></li>
+        </ul>
+        </div>
+    
+    
+    
+    
+    </div>
+    </div>
+    <style>
+        .disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
+    </style>
+    <div class="col-lg-9 col-md-8 col-12">
+    
+    <div class="shop-top">
+    <div class="row">
+    <div class="col-lg-4 filter-single">
+    <div class="filter-content">
+    <div class="my-auto filter-title"> {{ p_sum }} Product(s) Found</div>
+   
+    </div>
+    </div>
+    <div class="col-lg-6 filter-single">
+        <!-- <div class="filter-content">
+        <div class="my-auto filter-title">Sort By :</div>
+        <select>
+        <option selected="selected">Latest</option>
+        <option>Latest</option>
+        <option>Trending</option>
+        <option>Popular</option>
+        <option>Price Hight To Low</option>
+        <option>Price Low To High</option>
+        </select>
+        </div> -->
+        </div>
+   
+    <div class="col-lg-2 filter-single">
+    <ul class="view-mode">
+        {% if cat == 0 %}
+        <li ><a href="{% url 'vendor_store' lid|encrypt_id %}"><i class="fal fa-th-large"></i></a></li>
+        <li class="active"><a href="{% url 'vendor_store_list' lid|encrypt_id %}"><i class="fal fa-th-list"></i></a></li>
+        {% else %}
+        <li><a href="{% url 'shop_product_listings' sid|encrypt_id lid|encrypt_id %}"><i class="fal fa-th-large"></i></a></li>
+        <li  class="active"><a href="{% url 'shop_product_lists' sid|encrypt_id lid|encrypt_id %}"><i class="fal fa-th-list"></i></a></li>
+    
+        {% endif %}
+    </ul>
+    </div>
+    </div>
+    
+    </div>
+    <div class="row" id="grid">
+        {% for i in products %}
+
+        {% if i.stock > 0 %}
+        <div class="col-12 mt-4">
+        {% else %}
+    <div class="col-12 mt-4 disabledbutton">
+        {% endif %}
+            <div class="single-product">
+            <div class="row">
+            <div class="col-lg-3">
+            <div class="product-img">
+            <a href="{% url 'product_profile' i.id|encrypt_id %}">
+                {{ i.product.id|shop_cover_image|safe}}
+             {% if i.stock > 0 %}
+            {% if i.discount > 0 %}
+        <span class="price-dec">{{ i.discount|floatformat:0|intcomma }}% Off</span>
+        {% endif %}
+        {% else %}
+        <span class="out-of-stock">Out Of Stock</span>
+    
+        {% endif %}
+            </a>
+            <div class="button-head">
+            <div class="product-action">
+            <a data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ i.id }}" href="#"><i class="far fa-eye"></i><span>Quick Shop</span></a>
+            <a href="#" class="addwish" id="{{ i.id }}"><i class="far fa-heart"></i><span>Add to Wishlist</span></a>
+            
+            </div>
+            </div>
+            </div>
+            </div>
+            <div class="col-lg-8">
+            <div class="product-content">
+            <h3><a href="{% url 'product_profile' i.id|encrypt_id %}">{{ i.product.name }}</a></h3>
+            <div class="product-rate">
+                <input id="input-21c" value="{{i.id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="xs"
+                disabled>
+            </div>
+            
+            <p class="my-2">
+                <a href="{% url 'product_profile' i.id|encrypt_id %}"> {{ i.product.description|truncatechars:120 }} </a>
+            </p>
+            <div class="d-flex justify-content-between mt-4">
+            <div class="product-price">
+                <a href="{% url 'product_profile' i.id|encrypt_id %}">  {% if i.discount > 0 %}
+                <span class="old">Ksh. {{ i.price|floatformat:2|intcomma }}</span>
+                {% endif %}
+                <span>Ksh. {{ i.id|price_final|floatformat:2|intcomma }}</span>
+                </a>
+            </div>
+            <button class="product-cart-btn" id="{{i.id|encrypt_id}}" type="button"><i class="fal fa-shopping-cart"></i></button>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+    
+    
+            <div class="modal" id="staticBackdrop{{ i.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-body">
+                <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                    {{ i.product.id|cov_image|safe}}
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                <div class="quickview-content">
+                <h2>{{ i.product.name }}</h2>
+                <div class="d-flex mb-3">
+                <span>Brand:</span>
+                <b>{{ i.product.brand }}</b>
+                </div>
+                <div class="d-flex mb-3">
+                <span>Category:</span>
+                <b>{{ i.product.category }}</b>
+                </div>
+                <div class="d-flex mb-3">
+                <span>Rated:</span>
+                <div class="quickview-ratting-review">
+                <div class="quickview-ratting-wrap">
+                <div class="quickview-ratting">
+                    <input id="input-21c" value="{{i.id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="xs"
+                    disabled>
+                
+                </div>
+                </div>
+                </div>
+                </div>
+                <h3>Ksh. {{ i.id|price_final|floatformat:2|intcomma }}</h3>
+                <div class="quickview-stock">
+                <span><i class="fa fa-check-circle-o"></i> {{ i.stock }} {{i.product.units }} Left</span>
+                </div>
+                
+                <div class="add-to-cart">
+                    <form method="post" class="sample_form" enctype="multipart/form-data">        
+                        {% csrf_token %}
+                        <input type="hidden" name="vproduct" id="vproduct" value="{{ i.id }}"/>
+                        <input type="hidden" name="quantity" id="quantity" value="1"/>
+                        <input type="hidden" name="action" id="action" value="Add"/>
+                        <input type="submit" name="action_button" id="action_button" class="btn" value="Add to cart">
+                    </form>
+                </div>
+                <a href="{% url 'product_profile' i.id|encrypt_id %}" style="color: #32b87d;" >View_Product_Profile</a>
+                <div class="default-social">
+                <h4 class="share-now">Share:</h4>
+                <ul>
+                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                
+                </ul>
+                </div>
+                
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+                </div>
+    
+    
+     {% endfor %}
+    
+   
+    
+    
+    </div>
+    <div class="col-12">
+    
+        {% if products.has_other_pages %}
+        <div class="pagination center mt-2">
+        <ul class="pagination-list">
+            {% if products.has_previous %}
+        <li><a href="?page={{ products.previous_page_number }}"><i class="ti-arrow-left"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-left"></i></a></li>
+        {% endif %}
+        {% for i in products.paginator.page_range %}
+        {% if products.number == i %}
+        
+        <li class="active"><a href="#">{{ i }}</a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if products.has_next %}
+        <li><a href="?page={{ products.next_page_number }}"><i class="ti-arrow-right"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-right"></i></a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% include 'layouts/footer.html' %}

@@ -1,0 +1,97 @@
+{% include 'layouts/pheader.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<style>
+    .disabledbutton {
+pointer-events: none;
+opacity: 0.4;
+}
+</style>
+
+
+<div class="product-area section">
+<div class="container">
+<div class="row">
+<div class="col-12">
+<div class="section-title d-flex justify-content-between align-center">
+<div class="d-flex section-title-left">
+<i class="flaticon-tags"></i>
+<h2>Categories</h2>
+</div>
+<div class="section-title-right">
+
+</div>
+</div>
+</div>
+</div>
+<div class="row" id="pgrids">
+    {% for i in slides %}
+    
+        
+        <div class="col-lg-4 col-md-6 col-12 mt-4 ">
+      
+    <div class="single-product">
+    <div class="product-img">
+    <a href="{% url 'gskill_listings' i.id|encrypt_id %}">
+    
+        <img class="product-img" src="/media/{{ i.cover }}" alt="{{ i.name }}" title="{{ i.name }}" loading="lazy">
+        
+    </a>
+    <div class="button-head">
+    <div class="product-action">
+       
+     </div>
+    </div>
+    </div>
+    <div class="product-content">
+    <h3><a href="{% url 'gskill_listings' i.id|encrypt_id %}" style="font-size: 20px;">{{ i.name }}</a></h3>
+   
+    
+   
+
+    <div class="d-flex justify-content-between">
+    <div class="product-price">
+        
+    </div>
+
+    
+    </div>
+    
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+    
+    
+ {% endfor %}
+
+
+</div>
+</div>
+</div>
+
+
+<section class="shop-services section home">
+<div class="container">
+<div class="row">
+
+
+
+</div>
+</div>
+</section>
+
+
+<section class="shop-blog section pt-0">
+
+</section>
+
+
+{% include 'layouts/pfooter.html' %}

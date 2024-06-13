@@ -1,0 +1,328 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+Legal_Documents
+{% endblock %}
+
+{% block small %} 
+Legal_Documents
+{% endblock %}
+
+{% block content %}
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Legal_Documents</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+          NEW DOCUMENT
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+
+            <div class="form-group ">
+                <label for="exampleInputEmail1">Legal_Document_Types</label>
+                <select class="form-control " name="type" id="type" style="width: 100%;">
+                  
+                
+                    <option selected="selected" disabled>Select_Document_Type</option>
+                    {% for type in types %}
+                    <option value="{{type.id}}">{{type.name}}</option>
+                    {% endfor %}
+                 
+                  
+                </select>
+              </div>
+                 
+
+                  
+                  <div class="form-group col-md-12 col-xs-12">
+                    <label for="exampleInputEmail1">Upload_Document</label>
+                    <input type="file"  name="document" class="form-control" value="" autocomplete="off" />
+
+                  
+                  
+                </div>
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1">Status</label>
+                    <select class="form-control " name="status" id="status" style="width: 100%;">
+                      
+                    
+                      
+                      <option value="True">Active</option>
+                      <option value="False">Deactivated</option>
+                      
+                    </select>
+                  </div>
+                 
+        
+                 
+        
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div id="pdfContainer" style="overflow-y: scroll; height: 100vh;"></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="cats_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                   
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script language="javascript">
+
+$(document).ready(function() {
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    $('#cats_table').DataTable({
+        "serverSide": true,
+        "ordering": false,
+        "ajax": {
+            "url": "{% url 'docs_table' %}",
+            "type": "POST" ,
+            "headers": { "X-CSRFToken": csrf_token },
+        },
+        "columns": [
+            { "data": "type", "orderable": true, "searchable": true },
+           
+            
+
+            { "data": "status",
+              "render": function (data, type, row) {
+                if (row.status == 'True') {
+                  return "<span class='badge bg-green' >Active</span>";
+                } else {
+                  return "<span class='badge bg-gray' >Deactivated</span>";
+                }
+              },
+              "orderable": true, "searchable": true 
+            },
+
+
+            { "data": "id",
+              "render": function (data, type, row) {
+                 
+                
+                  return "<button type='button' name='edit' id='"+data+"' class='edit btn btn-xs  btn-primary btn-sm'>Edit</button> | <button type='button' name='delete' id='"+data+"' class='delete btn btn-xs btn-danger btn-sm'>Delete</button>";
+                
+              },
+              "orderable": true, "searchable": true 
+            },
+           
+        ]
+    });
+
+    $('#create_record').click(function(){
+      $('.modal-title').text("New Document");
+         $('#icvx').html('');
+         $('#action_button').val("Add");
+         $('#action').val("Add");
+         $('#sample_form')[0].reset();
+         $('#formModal').modal('show');
+     });
+    
+    $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'storedocs' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          
+           html += '<p>' + data.errors + '</p>';
+          
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#cats_table').DataTable().ajax.reload();
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'updatedocs' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          
+           html += '<p>' + data.errors + '</p>';
+          
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+         
+          $('#cats_table').DataTable().ajax.reload();
+         }
+         $('#form_result').html(html);
+        }
+       });
+      }
+     });
+    
+     $(document).on('click', '.edit', function() {
+    var id = $(this).attr('id');
+    $('#form_result').html('');
+    $.ajax({
+        url: "{% url 'docsedit' 1 %}".replace('1', id),
+        dataType: "json",
+        success: function(html) {
+            $('#name').val(html.name);
+            $('#category').val(html.category);
+
+            if (html.status) {
+                $('#status').val('True');
+            } else {
+                $('#status').val('False');
+            }
+
+            // Call renderPDF() function instead of using the embed tag
+            renderPDF("/media/" + html.document, "pdfContainer");
+
+            $('#hidden_id').val(html.id);
+            $('.modal-title').text("Edit  Record");
+            $('#action_button').val("Edit");
+            $('#action').val("Edit");
+            $('#formModal').modal('show');
+        }
+    })
+});
+
+    
+    
+     var user_id;
+    
+     $(document).on('click', '.delete', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete Document");
+      $('#confirmModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'deletedocs' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#cats_table').DataTable().ajax.reload();
+        }, 2);
+       }
+      })
+     });
+   
+  });
+</script>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      Listed_Skills
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

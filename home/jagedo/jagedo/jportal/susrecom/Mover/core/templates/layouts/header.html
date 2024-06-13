@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+{% load static %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>JaGedo</title>
+
+<link rel="icon" type="image/png" href="{% static 'assets/img/favicon.png' %}">
+
+<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/jquery.fancybox.min.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/jquery-ui.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/themify-icons.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/flaticon.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/niceselect.css'  %}"> 
+
+<link rel="stylesheet" href="{% static 'assets/css/animate.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/flex-slider.min.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/owl-carousel.css'  %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/slicknav.min.css'  %}">
+
+
+
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/default.css'  %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css'  %}">
+<link rel="stylesheet" href="{% static 'assets/css/responsive.css'  %}">
+
+
+<link href="{% static 'ratings/css/star-rating.css' %}" media="all" rel="stylesheet" type="text/css"/>
+<link href="{% static 'ratings/themes/krajee-fas/theme.css' %}" media="all" rel="stylesheet" type="text/css"/>
+<link href="{% static 'ratings/themes/krajee-svg/theme.css' %}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<style>
+    .circle-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 80vw;
+        height: 80vw;
+        max-width: 120px;
+        max-height: 120px;
+        border-radius: 50%;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+     
+      
+    }
+
+    .modal-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+    
+    .btn-primary {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+    
+    .btn-success {
+      background-color: #198754;
+      border-color: #198754;
+    }
+
+    .btn-info {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+  </style>
+  
+ 
+</head>
+<body>
+
+<!-- <div class="preloader">
+<div class="preloader-inner">
+<div class="preloader-icon"> -->
+<span></span>
+<span></span>
+</div>
+</div>
+</div>
+
+
+<header class="header shop">
+
+<div class="topbar sticky">
+<div class="container">
+<div class="row">
+<div class="col-lg-6 col-md-12 col-12">
+
+<div class="top-left">
+<ul class="list-main">
+<a href="tel:{{ company.phone }}" ><li><i class="ti-headphone-alt"></i> {{ company.phone }}</li></a>
+<a href="mailto:{{ company.email }}" ><li><i class="ti-email"></i> {{ company.email }}</li></a>
+</ul>
+</div>
+
+</div>
+<div class="col-lg-6 col-md-12 col-12">
+
+<div class="right-content">
+<ul class="list-main">
+{% if user.is_authenticated %}
+
+<li><i class="fa fa-lock"></i><a href="/logout">Log_Out</a></li>
+
+{% else %}
+<li><i class="fa fa-user-plus"></i> <a href="#" data-bs-toggle="modal" data-bs-target="#userTypeModal" >Sign_Up</a></li>
+<li><i class="ti-power-off"></i><a href="/login">Login</a></li>
+{% endif %}
+<li>
+<div class="dropdown top-dropdown">
+<a href="#" id="payment" data-bs-toggle="dropdown" aria-expanded="false">
+<i class="fal fa-dollar-sign"></i> KSH </i>
+</a>
+
+</div>
+</li>
+</ul>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="middle-inner">
+<div class="container">
+<div class="row">
+<div class="col-lg-3 col-md-3 col-12">
+
+<div class="logo">
+<a href="/"><img src="{% static 'assets/img/logo.png' %}" alt="logo"></a>
+</div>
+
+
+<div class="search-top">
+<div class="top-search"><a href="#0"><i class="far fa-search"></i></a> <div class="sinlge-bar shopping">
+    {% if user.is_authenticated %}
+<a href="{% url 'product_carts' user.id|encrypt_id %}" class="single-icon"><i style="color: #001399;" class="fal fa-shopping-cart"></i> <span class="tcount total-count">0</span></a>
+{% else %}
+<a href="#" class="single-icon"><i class="fal fa-shopping-cart"></i> <span class="tcount total-count">0</span></a>
+{% endif %}
+</div></div>
+
+<div class="search-top">
+<form class="search-form">
+<input type="text" placeholder="Search Products, Categories and Brands " name="search" id="msearch">
+<button><i class="far fa-search"></i></button>
+<ul class="list-group">
+    <span id="countList" ></span>
+    
+    </ul>
+</form>
+
+</div>
+
+</div>
+
+<div class="mobile-nav"></div>
+</div>
+<div class="col-lg-7 col-md-6 col-12 ">
+<div class="search-bar-top sticky-top">
+<div class="search-bar">
+
+<input name="search" placeholder="Search Products, Categories and Brands" id="search" >
+<button class="btnn"><i class="far fa-search"></i></button>
+
+<ul class="list-group">
+    <span id="countryList" ></span>
+    
+</ul>
+
+
+
+
+</div>
+
+</div>
+</div>
+<div class="col-lg-2 col-md-3 col-12">
+<div class="right-bar">
+    {% if user.is_authenticated %}
+    <span id="total-count">
+<div class="sinlge-bar">
+<a href="{% url 'my_wishlist' %}" class="single-icon"><i class="fal fa-heart" aria-hidden="true"></i><span class="total-count">{{user.id|wishlist}}</span</a>
+</div>
+</span>
+<div class="sinlge-bar">
+    {% if user.is_customer %}
+<a href="/custs/" class="single-icon"><i class="fal fa-user-circle" aria-hidden="true"></i></a>
+{% elif user.is_vendor %}
+<a href="/vendors/" class="single-icon"><i class="fal fa-user-circle" aria-hidden="true"></i></a>
+{% elif user.is_manager %}
+<a href="/mans/" class="single-icon"><i class="fal fa-user-circle" aria-hidden="true"></i></a>
+{% endif %}
+</div>
+
+{% endif %}
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header-inner  shadow">
+<div class="container">
+<div class="cat-nav-head">
+<div class="row">
+<div class="col-lg-3">
+<div class="all-category">
+<div class="d-flex">
+<i class="fal fa-solid fa-map-marker-alt  cat-heading-icon"></i>
+<h3 class="cat-heading" id="clocation">KENYA</h3>
+</div>
+<span id="act_counties"></span>
+</div>
+</div>
+<div class="col-lg-9 col-12">
+<div class="menu-area">
+
+<nav class="navbar navbar-expand-lg">
+<div class="navbar-collapse">
+<div class="nav-inner">
+    
+<ul class="nav main-menu menu navbar-nav">
+
+<li {% if request.resolver_match.url_name == 'index' %} class="active" {% endif %}><a href="/">Home</a></li>
+{% if user.is_authenticated %}
+<li {% if request.resolver_match.url_name == 'gigs' %} class="active" {% endif %}><a href="{% url 'gigs'%}">Experts</a></li>
+
+<li><a href="{% url 'gskill_listings' 3|encrypt_id %}">Contractors</a></li>
+
+<li {% if 'product_listings' in request.path %}  class="active" {% endif %} ><a href="{% url 'product_listings' cat.name|encrypt_id %}">Hardware</a></li>
+{% endif %}
+{% if user.is_authenticated %}
+<li><a href="#">{% if user.is_authenticated %} Hi, {{ user.first_name }} {% else %} Account {% endif %}<i class="ti-angle-down"></i></a>
+<ul class="dropdown">
+    {% if user.is_authenticated %}
+    {% if user.is_customer %}
+<li><a href="/custs/"><i class="fal fa-user"></i> My_Account</a></li>
+{% elif user.is_vendor %}
+<li><a href="/vendors/"><i class="fal fa-user"></i> My_Account</a></li>
+{% elif user.is_expert %}
+<li><a href="/fundis/"><i class="fal fa-user"></i> My_Account</a></li>
+{% elif user.is_manager %}
+<li><a href="/mans/"><i class="fal fa-user"></i> My_Account</a></li>
+{% endif %}
+{% if user.is_customer %}
+<li><a href="/custs/active_orders/"><i class="fal fa-shopping-bag"></i> Active_Orders</a></li>
+<li><a href="#"><i class="fal fa-heart"></i>Saved_Items</a></li>
+{% endif %}
+
+<li><a href="/logout"><i class="fal fa-power-off"></i>Logout</a></li>
+{% else %}
+<li><a href="/login"><i class="fal fa-key"></i>Login</a></li>
+{% endif %}
+</ul>
+</li>
+{% endif %}
+{% if user.is_authenticated %}
+<li class="nav-item sinlge-bar shopping">
+    
+    {% if user.is_authenticated %}
+<a href="{% url 'product_carts' user.id|encrypt_id %}" class="nav-link single-icon" title="View_Shopping_Cart"><i style="color: #001399;font-size: 20px;" class="fal  fa-shopping-cart "></i> <span class="tcount total-count">0</span></a>
+{% else %}
+<a href="#" class="nav-link single-icon" title="View_Shopping_Cart"><i style="color: #001399;font-size: 20px;" class="fal fa-shopping-cart"></i> <span class="tcount total-count">0</span></a>
+{% endif %}
+  </li>
+{% endif %}
+
+</ul>
+
+
+</div>
+</div>
+</nav>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</header>

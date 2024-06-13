@@ -1,0 +1,1298 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block small %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block content %}
+{% load avatar %}
+{% load encode_filter %} 
+{% load static %}
+{% load operations_filter %} 
+{% load vendor_filter %}
+
+  <!-- Default box -->
+  <div class="card">
+
+    <div class="card-header">
+      <h3 class="card-title">{{ ptitle }}</h3>
+
+      <div class="card-tools">
+       
+        <a href="{% url 'mexperts' %}" id="create_record" class="btn btn-xs btn-primary"  title="Experts_Register">
+         
+          Back
+         
+
+        </a>
+
+       
+
+
+      </div>
+    </div>
+    <div class="card-body">
+       
+        <div id="accordion">
+            <div class="card card-secondary">
+                <div class="card-header">
+                  <h4 class="card-title w-100">
+                    <a class="d-block w-100" data-toggle="collapse" href="#collapseFour">
+                      ID_&_CV
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseFour" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="col-6 float-right">
+                        <button class="medit btn  btn-info float-right" id="{{ expertid }}">Edit</button>
+                        <br/>
+                      </div>
+                    <span id="metadiv">
+                    <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Title</th>
+                            <th>Details</th>
+                            
+                          </tr>
+                        </thead>
+                    
+                        <tbody>
+                          {% for m in metas %}
+                         
+                          <tr>
+                            <td>CV</td>
+                            <td>{{ m.cv|docs_viewer|safe}}</br>
+                              
+                              {% if  m.cv|docs_checker == False %} 
+                              <span class="doc_view badge bg-olive" data-doctype="cv" id="{{ m.id }}">View_Document</span>
+                              {% endif %}
+                              <a href="/media/{{ m.cv }}" class=" badge bg-info" target="_blank">Download</a>
+                            </td>
+                           
+                          </tr>
+                          <tr>
+                            <td>Id_Front</td>
+                            <td>{{ m.idfront|docs_viewer|safe}}</br>
+                            
+                              {% if m.idfront|docs_checker == False %} 
+                              <span class="doc_view badge bg-olive" data-doctype="idfront" id="{{ m.id }}">View_Document</span>
+                              {% endif %}
+                            <a href="/media/{{ m.idfront }}" class=" badge bg-info" target="_blank">Download</a>
+                            </td>
+                            
+                          </tr>
+                          <tr>
+                            <td>Id_Back</td>
+                            <td>{{ m.idback|docs_viewer|safe}}</br>
+                              {% if m.idback|docs_checker == False %} 
+                              <span class="doc_view badge bg-olive" data-doctype="idback" id="{{ m.id }}">View_Document</span>
+                              {% endif %}
+                                <a href="/media/{{ m.idback }}" class=" badge bg-info" target="_blank">Download</a></td>
+                           
+                          </tr>
+  
+                       
+  
+                          
+                      {% endfor %}
+                        </tbody>
+                      </table>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+                    Skills
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="col-6 float-right">
+                        <button class="schange btn  btn-info float-right" id="{{ expertid }}">Change_Field</button>
+                        <br/>
+                      </div>
+                      <span id="skilldiv">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Field</th>
+                              <th>Skill</th>
+                              <th>Action</th>
+                              
+                            </tr>
+                          </thead>
+                      
+                          <tbody>
+                            
+                          {% for s in skills %}
+                            <tr>
+                              <td>{{ s.field.name }}</td>
+                              <td>{{ s.skill.name }}</td>
+                              <td><span class="sedit badge bg-info" id="{{ s.id }}">Edit</span></td>
+                            </tr>
+                            {% endfor %}
+                           
+                          </tbody>
+                        </table>
+                      </span>
+                </div>
+              </div>
+            </div>
+            <div class="card card-danger">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a class="d-block w-100" data-toggle="collapse" href="#collapseTwo">
+                    Qualifications
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="col-6 float-right">
+                        <button class="docadd btn  btn-info float-right" >Add_Document</button>
+                        <br/>
+                      </div>
+                      <span id="certsdiv">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Title</th>
+                            <th>Details</th>
+                            <th>Action</th>
+                            
+                          </tr>
+                        </thead>
+                    
+                        <tbody>
+                          {% for d in docs %}
+                         <tr>
+                        <td>{{ d.cert.name }}</td>
+                        <td>{{ d.doc|docs_viewer|safe}}</br>
+                          {% if d.doc|docs_checker == False %} 
+                          <span class="doc_view badge bg-olive"  data-doctype="{{ d.cert.name }}" id="{{ d.id }}" >View_Document</span>
+                          {% endif %}
+                          <a href="/media/{{ d.doc }}" class=" badge bg-info" target="_blank">Download</a></td>
+                        <td><span class="docdel badge bg-danger" id="{{ d.id }}">Delete</span></td>
+                         </tr>
+                         {% endfor %}
+                        </tbody>
+                      </table>
+                      </span>
+                </div>
+              </div>
+            </div>
+            <div class="card card-success">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a class="d-block w-100" data-toggle="collapse" href="#collapseThree">
+                    Availability
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="col-6 float-right">
+                        <button class="timesadd btn  btn-info float-right" >Adjust_Availability</button>
+                        <br/>
+                      </div>
+                     
+                      <span id="timesdiv">
+                        {% if mdet.availability == 1 %}
+                        <b>Custom Schedule</b>
+                        {% else %}
+                        <b>EveryDay(9 A.M - 5 P.M)</b>
+                        {% endif %}
+                        {% if mdet.availability == 1 %}
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Day</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Action</th>
+                            
+                          </tr>
+                        </thead>
+                    
+                        <tbody>
+                  {% for t in times %}
+                          <tr>
+                    <td>{{ t.day.name }}</td>
+                    <td>{{ t.start }}</td>
+                    <td>{{ t.end }}</td>
+                    <td><span class="timesdel badge bg-danger" id="{{ t.id }}">Delete</span></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                      {% endif %}
+                    </span>
+                </div>
+              </div>
+            </div>  
+            
+            <div class="card card-danger">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a class="d-block w-100" data-toggle="collapse" href="#collapseTwo">
+                    Approval Details
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="col-6 float-right">
+                        <button class="mapprove btn  btn-info float-right" id="{{ expertid }}">Upload_Document</button>
+                        <br/>
+                      </div>
+                      <span id="approvediv">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Title</th>
+                           
+                            <th>Action</th>
+                            
+                          </tr>
+                        </thead>
+                    
+                        <tbody>
+                          {% for m in metas %}
+                         <tr>
+                        <td>Approval_Form</td>
+                        <td>{{ m.approval_doc|docs_viewer|safe}}</br>
+                          {% if m.approval_doc|docs_checker == False %} 
+                          <span class="doc_view badge bg-olive"  data-doctype="approval_doc" id="{{ m.id }}" >View_Document</span>
+                          {% endif %}
+                          <a href="/media/{{ m.approval_doc }}" class=" badge bg-info" target="_blank">Download</a></td>
+                        
+                         </tr>
+                         {% endfor %}
+                        </tbody>
+                      </table>
+                      </span>
+                </div>
+              </div>
+            </div>
+              
+    </div>
+
+
+    <div class="modal fade" id="formMeta">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="form_res"></span>
+       <form method="post" id="samp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="row">
+              
+              <span id="uploads" class="row">
+               <div class="form-group col-md-6 col-xs-12">
+                <label for="exampleInputEmail2">Change_CV <br/>(<i><b class="text-danger">If you dont want to change leave this field blank !</b></i>)</label>
+                <input type="file" class="form-control" id="cv" name="cv"  oninvalid="this.setCustomValidity('Please Upload Your CV')"
+                          oninput="setCustomValidity('')"/> 
+                          <span id="icvx"></span>
+               </div>
+    
+               <div class="form-group col-md-6 col-xs-12">
+                <label for="exampleInputEmail2">Change_Id_Front <br/>(<i><b class="text-danger">If you dont want to change leave this field blank !</b></i>)</label>
+                <input type="file" class="form-control" id="id_front" name="id_front"  oninvalid="this.setCustomValidity('Please Upload Your National_Id_Front')"
+                oninput="setCustomValidity('')"/> 
+                <span id="idfront"></span>
+    
+               </div>
+    
+               <div class="form-group col-md-6 col-xs-12">
+                <label for="exampleInputEmail2">Change_Id_Back <br/>(<i><b class="text-danger">If you dont want to change leave this field blank !</b></i>)</label>
+                <input type="file" class="form-control" id="id_back" name="id_back"  oninvalid="this.setCustomValidity('Please Upload Your National_Id_Back ')"
+                          oninput="setCustomValidity('')"/> 
+                          <span id="idback"></span>
+    
+               </div>
+              </span>
+              </div>
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="act" id="act" />
+          <input type="hidden" name="hidden_id" id="hidden_id" />
+          <input type="submit" name="act_button" id="act_button" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+    
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal --> 
+
+
+      <div class="modal fade" id="formSkill">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="sform_res"></span>
+       <form method="post" id="ssamp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="row">
+    
+    <div class="form-group col-md-12 col-xs-12">
+      <label for="exampleInputEmail2">Skill</label>
+     
+        
+        <span id="askills"></span>
+        
+    
+              </div>
+    
+              
+              </div>
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="sact" id="sact" />
+          <input type="hidden" name="shidden_id" id="shidden_id" />
+          <input type="submit" name="sact_button" id="sact_button" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+    
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->  
+      
+      
+      <div class="modal fade" id="formaSkill">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="saform_res"></span>
+       <form method="post" id="sasamp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="row">
+    
+      <div class="form-group col-md-12 col-xs-12">
+    
+        <label for="exampleInputEmail1">Field</label>
+        <select class="field form-control select2" name="field" id="field" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Field')"
+        oninput="setCustomValidity('')" style="width: 100%;">
+          <option selected="selected" disabled value="">Select_Your_Field</option>
+          {% for x in  fields %}
+          <option value="{{ x.id }}">{{ x.name }}</option>
+          {% endfor %}
+        </select>
+    
+    
+        </div>
+    
+        <span id="specs" style="display: none;" class="col-12"> 
+        <div class="form-group col-12">
+    
+          <label for="exampleInputEmail1">Specialisation(Maximum Of 2)</label>
+    
+          <script type="text/javascript">
+    
+            function add_row(field)
+            {
+             $rowno=$("#employee_table tr").length;
+             $rowno=$rowno+1;
+             var lx=$rowno;
+             var setid = lx +"."+ field
+             var finder= Number(setid)
+            
+             if(lx <= 3){
+             $.ajax({
+           url:"{% url 'mgetskillsx' 1 %}".replace('1', finder),
+           dataType:"json",
+           success:function(html){
+            $('.askis'+html.fid).html(html.img);
+           }
+          });
+    
+             $("#employee_table tr:last").after("<tr id='row"+$rowno+"'><td><span class='askis"+$rowno+"'></span></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_row('row"+$rowno+"')></td></tr>");
+        }
+                              
+                  $('.select2').select2()
+            
+            }
+            
+            function delete_row(rowno)
+            {
+             $('#'+rowno).remove();
+            }
+            </script>          
+          <table id="employee_table" class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+    
+       <th>Skill</th> 
+      <th>Add</th> 
+              </tr>
+      
+      
+            </thead>
+         <tr id="row1">
+          
+     
+        <td> <span class="askis"></span></td>
+        
+       
+          <td><input type="button" onclick="add_row( document.getElementById('field').value );" class="btn btn-info" value="+"></td>
+         </tr>
+        </table>
+    
+    
+      </span>          
+              </div>
+    
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="uid" id="uid" value="{{ expertid }}" />
+                <input type="hidden" name="saact" id="saact" />
+          <input type="hidden" name="sahidden_id" id="sahidden_id" />
+          <input type="submit" name="saact_button" id="saact_button" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+    
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->   
+    </div>
+    
+      <div class="modal fade" id="formDocs">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="dform_res"></span>
+       <form method="post" id="dsamp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="row">
+    
+      <div class="form-group col-12">
+    
+        <label for="exampleInputEmail1">Upload Available Academic/Practice Certificates(Maximum Of 4)</label>
+    
+        <script type="text/javascript">
+    
+          function cadd_row(certs)
+          {
+           $rowno=$("#certs_table tr").length;
+           $rowno=$rowno+1;
+           var lx=$rowno;
+           if(lx <= 5){
+           $("#certs_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='form-control select2' name='cert_name' id='cert_name'  style='width: 100%;'><option selected='selected' disabled >Select_Certificate_Name</option>"+certs+"</select></td><td><input type='file'  name='certs' class='form-control' autocomplete='off' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_crow('row"+$rowno+"')></td></tr>");
+                 
+                $('.select2').select2()
+           }
+          
+          }
+          
+          function delete_crow(rowno)
+          {
+           $('#'+rowno).remove();
+          }
+          </script>          
+        <table id="certs_table" class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+    
+     <th>Name</th>
+     <th>Upload</th>  
+    <th>Add</th> 
+            </tr>
+    
+    
+          </thead>
+       <tr id="row1">
+        
+    
+      <td> <select class="form-control select2" name="cert_name" id="cert_name"  style="width: 100%;">
+          <option selected="selected" disabled value="">Select_Certificate_Name</option>
+         
+         {{ certs|safe }}
+         
+        </select> </td>
+      <td><input type="file"  name="certs" class="form-control" value="" autocomplete="off" /></td>
+     
+        <td><input type="button" onclick="cadd_row( '{{ certs }}' );" class="btn btn-info" value="+"></td>
+       </tr>
+      </table>
+    
+    
+      </div>
+    
+              
+              </div>
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="uid" id="uid" value="{{ expertid }}" />
+                <input type="hidden" name="dact" id="dact" />
+          <input type="hidden" name="dhidden_id" id="dhidden_id" />
+          <input type="submit" name="dact_button" id="dact_button" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+    
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->   
+    </div>
+    
+    
+    
+    <div id="confModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                 
+                  <h2 class="modal-title">Confirmation</h2>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+              </div>
+              <div class="modal-body">
+                  <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+              </div>
+              <div class="modal-footer">
+               <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+    </div>
+    
+    
+    
+    <div class="modal fade" id="formTimes">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="tform_res"></span>
+       <form method="post" id="tsamp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+      <div class="row">
+      
+        <div class="form-group col-12">
+      
+          <label for="exampleInputEmail1">Partner Availability</label>
+          <div class="form-group col-12">
+          <select class="aset form-control" name="aset" id="aset" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Availability')"
+          oninput="setCustomValidity('')" style="width: 100%;">
+           
+            
+            <option value="0">Everyday( 9 A.M - 5 P.M)</option>
+            <option value="1">Custom(Set Available Days)</option>
+          
+          </select>
+      </div>
+      
+      
+          <script type="text/javascript">
+      
+            function dadd_row(days)
+            {
+             $rowno=$("#days_table tr").length;
+             $rowno=$rowno+1;
+             var lx=$rowno;
+             if(lx <= 6){
+             $("#days_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='field form-control select2' name='day' id='day' required='true' style='width: 100%;'>"+days+"</select></td><td><input type='time'  name='start' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='time'  name='end' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_drow('row"+$rowno+"')></td></tr>");
+                   
+                  $('.select2').select2()
+             }
+            
+            }
+            
+            function delete_drow(rowno)
+            {
+             $('#'+rowno).remove();
+            }
+            </script>  
+            <span id="days" style="display: none;" class="col-12"> 
+          <table id="days_table" class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+      
+       <th>Day</th>
+       <th>From</th>  
+       <th>To</th>  
+      <th>Add</th> 
+              </tr>
+      
+      
+            </thead>
+         <tr id="row1">
+          
+      
+        <td> <select class="field form-control select2" name="day" id="day" required="true" style="width: 100%;">
+           
+           
+           {{ days|safe }}
+           
+          </select> </td>
+        <td><input type="time"  name="start" class="form-control" value="" autocomplete="off"onfocus="this.showPicker()" /></td>
+        <td><input type="time"  name="end" class="form-control" value="" autocomplete="off" onfocus="this.showPicker()" /></td>
+       
+          <td><input type="button" onclick="dadd_row( '{{ days }}' );" class="btn btn-info" value="+"></td>
+         </tr>
+        </table>
+      </span>       
+      </span>  
+        </div>
+      
+      
+              
+              </div>
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="uid" id="uid" value="{{ expertid }}" />
+                <input type="hidden" name="tact" id="tact" />
+          <input type="hidden" name="thidden_id" id="thidden_id" />
+          <input type="submit" name="tact_button" id="tact_button" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+      
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->   
+      </div>
+      
+      
+      <div id="confMod" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                   
+                    <h2 class="modal-title">Confirmation</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                </div>
+                <div class="modal-body">
+                    <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                </div>
+                <div class="modal-footer">
+                 <button type="button" name="ok_but" id="ok_but" class="btn btn-danger">OK</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="formMapprove">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">ADD A NEW TAX</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+                          <div class="modal-body">
+                 <span id="tform_res"></span>
+       <form method="post" id="tsmp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="row">
+              
+              <span id="apuploads" class="row">
+               <div class="form-group col-md-12 col-xs-12">
+                <label for="exampleInputEmail2">Upload_Document <br/>(<i><b class="text-danger">If you dont want to change leave this field blank !</b></i>)</label>
+                <input type="file" class="form-control" id="approval_doc" name="approval_doc"  oninvalid="this.setCustomValidity('Please Upload Your Approval Document')"
+                          oninput="setCustomValidity('')"/> 
+                          <span id="iapx"></span>
+               </div>
+    
+              </span>
+              
+                 
+             
+               <div class="form-group col-md-12 col-xs-12">
+                <input type="hidden" name="actb" id="actb" />
+          <input type="hidden" name="adhidden_id" id="adhidden_id" />
+          <input type="submit" name="act_buton" id="act_buton" class="btn btn-block btn-warning" value="Add" />
+                                </div>
+              </form>
+            </div>
+          </div>  
+            <div class="modal-footer">
+                           
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal --> 
+      
+
+    
+      <script>
+        $(function () {
+            $('.schange').click(function(){
+                   $('.modal-title').text("Change_Field_&_Skills");
+                   $('#saact_button').val("Add");
+                   $('#saact').val("Add");
+                   $('#sasamp_form')[0].reset();
+                   $('#formaSkill').modal('show');
+               });
+
+               $('.docadd').click(function(){
+                   $('.modal-title').text("Upload_Documents");
+                   $('#dact_button').val("Add");
+                   $('#dact').val("Add");
+                   $('#dsamp_form')[0].reset();
+                   $('#formDocs').modal('show');
+               });
+
+
+               $('.timesadd').click(function(){
+                   $('.modal-title').text("Adjust_Availability");
+                   $('#tact_button').val("Add");
+                   $('#tact').val("Add");
+                   $('#tsamp_form')[0].reset();
+                   $('#formTimes').modal('show');
+               });
+
+               $('#mupedit').click(function(){
+                   
+                   $('#uploads').toggle();
+                  
+                   
+               });
+
+
+               $(document).on('change', '.field', function(){
+      var id = $(this).val();
+    
+      $.ajax({
+       url:"{% url 'mgetskills' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('.askis').html(html.img);
+        $('#specs').show();
+       }
+      })
+     });
+
+
+            $(document).on('click', '.medit',function(){
+                $('#form_res').html('');
+                $('#samp_form')[0].reset();
+                var id = $(this).attr('id');
+                $.ajax({
+                url:"{% url 'mexpertmetaedit' 1 %}".replace('1', id),
+                dataType:"json",
+                success:function(html){
+               $('#icvx').html(html.cv);
+               $('#idfront').html(html.idfront);
+               $('#idback').html(html.idback);
+               $('#hidden_id').val(html.id);
+               $('.modal-title').text("Edit_Meta_Data");
+               $('#act_button').val("Edit");
+               $('#act').val("Edit");
+               $('#formMeta').modal('show');
+              }
+                 });
+
+
+                   
+               });
+
+               $(document).on('click', '.mapprove',function(){
+                $('#form_res').html('');
+                $('#samp_form')[0].reset();
+                var id = $(this).attr('id');
+                $.ajax({
+                url:"{% url 'mexpertmetaedit' 1 %}".replace('1', id),
+                dataType:"json",
+                success:function(html){
+               $('#iapx').html(html.approval_doc);
+               $('#adhidden_id').val(html.id);
+               $('.modal-title').text("Meta_Data");
+               $('#act_buton').val("Upload_Doc");
+               $('#actb').val("Upload_Doc");
+               $('#formMapprove').modal('show');
+              }
+                 });
+
+
+                   
+               });
+
+
+               $('#samp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#act').val() == 'Edit')
+                {
+                 $.ajax({
+                  url: "{% url 'meditexpertmeta' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#samp_form')[0].reset();
+                    $('#metadiv').load(' #metadiv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#form_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+              $('#tsmp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#actb').val() == 'Upload_Doc')
+                {
+                 $.ajax({
+                  url: "{% url 'mapprovemeta_doc' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#tsmp_form')[0].reset();
+                    $('#approvediv').load(' #approvediv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#tform_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+              $(document).on('click', '.sedit',function(){
+                $('#sform_res').html('');
+                $('#ssamp_form')[0].reset();
+                $('#skill').select2().val('').trigger("change");
+                var id = $(this).attr('id');
+                $.ajax({
+                url:"{% url 'meskilledit' 1 %}".replace('1', id),
+                dataType:"json",
+                success:function(html){
+                
+               $('#askills').html(html.askills);
+               $('#skill').select2().val(html.skills.skill).trigger("change");
+               
+               $('#shidden_id').val(html.skills.id);
+               $('.modal-title').text("Edit_Skill");
+               $('#sact_button').val("Edit");
+               $('#sact').val("Edit");
+               $('#formSkill').modal('show');
+              }
+                 });
+
+                });
+
+
+                $('#ssamp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#sact').val() == 'Edit')
+                {
+                 $.ajax({
+                  url: "{% url 'meskillupdate' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#ssamp_form')[0].reset();
+                    
+                    $('#skilldiv').load(' #skilldiv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#sform_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+
+              $('#sasamp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#saact').val() == 'Add')
+                {
+                 $.ajax({
+                  url: "{% url 'meskillchange' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#sasamp_form')[0].reset();
+                    
+                    $('#skilldiv').load(' #skilldiv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#saform_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+
+
+              $('#dsamp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#dact').val() == 'Add')
+                {
+                 $.ajax({
+                  url: "{% url 'medocsadd' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#dsamp_form')[0].reset();
+                    
+                    $('#certsdiv').load(' #certsdiv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#dform_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+
+
+
+              $('#tsamp_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+               
+
+                if($('#tact').val() == 'Add')
+                {
+                 $.ajax({
+                  url: "{% url 'metimesadd' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#tsamp_form')[0].reset();
+                    
+                    $('#timesdiv').load(' #timesdiv');
+                    $(':input[type="submit"]').prop('disabled', false);
+                        
+          
+                         }
+                   $('#tform_res').html(html);
+                  }
+                 })
+                }
+               
+               
+              });
+
+
+
+        
+
+
+
+     $(document).on('change', '.aset', function(){
+      var id = $(this).val();
+
+      if(id == 0) {
+
+        $('#days').hide();
+
+      } else {
+
+        $('#days').show();
+
+      }
+
+
+    });
+
+
+
+
+     var user_id;
+    
+     $(document).on('click', '.docdel', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete Document");
+      $('#confModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'medeletedoc' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#certsdiv').load(' #certsdiv');
+        }, 2);
+       }
+      })
+     });
+
+
+
+
+     var us_id;
+    
+     $(document).on('click', '.timesdel', function(){
+      us_id = $(this).attr('id');
+      $('.modal-title').text("Delete Availability Setting");
+      $('#confMod').modal('show');
+     });
+    
+     $('#ok_but').click(function(){
+      $.ajax({
+        url:"{% url 'medeletetime' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_but').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confMod').modal('hide');
+         $('#ok_button').text('OK');
+         $('#timesdiv').load(' #timesdiv');
+        }, 2);
+       }
+      })
+     });
+
+
+
+
+        });
+        </script>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      {{ ptitle }}
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

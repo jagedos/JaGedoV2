@@ -1,0 +1,825 @@
+{% load static %}
+<style>
+  #pdfContainer {
+position: relative;
+width: 80%; /* You can adjust the width as desired */
+height: 70vh;
+overflow-y: auto;
+margin: auto; /* Add this line to center the container horizontally */
+
+
+}
+
+
+</style>
+<section class="shop-services section home">
+  <div class="container">
+  <div class="row">
+  <div class="col-lg-3 col-md-6 col-12">
+  
+  <div class="single-service">
+  <i class="fal fa-truck"></i>
+  <h4>Efficient Delivery</h4>
+  <p>Orders delivered to construction site</p>
+  </div>
+  
+  </div>
+  <div class="col-lg-3 col-md-6 col-12">
+  
+  <div class="single-service">
+  <i class="fal fa-sync"></i>
+  <h4>Get Refund</h4>
+  <p>Within 30 days returns</p>
+  </div>
+  
+  </div>
+  <div class="col-lg-3 col-md-6 col-12">
+  
+  <div class="single-service">
+  <i class="fal fa-lock"></i>
+  <h4>Safe Payment</h4>
+  <p>100% secure payment</p>
+  </div>
+  
+  </div>
+  <div class="col-lg-3 col-md-6 col-12">
+  
+  <div class="single-service">
+  <i class="fal fa-headset"></i>
+  <h4>24/7 Support</h4>
+  <p>Feel Free To Call us</p>
+  </div>
+  
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </section>
+
+
+    
+    
+    <footer class="footer">
+    
+    <div class="footer-top section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-5 col-md-6 col-12">
+    
+    <div class="single-footer about">
+    <div class="logo">
+    <a href="/"><img width="250" src="{% static 'assets/img/lgo.png' %}" alt="#"></a>
+    </div>
+    <p class="text">{{ company.about|truncatechars:120 }}</p>
+    <p class="call">Have Any Question? Call Us 24/7<span><a href="tel:{{ company.phone }}">{{ company.phone }}</a></span></p>
+    <div class="footer-download">
+      <div  id="google_translate_element"></div>
+    </div>
+    </div>
+    
+    </div>
+    <div class="col-lg-2 col-md-6 col-12">
+    
+    <div class="single-footer links">
+    <h4>Information</h4>
+    <ul>
+    <li><a href="{% url 'about' %}">About Us</a></li>
+    {% for doc in docs %}
+    <li><a href="#"  id="{{ doc.id }}" class="lview" >{{ doc.type }}</a></li>
+    {% endfor %}
+    <li><a href="#">Help</a></li>
+    </ul>
+    </div>
+    
+    </div>
+    <div class="col-lg-2 col-md-6 col-12">
+    
+    <div class="single-footer links">
+    <h4>Make Money With Us</h4>
+    <ul>
+    <li><a href="{% url 'vsign' %}">Sell On JaGedo</a></li>
+    <li><a href="{% url 'esign' %}">Join Our Team Of Experts</a></li>
+   
+    </ul>
+    </div>
+    
+    </div>
+    <div class="col-lg-3 col-md-6 col-12">
+    
+    <div class="single-footer social">
+    <h4>Get In Touch</h4>
+    
+    <div class="contact">
+    <ul>
+    <li> <i class="fal fa-map-marker-alt"></i> {{ company.address }}</li>
+    <li> <i class="fal fa-map-marker-alt"></i> 1ST Floor, Checkmulla Building,
+      Off Achieng’ Oneko Road,
+      Kisumu Town </li>
+    <a href="mailto:{{ company.email }}" ><li> <i class="fal fa-envelope"></i> {{ company.email }}</li></a>
+    <a href="tel:{{ company.phone }}" ><li> <i class="fal fa-phone"></i> {{ company.phone }}</li></a>
+    </ul>
+    </div>
+    
+    <ul>
+    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+    <li><a href="#"><i class="fab fa-whatsapp"></i></a></li>
+    
+    </ul>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <div class="copyright">
+    <div class="container">
+    <div class="inner">
+    <div class="row">
+    <div class="col-lg-6 col-12">
+    <div class="left">
+    <p>Copyright © {% now 'Y' %} <a href="#">JaGedo</a> - All Rights Reserved.</p>
+    </div>
+    </div>
+    <div class="col-lg-6 col-12">
+    <div class="right payment">
+
+   <!-- Your modal code -->
+<div class="modal fade" id="legalModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <div id="pdfContainer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </footer>
+    
+    
+    <div class="modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-body">
+    <div class="row">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <img src="{% static 'assets/img/products/p1.png' %}" alt="#">
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <div class="quickview-content">
+    <h2>Xbeats Bluetooth Earphones</h2>
+    <div class="d-flex mb-3">
+    <span>Brand:</span>
+    <b>Xbeats</b>
+    </div>
+    <div class="d-flex mb-3">
+    <span>Category:</span>
+    <b>Headphones</b>
+    </div>
+    <div class="d-flex mb-3">
+    <span>Tated:</span>
+    <div class="quickview-ratting-review">
+    <div class="quickview-ratting-wrap">
+    <div class="quickview-ratting">
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fa fa-star"></i>
+    <i class="fal fa-star"></i>
+    <a href="#"> (50)</a>
+    </div>
+    </div>
+    </div>
+    </div>
+    <h3>$29.00</h3>
+    <div class="quickview-stock">
+    <span><i class="fa fa-check-circle-o"></i> Stock Available</span>
+    </div>
+    <div class="add-to-cart">
+    <a href="#" class="btn">Add to cart</a>
+    </div>
+    <div class="default-social">
+    <h4 class="share-now">Share:</h4>
+    <ul>
+    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+    <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    
+    
+    <!-- <script data-cfasync="false" src="../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js'  %}"></script> -->
+    <!-- <script src="{% static 'assets/js/jquery-3.6.0.min.js'  %}"></script> -->
+    
+    <script src="{% static 'assets/js/jquery-ui.min.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/slicknav.min.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/owl-carousel.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/magnific-popup.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/facnybox.min.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/waypoints.min.js'  %}"></script>
+
+    <script src="{% static 'ratings/js/star-rating.js'  %}" type="text/javascript"></script>
+   
+    <script src="{% static 'ratings/js/star-rating.js'  %}" type="text/javascript"></script>
+    <script src="{% static 'ratings/themes/krajee-fas/theme.js'  %}" type="text/javascript"></script>
+    <script src="{% static 'ratings/themes/krajee-svg/theme.js'  %}" type="text/javascript"></script>
+    
+    <script src="{% static 'assets/js/finalcountdown.min.js'  %}"></script>
+    {% if 'product_carts' in request.path %}
+    <!-- <script src="{% static 'assets/js/nicesellect.js'  %}"></script> -->
+    {% else %}
+    <script src="{% static 'assets/js/nicesellect.js'  %}"></script>
+    {% endif %}
+    <script src="{% static 'assets/js/ytplayer.min.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/flex-slider.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/scrollup.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/onepage-nav.min.js'  %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+
+    <script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+    <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>  
+    
+    <script src="{% static 'assets/js/easing.js'  %}"></script>
+    
+    <script src="{% static 'assets/js/main.js'  %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.worker.min.js"></script>
+    
+    <script>
+        $(function () {
+         
+          $('.select2').select2()
+      
+         
+          
+        })
+      $(document).ready(function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+
+
+        $.ajax({
+          url:"/clocs/",
+          dataType:"json",
+          success:function(html){
+            $('#clocation').html(html.county);
+            $('#act_counties').html(html.activecounties);
+          }
+        })
+
+
+
+       
+
+      })
+
+
+      $(document).on('click', '.location', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'updatelocation' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        if (data.errors) {
+
+        toastr.error(data.errors);
+        
+        } else {
+        $('#clocation').html(data.county);
+        $('#grid').load(' #grid');
+       
+        toastr.success(data.success);
+        }
+        
+       }
+      })
+     });
+      </script>
+  <script type="text/javascript">
+   $(document).ready(function(){
+   
+   $('#search').on('keyup',function(){
+     
+   $value=$(this).val();
+   if ($value == '') {
+    $('#countryList').fadeOut();  
+    // $('#countryList').html(data.res);
+  
+  } else {
+    $.ajax({
+    
+    type : 'get',
+     
+    url : "/search/",
+     
+    data:{'search':$value},
+     
+    success:function(data){
+      
+                        $('#countryList').fadeIn();  
+                        $('#countryList').html(data.res);
+    
+    
+    }
+     });
+   
+
+
+  }
+
+   });
+   
+    $(document).on('click', 'li', function(){  
+           $('#search').val($(this).text());  
+           $('#countryList').fadeOut();  
+       });  
+   
+     
+   
+   });
+
+
+
+
+
+   $(document).ready(function(){
+   
+   $('#msearch').on('keyup',function(){
+     
+   $value=$(this).val();
+   
+   if ($value == '') {
+    $('#countList').fadeOut();  
+    // $('#countryList').html(data.res);
+  
+  } else {
+    $.ajax({
+    
+    type : 'get',
+     
+    url : "/search/",
+     
+    data:{'search':$value},
+     
+    success:function(data){
+      
+                        $('#countList').fadeIn();  
+                        $('#countList').html(data.res);
+    
+    
+    }
+     });
+   
+
+
+  }
+
+   });
+   
+    $(document).on('click', 'li', function(){  
+           $('#msearch').val($(this).text());  
+           $('#countryList').fadeOut();  
+       });  
+   
+     
+   
+   });
+   
+   </script>
+  <script>
+     jQuery(document).ready(function () {
+             
+            var $inp = $('#rating-input');
+
+            $inp.rating({
+                min: 0,
+                max: 5,
+                step: 1,
+                size: 'lg',
+                showClear: false
+            });
+
+            $('#btn-rating-input').on('click', function () {
+                $inp.rating('refresh', {
+                    showClear: true,
+                    disabled: !$inp.attr('disabled')
+                });
+            });
+
+
+            $('.btn-danger').on('click', function () {
+                $("#kartik").rating('destroy');
+            });
+
+            $('.btn-success').on('click', function () {
+                $("#kartik").rating('create');
+            });
+
+            $inp.on('rating.change', function () {
+                alert($('#rating-input').val());
+            });
+
+
+            $('.rb-rating').rating({
+                'showCaption': true,
+                'stars': '3',
+                'min': '0',
+                'max': '3',
+                'step': '1',
+                'size': 'xs',
+                'starCaptions': {0: 'status:nix', 1: 'status:wackelt', 2: 'status:geht', 3: 'status:laeuft'}
+            });
+            
+        });
+
+
+
+        // $(document).on('click', '.product-cart-btn', function(){
+        //  var id = $(this).attr('id');
+        //  window.location.href='/product_profile/'+id;
+        
+        // });
+
+        $(document).on('click', '.addwish', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'add_wish' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(data){
+        
+        $('#total-count').load(' #total-count');
+        if(data.success)
+         {    
+        toastr.success(data.success);
+         } else {
+        toastr.error(data.errors);
+
+         }
+       }
+      })
+     });
+</script>
+<script>
+$(function () {
+
+  $('.sample_form').on('submit', function(event){
+      event.preventDefault();
+      $(':input[type="submit"]').prop('disabled', true);
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "/addcart/",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                    $(':input[type="submit"]').prop('disabled', false);
+                  
+                   html = data.errors ;
+                  
+                
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('.sample_form')[0].reset();
+          $('.tcount').html(data.count);
+          $('#calc').load(' #calc');
+          $('#carts').load(' #carts',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+          $(':input[type="submit"]').prop('disabled', false);
+              
+
+               }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       })
+      }
+     
+     
+     });
+
+  $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      $(':input[type="submit"]').prop('disabled', true);
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'addcart' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                    $(':input[type="submit"]').prop('disabled', false);
+                  
+                   html = data.errors ;
+                  
+                
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('#sample_form')[0].reset();
+          $('.tcount').html(data.count);
+          $('#calc').load(' #calc');
+          $('#carts').load(' #carts',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+          $(':input[type="submit"]').prop('disabled', false);
+              
+
+               }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'updatecart' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                 
+                  
+                   html = data.errors;
+                  
+                 
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('#sample_form')[0].reset();
+          $(':input[type="submit"]').prop('disabled', false);
+          $('#calc').load(' #calc');
+          $('#carts').load(' #carts',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+          
+         }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       });
+      }
+     });
+
+})
+
+
+</script>
+<script>
+
+$(document).on('click', '.qtyplus', function(){
+      var id = $(this).attr('id');
+      var inputQuantityElement = $(".itquant-"+id);
+      var newQuantity = parseInt($(inputQuantityElement).val())+1;
+      $(inputQuantityElement).val(newQuantity);
+     });
+
+ 
+  
+     $(document).on('click', '.qtyminus', function(){
+      var id = $(this).attr('id');
+      var inputQuantityElement = $(".itquant-"+id);
+      if ($(inputQuantityElement).val() > 1) {
+      var newQuantity = parseInt($(inputQuantityElement).val())-1;
+      $(inputQuantityElement).val(newQuantity);
+      }
+     });
+
+  
+  $(document).on('click', '.gadd_cart', function(){
+    var id = $(this).attr('id');
+    var inputQuantityElement = $(".itquant-"+id);
+    var newQuantity = $(inputQuantityElement).val();
+
+    save_to_cart(id, newQuantity);
+
+
+  });
+
+  function save_to_cart(cart_id, new_quantity) {
+  
+  $.ajax({
+     url : '/quick_cart/',
+     data : "vproduct_id="+cart_id+"&quantity="+new_quantity,
+     type : 'get',
+success : function(data) {
+    $('.tcount').html(data.count);
+    $('#carts').load(' #carts',function(){
+    $.ajax({
+      url:"/ctals/",
+      dataType:"json",
+      success:function(html){
+        $('.tcount').html(html.count);
+      }
+    })
+  });
+    if (data.success) {
+    toastr.success(data.success);
+    } else {
+        toastr.error(data.errors);
+
+
+    }
+}
+
+});
+
+}
+
+function renderPDF(url, pdfContainer) {
+    var container = document.getElementById(pdfContainer);
+
+    pdfjsLib.getDocument(url).promise.then(function (pdfDoc) {
+        // Remove existing canvases (if any)
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        // Loop through all the pages and render each one
+        for (var pageNumber = 1; pageNumber <= pdfDoc.numPages; pageNumber++) {
+            pdfDoc.getPage(pageNumber).then(function (page) {
+                // Create a new canvas element for each page
+                var canvas = document.createElement('canvas');
+                container.appendChild(canvas);
+
+                var ctx = canvas.getContext('2d');
+                var viewport = page.getViewport({ scale: 1 });
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                var renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport,
+                };
+
+                page.render(renderContext);
+            });
+        }
+    });
+}
+
+$(document).on('click', '.lview', function() {
+    var id = $(this).attr('id');
+    $('#form_result').html('');
+    $.ajax({
+        url: "{% url 'docsedit' 1 %}".replace('1', id),
+        dataType: "json",
+        success: function(html) {
+           
+            // Call renderPDF() function instead of using the embed tag
+            renderPDF("/media/" + html.document, "pdfContainer");
+
+            $('.modal-title').text(html.name);
+            $('#legalModal').modal('show');
+        }
+    })
+});
+  
+  </script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+          {pageLanguage: 'en'},
+          'google_translate_element'
+      );
+  }
+</script>
+
+
+<script type="text/javascript"
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+    {% if messages %} 
+{% for message in messages %}
+
+{% if message.tags == 'success'%}
+<script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+{% elif message.tags == 'info' %}
+<script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+{% elif message.tags == 'warning' %}
+<script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+{% elif message.tags == 'error' %}
+<script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+{% endif %}
+
+{% endfor %}
+{% endif %}
+    </body>
+    
+    
+    </html>

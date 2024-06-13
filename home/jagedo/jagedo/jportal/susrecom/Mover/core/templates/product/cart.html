@@ -1,0 +1,751 @@
+{% include 'layouts/header.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Cart</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <div class="shopping-cart section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-8">
+     
+        <span id="icarts">
+        {% if items or gigs %}
+   
+  {% for i in items %}
+ 
+    <div class="shopping-cart-single">
+    <div class="row">
+    <div class="col-lg-2">
+        {{ i.vproduct.id|cart_image|safe }}
+    </div>
+    <div class="col-lg-10 my-auto">
+    <div class="d-flex justify-content-between cart-title">
+    <h6>{{i.vproduct}}  </h6> 
+    <a href="#" class="del" id="{{i.id}}"><i class="fal fa-times"></i></a>
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+    <div class="cart-price my-auto">
+    Ksh. {{ i.vproduct.id|price_final|floatformat:2|intcomma }} x {{i.quantity}} <b>Ksh. {{ i.id|cart_price|floatformat:2|intcomma }}</b>
+    </div>
+    <div class="row g-0 cart-qty">
+    <div class="col-auto">
+    <button type="submit" onclick="decrement_quantity( '{{ i.id }}' )" class=" minus cat-qty-btn"> <i class="fal fa-minus "></i></button>
+    </div>
+    <div class="col-auto">
+    <input type="text" name="quant[1]" id="quant-{{i.id}}" class="input-number" readonly data-min="1" data-max="1000" value="{{ i.quantity }}">
+     </div>
+    <div class="col-auto">
+    <button type="submit" onclick="increment_quantity( '{{ i.id }}' )" class="add plus cat-qty-btn"><i class="fal fa-plus"></i></button>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    {% endfor %}
+    {% if gigs %}
+      <i><h2 style="color: grey;">Quotation Requests</h2></i>
+    {% for g in gigs %}
+
+
+    <div class="shopping-cart-single">
+      <div class="row">
+      <div class="col-lg-2">
+        <img src="/media/products/gigs.png" loading="lazy">
+      </div>
+      <div class="col-lg-10 my-auto">
+      <div class=" cart-title">
+      <h6>Job_Category: {{g.job.name}} <a href="#" class="gdel float-end" id="{{g.id}}"><i class="fal fa-times"></i></a></h6>
+       
+      </div>
+      <div class="">
+      
+      <div class=" my-auto">
+        <p><b>Expert_Required |</b> {{g.expert.name}}</p>
+        <p><b class="text-info">Duration |</b> {% if not g.start %} <span class="badge bg-danger" >Duration_Not_Set</span> {% else %}<b>Start:</b> {{ g.start }} <b>End:</b> {{ g.end }}{% endif %}</p>
+        <p><b>Description |</b> <span class="show-more badge bg-primary" id="{{ g.id }}">Show_Description</span></p>
+        <div class="full-text-{{ g.id }}" style="display: none;">{{ g.description }}</div></br>
+        <span class="reqedit badge bg-info float-end" id="{{ g.id }}" style="color: black;font-size:small;">Edit_Request</span> 
+      </div>
+      
+      </div>
+      </div>
+      </div>
+      </div>
+
+
+
+
+
+
+
+    {% endfor %}
+    {% endif %}
+      
+ 
+   {% else %}
+   <div class="shopping-cart-single">
+<i><h1 style="color: grey;">No Items Added To Cart !</h1></i>
+</div>
+
+   {% endif %}
+  </span>
+    </div>
+    <div class="col-lg-4">
+      {% if items %}
+    <div class="coupon-area">
+    <form action="#">
+    <input type="text" placeholder="Apply your coupon">
+    <button class="coupon-apply-btn">Apply Now</button>
+    </form>
+    </div>
+    {% endif %}
+
+    
+    <form method="post" id="sample_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+        <div class="cart-total-amount">
+            {% if items %}
+            <label style="color: #001399;"><b>DELIVERY_DETAILS</b></label><br>
+            {% else %}
+            <label style="color: #001399;"><b>LOCATION</b></label><br>
+            {% endif %}
+            {% if items %}
+            <i>Where Do You Want The Goods Delivered ?</i>
+            {% else %}
+            <i>Give Details Of Your Location ?</i>
+            {% endif %}
+                    <div class="row">
+                        <!-- <div class="form-check">
+                    <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="delivery_method" value="1" id="delivery_method" required>
+                Pickup Station
+                </label>
+            </div> -->
+            <!-- <span id="pick" style="display : none;">
+            <div class="form-group ">
+                <select class="form-control select2" name="pickup" id="pickup"  style="width: 100%;">
+                  <option value="" selected disabled>Select PickUp Station</option>
+                  {% for p in picks %}
+                  <option value="{{ p.id }}">{{ p.county.name }}, {{ p.name }}</option>
+                  {% endfor %}
+                 
+                </select>
+              </div>
+              </span> -->
+                
+                   </div>
+                   <span id="site"  >
+                   <div class="form-group ">
+                    <input type="hidden"  name="delivery_method" value="2" id="delivery_method" required>
+                    <select class="form-control select2" name="county_site" id="county_site" style="width: 100%;">
+                      {% for pc in countys %}
+                      <option value="{{ pc.id }}" {% if pc.id == prof.location.id %} selected {% endif %}>{{ pc.name }}</option>
+                      {% endfor %}
+                     
+                    </select>
+                  </div>
+                  <div class="form-group ">
+                    <label for="">Enter_Directions_To_The_Site</label>
+                    <textarea name="directions" id="directions" class="form-control" cols="30" rows="4" placeholder="Example : Rock 2, London Square, House No. 55, Embakasi, Nairobi" >{{ user.location }}</textarea>
+                  </div>
+                </span>
+        </div>
+        {% if items %}
+        <div class="cart-total-amount">
+            <label style="color: #001399;"><b>CART_SUMMARY</b></label><br>
+            <span id="isums">
+           
+            <ul>
+                <li>Cart Subtotal<span>Ksh. {{ id|cart_totals|floatformat:2|intcomma }}</span></li>
+                <li>Shipping<span>Ksh. 0.00</span></li>
+                <li>Discount<span>Ksh. 0.00</span></li>
+                <li class="last">Total <span>Ksh. {{ id|cart_totals|floatformat:2|intcomma }}</span></li>
+                </ul>
+    <input type="hidden" name="price" value="{{ id|cart_totals|floatformat:2 }}">
+    <input type="hidden" name="final_price" value="{{ id|cart_totals|floatformat:2 }}">
+           
+                
+            </span>
+                
+        </div>
+        {% else %}
+        <input type="hidden" name="price" value="0">
+        <input type="hidden" name="final_price" value="0">
+        {% endif %}
+        <input type="hidden" name="customer" value="{{ id }}">
+        {% if items or gigs %}
+       
+
+    <div class="cart-total-amount">
+      
+    <div class="checkout-section">
+    <!-- <button type="submit" class="btn checkout-btn" >Checkout</button> -->
+    {% if items and gigs %}
+    <button type="button" class="mpay btn btn-info" id="{{ user.id }}"  style="background-color: #001399;color: white;" >Checkout</button>
+    <input type="submit" id="action" class="checkout btn btn-success" style="background-color: #001399;color: white;display: none;" value="Checkout">
+    {% elif items  %}
+    <button type="button" class="mpay btn btn-info" id="{{ user.id }}"  style="background-color: #001399;color: white;" >Checkout</button>
+    <input type="submit" id="action" class="checkout btn btn-success" style="background-color: #001399;color: white;display: none;" value="Checkout">
+    {% else  %}
+    <input type="submit" id="action" class="checkout btn btn-success" style="background-color: #001399;color: white;" value="Checkout">
+    {% endif %}
+    <a href="/" class="btn" style="color: white;">Continue shopping</a>
+    </div>
+    </div>
+    {% endif %}
+    </div>
+</form>
+    </div>
+    </div>
+    </div>
+    </div> 
+<!-- <style>
+    input#delivery_method {
+   transform: scale(2);
+}
+</style> -->
+
+<!-- Modal -->
+<div class="modal fade" id="RequestEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form method="post" id="sample_ereq" enctype="multipart/form-data">        
+              {% csrf_token %}
+      
+      <div class="row">
+     
+        <input type="hidden" class="form-control"  name="category" id="category"  required >
+        <input type="hidden" class="form-control"  name="expert" id="expert"  required >
+        <input type="hidden" class="form-control" min="1" value="" name="quantity" id="quantity" required>
+      
+       
+       
+     
+      <label for="fname" class="form-label"><b>Job_Duration</b></label>
+      <div class="col-lg-6">     
+      <div class="mb-3">
+      <label for="lname" class="form-label">Start</label>
+      <input type="date" class="form-control" value="" name="start" id="start" onfocus="this.showPicker()" required>
+      </div>
+      </div>
+      <div class="col-lg-6">
+      <div class="mb-3">
+      <label for="email" class="form-label">End</label>
+      <input type="date" id="end" name="end"  class="form-control" onfocus="this.showPicker()" required>
+      </div>
+      </div>
+      <br></br>
+      <br></br>
+      <div class="col-12">
+      <div class="mb-3">
+      <label for="description" class="form-label"><b>Description</b></label>
+      <textarea class="form-control" name="description" id="description" rows="6" required></textarea>
+
+      </div>
+      </div>
+      <br></br>
+      <br></br>
+          <div class="col-12">
+          <div class="mb-3">
+          <label for="email" class="form-label"><b>Upload Document/ Image</b> <i class="text-success"> (If Available)</i></label>
+          <input type="file" id="doc" name="doc"  class="form-control" >
+          <span id="gdoc"></span>
+          </div>
+          </div>
+     
+      </div>
+      
+      <input type="hidden" name="qxaction" id="qxaction" class="btn bg-warning bg-gradient" />
+      <input type="hidden" name="hidden_id" id="hidden_id" class="btn bg-warning bg-gradient" />
+     
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary float-left"  data-bs-dismiss="modal">Close</button>
+        <input  type="submit" id="qxaction_button" class="btn bg-warning bg-gradient">
+
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<div class="modal fade" id="PformModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       
+        <h4 class="modal-title">ADD A NEW TAX</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+                    <div class="modal-body">
+           <span id="pform_result"></span>
+ <form method="post" id="psample_form" enctype="multipart/form-data">        
+  {% csrf_token %}
+  <div class="form-group col-12">
+    <label for="exampleInputEmail1"><b>A/C_ No. | <span id="macc"></span></b></label></br>
+    <label for="exampleInputEmail1"><b>Amount. | <span id="mamt"></span></b></label></br>
+    
+
+    </div>
+    <div class="form-group col-12 mnotice">
+     <h3 class="text-danger" style="font-size: 18px;"><b>Kindly Confirm Payment By Clicking Button Below, Once Completed !</b></h3>
+    </div>
+         <div class="form-group col-12 numbox">
+          <label for="exampleInputEmail1"><b>Mpesa_Number </b><span class="text-danger"><i>(Change if not your mpesa number)</i></span></label>
+          <input type="text" class="form-control" name="mphone" id="mphone" maxlength="10" minlength="10" value="{{ user.phone_number }}" pattern="[0]{1}[0-9]{9}" oninvalid="this.setCustomValidity('Please Use Requested Format Ex: 0722000000. First digit must be zero , followed by nine digits')"
+          oninput="setCustomValidity('')" required>
+        </div>
+
+
+       
+
+         <div class="form-group col-md-12">
+         </br>
+          <input type="hidden" name="paction" id="paction" />
+    <input type="hidden" name="phidden_id" id="phidden_id" />
+    <input type="submit" name="paction_button" id="paction_button" class="btn col-12" style="background-color: #001399;color: white;" value="Add" />
+                          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+                     
+    </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->   
+
+<script>
+
+function increment_quantity(cart_id) {
+    var inputQuantityElement = $("#quant-"+cart_id);
+    var newQuantity = parseInt($(inputQuantityElement).val())+1;
+    save_to_db(cart_id, newQuantity);
+
+}
+
+function decrement_quantity(cart_id) {
+    var inputQuantityElement = $("#quant-"+cart_id);
+    if($(inputQuantityElement).val() > 1) 
+    {
+    var newQuantity = parseInt($(inputQuantityElement).val()) - 1;
+    save_to_db(cart_id, newQuantity);
+    }
+}
+
+function save_to_db(cart_id, new_quantity) {
+  
+      $.ajax({
+         url : '/nums/',
+         data : "cart_id="+cart_id+"&new_quantity="+new_quantity,
+         type : 'get',
+    success : function(data) {
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+        if (data.success) {
+        toastr.success(data.success);
+        } else {
+            toastr.error(data.errors);
+
+
+        }
+    }
+
+});
+
+}
+
+
+$('input[type="radio"]').keydown(function(e)
+{
+    var arrowKeys = [37, 38, 39, 40];
+    if (arrowKeys.indexOf(e.which) !== -1)
+    {
+        $(this).blur();
+        return false;
+    }
+});
+
+
+
+$(document).on('click', '#delivery_method', function(){
+      var id = $(this).val();
+      if(id == 1) {
+      $('#pick').show();
+      $('#site').hide();
+      $('#pickup').attr('required', true);
+      $('#county_site').attr('required', false);
+      $('#directions').attr('required', false);
+      } else {
+
+      $('#pick').hide();
+      $('#site').show();
+      $('#pickup').attr('required', false);
+      $('#county_site').attr('required', true);
+      $('#directions').attr('required', true);
+
+      }
+     
+     });
+
+
+
+</script>
+<script>
+    $(function () {
+    $('#sample_form').on('submit', function(event){
+          event.preventDefault();
+          $(':input[type="submit"]').prop('disabled', true);
+         
+          if($('#action').val() == 'Checkout')
+          {
+            $('#action').val('Creating Order, please wait...');
+           $.ajax({
+            url: "{% url 'create_order_c' %}",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+                     {
+                        $(':input[type="submit"]').prop('disabled', false);
+                        $('#action').val('Checkout');
+                       html = data.errors ;
+                      
+                    
+                     }
+             if(data.success)
+             {
+              html =  data.success ;
+            
+              $(':input[type="submit"]').prop('disabled', false);
+              window.location.href = "/order_summary/"+data.serial;
+                  
+    
+                   }
+             if(data.success)
+             {    
+            toastr.success(html);
+             } else {
+            toastr.error(html);
+    
+             }
+            }
+           })
+          }
+         
+         
+         });
+
+
+
+      $(document).on('click', '.del', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'delcartitem' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+        toastr.success(data.success);
+        
+       }
+      })
+     });
+
+
+
+
+
+
+     $(document).on('click', '.gdel', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'gdelcartitem' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+        toastr.success(data.success);
+        
+       }
+      })
+     });
+
+
+     $(document).on('click', '.mpay', function(){
+      user_id = $(this).attr('id');
+      if ($('#directions').val().trim() === '') {
+            alert('Kindly Provide Delivery Details !');
+      } else {
+      $.ajax({
+        url:"{% url 'payloader' 1 %}".replace('1', user_id),
+      
+       success:function(html)
+       {
+        $('#macc').html(html.pcode);
+        $('#mamt').html(html.amount);
+        $('#mpaid').html(html.paid);
+        $('.mnotice').hide();
+        $('.numbox').show();
+
+        $('#phidden_id').val(html.id);
+        $('.modal-title').text("Mpesa_Express_Payment");
+        if(html.is_paid){
+          $('#paction_button').val("Confirm_Payment");
+          $('#paction').val("Pconfirm");
+
+        } else {
+          $('#paction_button').val("Make_Payment");
+          $('#paction').val("Pay");
+        }
+
+       
+        $('#PformModal').modal('show');
+       
+       }
+      })
+    }
+     });
+    
+     $('#psample_form').on('submit', function(event){
+      event.preventDefault();
+     
+      $('#paction_button').prop('disabled', true);
+      if($('#paction').val() == 'Pay')
+      {
+        $('#paction_button').val(' Submitting, please wait...');
+       $.ajax({
+        url: "{% url 'pushpay' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          $('#paction_button').prop('disabled', false);
+          $('#paction_button').val(' Make_Payment');
+          $('.mnotice').hide();
+          $('.numbox').show();
+          toastr.error(data.errors);
+         
+         }
+         if(data.success)
+         {
+          $('#paction_button').prop('disabled', false);
+          $('#paction_button').val("Confirm_Payment");
+          $('#paction').val("Pconfirm");
+          $('.mnotice').show();
+          $('.numbox').hide();
+          toastr.success(data.success);
+               }
+         
+        }
+       })
+      }
+
+
+      if($('#paction').val() == 'Pconfirm')
+      {
+        $('#paction_button').val(' Submitting, please wait...');
+       $.ajax({
+        url: "{% url 'pushconf' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          $('#paction_button').prop('disabled', false);
+          $('#paction_button').val(' Confirm_Payment');
+          $('.mnotice').show();
+          $('.numbox').hide();
+          toastr.error(data.errors);
+         
+         }
+         if(data.success)
+         {
+          $('#paction_button').val(' Creating Order, Please Wait !');
+          $('.mpay').hide();
+          $('.checkout').show();
+          $('.checkout').click();
+          toastr.success(data.success);
+               }
+         
+        }
+       })
+      }
+
+    });
+      
+    
+    
+        })
+      
+    </script>
+
+<script>
+  $('.show-more').click(function(e) {
+    e.preventDefault();
+    var id = $(this).attr('id');
+    $('.full-text-'+id).toggle();
+  });
+
+  $(document).on('click', '.reqedit', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'ereqdets' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('#category').val(html.x.category);
+        $('#expert').val(html.x.expert);
+        $('#quantity').val(html.x.quantity);
+        $('#start').val(html.x.start);
+        $('#end').val(html.x.end);
+        $('#description').val(html.x.description);
+        $('#gdoc').html(html.x.doc);
+
+        $('#hidden_id').val(html.x.id);
+        $('.modal-title').text("Edit_Details");
+        $('#qxaction_button').val("Edit");
+        $('#qxaction').val("Edit");
+        $('#RequestEdit').modal('show');
+       }
+      })
+     });
+
+
+
+     $('#sample_ereq').on('submit', function(event){
+      event.preventDefault();
+      $(':input[type="submit"]').prop('disabled', true);
+      if($('#qxaction').val() == 'Edit')
+      {
+       $.ajax({
+        url: "/grequpdate/",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                    $(':input[type="submit"]').prop('disabled', false);
+                  
+                   html = data.errors ;
+                  
+                
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('#sample_ereq')[0].reset();
+          $('#icarts').load(' #icarts');
+          $('#isums').load(' #isums',function(){
+          $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+             }
+           })
+          });
+          $(':input[type="submit"]').prop('disabled', false);
+              
+
+               }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       })
+      }
+     
+     
+     });
+</script>
+
+
+
+
+{% include 'layouts/footer.html' %}

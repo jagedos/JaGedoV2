@@ -1,0 +1,513 @@
+{% include 'layouts/pheader.html' %}
+{% load static %}
+{% load avatar %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">{{ items.product.name }}</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="shop single section">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="row">
+    <div class="col-lg-5 col-12">
+    
+    <div class="product-gallery">
+    
+    <div class="flexslider-thumbnails">
+    <ul class="slides">
+        {% for i in imgs %}
+    <li data-thumb="/media/{{i.cover}}" rel="adjustX:10, adjustY:" loading="lazy">
+    <img src="/media/{{i.cover}}" alt="{{i.name}}" title="{{i.name}}" loading="lazy">
+    </li>
+    {% endfor %}
+   
+    </ul>
+    </div>
+    
+    </div>
+    
+    </div>
+    <div class="col-lg-7 col-12">
+    <div class="product-des">
+    
+    <div class="short">
+    <h4>{{ items.name }}</h4>
+    <div class="rating-main">
+    <span class="rating" id="avgt">
+      <input id="input-21c" value="{{id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="sm"
+      disabled>
+    </span>
+    <a href="#" class="total-review">({{id|rev_total}}) Reviews</a>
+    </div>
+    <p class="price"><span class="discount">Ksh. {{ items.id|price_final|floatformat:2|intcomma }}</span>{% if items.discount > 0 %}<s>Ksh. {{items.price|floatformat:2|intcomma}}</s>{% endif %} </p>
+   
+    </div>
+    
+    
+    <div class="color">
+    
+    </div>
+    
+    
+    <div class="size">
+    
+    </div>
+    
+    
+    
+  <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+           
+          <div class="product-buy">
+    <div class="quantity">
+    <h6>Quantity :</h6>
+    <div class="input-group">
+    <div class="button minus">
+    <button type="button" class="btn btn-primary btn-number" data-type="minus" data-field="cquant">
+    <i class="fas fa-minus"></i>
+    </button>
+    </div>
+  <span id="calc">
+    {% if carts %}
+    <input type="text" name="quantity" id="cquant" class="input-number" data-min="1" data-max="1000" value="{{ cart.quantity }}" required>
+    {% else %}
+    <input type="text" name="quantity" id="cquant" class="input-number" data-min="1" data-max="1000" value="1" required>
+    {% endif %}
+  </span>
+    <div class="button plus">
+    <button type="button" class="btn btn-primary btn-number" data-type="plus" data-field="cquant">
+    <i class="fas fa-plus"></i>
+    </button>
+    </div>
+    </div>
+    </div>
+  
+    <input type="hidden" name="product" id="product" value="{{ items.id }}"/>
+    <input type="hidden" name="category" id="category" value="{{ items.category.id }}"/>
+ <span id="carts">
+    <div class="add-to-cart">
+        {% if carts %}
+        <input type="hidden" name="action" id="action" value="Edit"/>
+        <input type="hidden" name="hidden_id" id="hidden_id" value="{{cart.id}}"/>
+        <input type="submit" name="action_button" id="action_button" class="btn" value="Update Quantity">
+        {% else %}
+        <input type="hidden" name="action" id="action" value="Add"/>
+    <input type="submit" name="action_button" id="action_button" class="btn" value="Request Quote">
+    {% endif %}
+    </div>
+ </span>
+</form>
+    <div class="single-product-info">
+    <p>Category :<a href="#">{{ items.category.name }}</a></p>
+    <p>Availability : <span class="badge bg-gray">Upon_Request</span> </p>
+    
+    </div>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    <div class="row">
+     
+    <div class="col-12">
+    <div class="product-info">
+    <nav class="nav-main">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-description-tab" data-bs-toggle="tab" data-bs-target="#nav-description" type="button" role="tab" aria-controls="nav-description" aria-selected="true">Description</button>
+    <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review" aria-selected="false">Review <span id="avgt">({{id|rev_total}})</span></button>
+    </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-description" role="tabpanel" aria-labelledby="nav-description-tab">
+    <div class="tab-single">
+    <div class="row">
+    <div class="col-12">
+    <div class="single-des">
+    <p>{{ items.description }}</p>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
+    <div class="tab-single review-panel">
+    <div class="row">
+    <div class="col-12">
+    <div class="ratting-main">
+    <div class="avg-ratting">
+    <h4>{{id|avg_total|floatformat:1}}/5 <span> (Ratings)</span></h4>
+    <input id="input-21b" value="{{id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="sm"
+      disabled>
+    <span>Based on {{id|rev_total}} verified review(s)</span>
+    </div>
+    <span id="revs">
+    {% if reviews %}
+    {% for v in reviews %}
+    <div class="single-rating">
+    <div class="rating-author">
+    <img src="{{ v.customer.email|gravat:50 }}" alt="#">
+    </div>
+    <div class="rating-des">
+    <h6>{{ v.customer.first_name}} {{ v.customer.last_name}} <span class="badge bg-success float-end" ><i class="fa fa-check-circle"></i> Verified Purchase</span></h6>
+    <div class="ratings">
+    <ul class="rating">
+      <input id="input-21b" value="{{ v.rating|floatformat:1 }}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="xs"
+      disabled>
+    </ul>
+    <div class="rate-count">(<span>{{ v.rating|floatformat:1 }}</span>)</div>
+    </div>
+     <p>{{ v.review }}</p>
+    </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="single-rating">
+     
+      <div class="rating-des">
+      
+      
+      <center> <h3><i>No Reviews Yet !</i></h3></center>
+      </div>
+      </div>
+
+
+    {% endif %}
+  </span>
+    
+  {% if reviews.has_other_pages %}
+  <div class="pagination center mt-2">
+  <ul class="pagination-list">
+      {% if reviews.has_previous %}
+  <li><a href="?page={{ reviews.previous_page_number }}"><i class="ti-arrow-left"></i></a></li>
+      {% else %}
+  <li class="disabled" ><a href="#"><i class="ti-arrow-left"></i></a></li>
+  {% endif %}
+  {% for i in reviews.paginator.page_range %}
+  {% if reviews.number == i %}
+  
+  <li class="active"><a href="#">{{ i }}</a></li>
+{% else %}
+  <li><a href="?page={{ i }}">{{ i }}</a></li>
+{% endif %}
+  
+  {% endfor %}
+ 
+  {% if reviews.has_next %}
+  <li><a href="?page={{ reviews.next_page_number }}"><i class="ti-arrow-right"></i></a></li>
+      {% else %}
+  <li class="disabled" ><a href="#"><i class="ti-arrow-right"></i></a></li>
+  {% endif %}
+  
+  </ul>
+  </div>
+  {% endif %}
+    </div>
+    <span class="c-review" style="display : none;">
+    <div class="comment-review" >
+    <div class="add-review">
+    <h5>Add A Review </h5>
+    <p><b>Order_Id:</b> #0<span id="oid"></span></p>
+    </div>
+    <h4>Your Rating</h4>
+
+    <div class="review-inner">
+      <form method="post" id="samp_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <div class="ratings">
+      <input id="input-21b" value="0" type="text" class="rating" name="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
+      required >
+      
+     </div>
+    </div>
+    </div>
+    
+    
+    
+    <div class="row">
+   
+    <div class="col-lg-12 col-12">
+    <div class="form-group">
+    <label>Write a review<span style="color: red;">*</span></label>
+    <textarea name="review" rows="6" placeholder="Enter Your Review ..." required></textarea>
+    </div>
+    </div>
+    <input type="hidden" name="order" id="order" />
+    <input type="hidden" name="serial" id="serial" />
+    <input type="hidden" name="pid" id="pid" value="{{ id }}"/>
+
+    <div class="col-lg-12 col-12">
+      <input type="hidden" name="act" id="act" value="Add"/>
+    <div class="form-group button5">
+    <button type="submit" id="act_button" name="act_button" class="btn">Submit</button>
+    </div>
+    </div>
+    </div>
+    </form>
+  </span>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+    
+    {% if products %}
+    <div class="product-area most-popular related-store section">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="section-title">
+    <h2>More Items From This Expert</h2>
+    </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-12">
+    <div class="row">
+        {% for shop in products %}
+    <div class="col-lg-2 col-md-6 col-12 mb-4">
+    <div class="related-store-single">
+    <div class="product-img">
+    <a href="{% url 'gproduct_profile' shop.id|encrypt_id %}">
+        {{ shop.id|gig_cover_image|safe }}
+    </a>
+    </div>
+    <h6 class="text-center"><a href="{% url 'gproduct_profile' shop.id|encrypt_id %}">{{ shop.product.name }}</a></h6>
+    </div>
+    </div>
+         {% endfor %}
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    {% endif %}
+
+    {% if r_prods %}
+    
+    <div class="product-area most-popular related-product section">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="section-title">
+    <h2>Related Products</h2>
+    </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-12">
+    <div class="row">
+        {% for rp in r_prods %}    
+    <div class="col-lg-3 col-md-6 col-12 mb-4">
+    <div class="single-product">
+    <div class="product-img">
+    <a href="{% url 'gproduct_profile' rp.id|encrypt_id %}">
+        {{ rp.id|gig_cover_image|safe }}
+       
+    </a>
+    <div class="button-head">
+    <div class="product-action">
+    <a data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="#"><i class="far fa-eye"></i><span>Quick Shop</span></a>
+    <a href="#"><i class="far fa-heart"></i><span>Add to Wishlist</span></a>
+    <a href="#"><i class="far fa-exchange"></i><span>Add to Compare</span></a>
+    </div>
+    </div>
+    </div>
+    <div class="product-content">
+    <h3><a href="{% url 'gproduct_profile' rp.id|encrypt_id %}">{{ rp.product.name }}</a></h3>
+    <div class="product-rate">
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="fas fa-star"></i>
+    <i class="far fa-star"></i>
+    </div>
+    <div class="d-flex justify-content-between">
+    <div class="product-price">
+       
+    <span>Ksh. {{ rp.price|floatformat:2|intcomma }}</span>
+    </div>
+    <button class="product-cart-btn" type="button"><i class="fal fa-shopping-cart"></i></button>
+    </div>
+    </div>
+    </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <a class="echeck" id="{{ id }}"></a>
+<script>
+$(function () {
+     $('#samp_form').on('submit', function(event){
+      event.preventDefault();
+      $('#act_button').prop('disabled', true);
+      if($('#act').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'addreview' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                    $('#act_button').prop('disabled', False);
+                  
+                   html = data.errors ;
+                  
+                
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('#samp_form')[0].reset();
+          $('#avgt').load(' #avgt');
+          $('.avg-ratting').load(' .avg-ratting');
+          $('#revs').load(' #revs',function(){
+           
+
+       jQuery('.echeck').click();
+
+       jQuery(document).ready(function () {
+             
+             var $inp = $('#rating-input');
+ 
+             $inp.rating({
+                 min: 0,
+                 max: 5,
+                 step: 1,
+                 size: 'lg',
+                 showClear: false
+             });
+ 
+             $('#btn-rating-input').on('click', function () {
+                 $inp.rating('refresh', {
+                     showClear: true,
+                     disabled: !$inp.attr('disabled')
+                 });
+             });
+ 
+ 
+             $('.btn-danger').on('click', function () {
+                 $("#kartik").rating('destroy');
+             });
+ 
+             $('.btn-success').on('click', function () {
+                 $("#kartik").rating('create');
+             });
+ 
+             $inp.on('rating.change', function () {
+                 alert($('#rating-input').val());
+             });
+ 
+ 
+             $('.rb-rating').rating({
+                 'showCaption': true,
+                 'stars': '3',
+                 'min': '0',
+                 'max': '3',
+                 'step': '1',
+                 'size': 'xs',
+                 'starCaptions': {0: 'status:nix', 1: 'status:wackelt', 2: 'status:geht', 3: 'status:laeuft'}
+             });
+             
+         });
+
+       
+      });
+          $('#act_button').prop('disabled', false);
+              
+
+               }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       })
+      }
+
+
+     });
+
+     $(document).on('click', '.echeck', function(){
+      var id = $(this).attr('id');
+     $.ajax({
+          url:"{% url 'checkreviews' 1 %}".replace('1', id),
+          dataType:"json",
+          success:function(html){
+            if (html.locks==1){
+            $('#oid').text(html.udets.id);
+            $('#serial').val(html.udets.serial);
+            $('.c-review').show();
+            } else {
+              
+              $('.c-review').hide();
+
+            }
+            
+          }
+        });
+      });
+
+
+    })
+
+</script>
+
+
+<script>
+  $(document).ready(function(){
+
+  jQuery('.echeck').click();
+
+
+  });
+
+</script>
+
+
+
+
+
+{% include 'layouts/pfooter.html' %}

@@ -1,0 +1,327 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ q.name }} Products
+{% endblock %}
+
+{% block small %} 
+{{ q.name }} Products
+{% endblock %}
+
+{% block content %}
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{ q.name }} Products</h3>
+
+      <div class="card-tools">
+    
+        <a href="{% url 'cat' %}" class="btn btn-xs btn-info">Back</a>
+       
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+                   <div class="form-group ">
+                    <label for="exampleInputEmail1">Category_Name</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="">
+                  </div>
+
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1">Section</label>
+                    <select class="form-control " name="section" id="section" style="width: 100%;">
+                      <option selected="selected" disabled>Select_Section</option>
+                    
+                      <option value="False">Hardware</option>
+                      <option value="True">Expert</option>
+                      
+                    </select>
+                  </div>
+
+
+                  <div class="form-group ">
+                    <label for="exampleInputEmail1">Slide</label>
+                    <select class="form-control " name="slide" id="slide" style="width: 100%;">
+                      
+                    
+                      <option value="False">Hide</option>
+                      <option value="True">Show</option>
+                      
+                    </select>
+                  </div>
+        
+        
+                 
+        
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="cats_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                   
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;" class="myinfo"></h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="fpid" id="{{ pid|safe }}" ></span>
+    <script language="javascript">
+
+$(document).ready(function() {
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    var p_id = $('.fpid').attr('id');
+    $('#cats_table').DataTable({
+        "serverSide": true,
+        "ajax": {
+            "url": "{% url 'prod_table' %}",
+            "type": "POST" ,
+            "headers": { "X-CSRFToken": csrf_token },
+            "data": {
+                "pid": p_id ,
+            },
+        },
+        "columns": [
+            { "data": "name", "orderable": true, "searchable": true },
+
+            { "data": "slide",
+              "render": function (data, type, row) {
+              
+                if (row.slide == 'True') {
+                  return "<button type='button'  class='stat btn btn-xs  btn-primary btn-sm'>Show</button> ";
+                  
+                } else {
+                  return "<button type='button'  class='hstat btn btn-xs  bg-gray btn-sm'>Hide</button> ";
+                  
+                }
+                
+                  
+                
+              },
+              "orderable": true, "searchable": true 
+            },
+
+            { "data": "id",
+              "render": function (data, type, row) {
+               
+                  return "<button type='button' name='edit' id='"+row.id+"' class='stat btn btn-xs  bg-gray btn-sm'>Adjust Status</button> ";
+                
+                
+                  
+                
+              },
+              "orderable": true, "searchable": true 
+            },
+           
+        ]
+    });
+
+    $('#create_record').click(function(){
+      $('.modal-title').text("New Category");
+         $('#action_button').val("Add");
+         $('#action').val("Add");
+         $('#sample_form')[0].reset();
+         $('#formModal').modal('show');
+     });
+    
+    $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'storecat' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#cats_table').DataTable().ajax.reload();
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'updatecat' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+         
+          $('#cats_table').DataTable().ajax.reload();
+         }
+         $('#form_result').html(html);
+        }
+       });
+      }
+     });
+    
+     $(document).on('click', '.edit', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'catedit' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('#name').val(html.name);
+        if(html.expert){
+          $('#section').val('True');
+        } else {
+          $('#section').val('False');
+        }
+
+        if(html.slide){
+          $('#slide').val('True');
+        } else {
+          $('#slide').val('False');
+        }
+
+        $('#hidden_id').val(html.id);
+        $('.modal-title').text("Edit  Record");
+        $('#action_button').val("Edit");
+        $('#action').val("Edit");
+        $('#formModal').modal('show');
+       }
+      })
+     });
+    
+    
+     var user_id;
+    
+     $(document).on('click', '.stat', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Adjust Slide Status");
+      $('.myinfo').text("Are you sure you want to adjust status ?");
+      $('#confirmModal').modal('show');
+     });
+
+     
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'changestat' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Updating ...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#cats_table').DataTable().ajax.reload();
+        }, 2);
+       }
+      })
+     });
+   
+  });
+</script>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      Product_Categories
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

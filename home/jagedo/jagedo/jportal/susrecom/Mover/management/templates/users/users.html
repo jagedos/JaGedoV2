@@ -1,0 +1,533 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{% if utype == 1 %}
+ADMINS
+{% elif utype == 2 %}
+VENDORS
+{% elif utype == 3 %}
+CUSTOMERS
+{% endif %}
+{% endblock %}
+
+{% block small %} 
+{% if utype == 1 %}
+ADMINS
+{% elif utype == 2 %}
+VENDORS
+{% elif utype == 3 %}
+CUSTOMERS
+{% endif %}
+{% endblock %}
+
+{% block content %}
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{% if utype == 1 %}
+        Admins_Register
+        {% elif utype == 2 %}
+        Vendors_Register
+        {% elif utype == 3 %}
+        Customers_Register
+        {% endif %}</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+          {% if utype == 1 %}
+          ADD_NEW_ADMIN
+          {% elif utype == 2 %}
+          ADD_NEW_VENDOR
+          {% elif utype == 3 %}
+          ADD_NEW_CUSTOMER
+          {% endif %}
+
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">First_Name</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+        
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Last_Name</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="email" class="form-control"  id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">National_Id</label>
+                    <input type="text" class="form-control" name="national_id" id="national_id"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Phone_Number</label>
+                    <input type="text" class="form-control" name="phone" id="phone" minLength="10" maxLength="10"   pattern="[0]{1}[0-9]{9}" autocomplete="off" placeholder="Example : 0744000111" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1" >County</label>
+                    <!-- select box from counties array -->
+                    <select class="form-control select2" name="county" id="county" style="width: 100%;" required>
+                      <option value="">Select County</option>
+                      {% for county in counties %}
+                      <option value="{{ county.id }}">{{ county.name }}</option>
+                      {% endfor %}
+                    </select>
+
+
+
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="text" class="form-control" name="location" id="location"  autocomplete="off" placeholder="Example : EMBAKASI, NAIROBI" required>
+                  </div>
+
+          
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Password</label>
+                    <input type="text" class="form-control" name="password" id="password" placeholder="" autocomplete="off" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Account_Status</label>
+                    <select class="form-control select2" name="status" id="status" style="width: 100%;" required>
+                      
+                     
+                      <option value="0">In_Active</option>
+                      <option value="1">Active</option>
+                      
+                    </select>
+                  </div>
+                  {% if utype == 1 %}
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">User_Type</label>
+                    <select class="form-control" name="usertype" id="usertype" style="width: 100%;" required>
+                      <option selected="selected" disabled>Select Type</option>
+                      {% for type in roles %}
+                      <option value="{{ type.id }}" >{{ type.name }}</option>
+                      {% endfor %}
+                    
+                    
+                      
+                    </select>
+                  </div>
+
+                  {% else %}
+                  <input type="hidden" name="usertype" id="usertype" value="2"/>
+
+                  {% endif %}
+
+
+                </div>
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="utype" id="utype" value="{{ utype }}"/>
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="users_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Date_Joined</th>
+                            <th>First_Name</th>
+                            <th>Last_Name</th>
+                            <th>National_Id</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for x in  users %}
+                    <tr>
+                    <td>{{ x.date_joined }}</td>
+                    <td>{{ x.first_name }}</td>
+                    <td>{{ x.last_name }}</td>
+                    <td>{{ x.national_id }}</td>
+                    <td>{{ x.email }}</td>
+                    <td>{{ x.phone_number }}</td>
+                    <td>{% if x.is_active %}
+<span class="btn btn-xs btn-success">Active</span><br>
+                      {% else %}
+                      <span class="btn btn-xs btn-warning">In-Active</span><br>
+                    {% endif %}
+                    {% if x.is_vendor %}
+                    {% if x.is_approved %}
+                    <span class="btn btn-xs btn-info">Approved</span>
+                    {% else %}
+                    <span class="btn btn-xs btn-danger">Not-Approved</span>
+                    {% endif %}
+                    {% endif %}
+
+                    </td>
+                    <td><i  name="edit" id="{{ x.id }}" class="edit fa fa-edit" style="color: #058585;"></i> | {% if utype == 2 %} <i  name="docs" id="{{ x.id }}" class="edocs fa fa-file" style="color: #058585;"></i> |{% endif %} <i   name="reset" id="{{ x.id }}" class="reset fa fa-lock" style="color: #3bc7d9;"></i> | <i  id="{{ x.id }}" class="delete fa fa-trash" style="color: #ec0f0f;"></i></td>
+        
+                    </tr>
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this user? There may be data attached to this account.</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="resetModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_res"></span>
+           <form method="post" id="samp_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="text" class="form-control" name="mail" id="mail"  autocomplete="off" placeholder="" readonly required>
+                  </div>
+        
+                </div>
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="act" id="act" />
+             
+              <input type="submit" name="act_button" id="act_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+        <script language="javascript">
+
+            $(function () {
+            $("#users_table").DataTable({
+                
+                pageLength: 10,
+                lengthChange: true,
+                autoWidth: true,
+                searching: true,
+            });
+        
+            $('#create_record').click(function(){
+              $('.modal-title').text("New User");
+                 $('#action_button').val("Add");
+                 $('#action').val("Add");
+                 $('#sample_form')[0].reset();
+                 $('#formModal').modal('show');
+             });
+            
+            $('#sample_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#action').val() == 'Add')
+              {
+               $.ajax({
+                url: "{% url 'storeuser' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                      $('#users_table').load(' #users_table');
+                       }
+                 $('#form_result').html(html);
+                }
+               })
+              }
+             
+             if($('#action').val() == "Edit")
+              {
+               $.ajax({
+                url:"{% url 'updateuser' %}",
+                method:"POST",
+                data:new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  html = '<div class="alert alert-danger">';
+                  for(var count = 0; count < data.errors.length; count++)
+                  {
+                   html += '<p>' + data.errors[count] + '</p>';
+                  }
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                  $('#users_table').load(' #users_table');
+                 }
+                 $('#form_result').html(html);
+                }
+               });
+              }
+             });
+
+
+
+
+             $('#samp_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#act').val() == 'Initiate')
+              {
+               $.ajax({
+                url: "{% url 'initiate_reset' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  
+                  $(':input[type="submit"]').prop('disabled', false);
+                     
+                       }
+                 $('#form_res').html(html);
+                }
+               })
+              }
+             
+             
+
+
+
+             
+             
+             
+             });
+
+
+
+             
+            
+             $(document).on('click', '.edit', function(){
+              var id = $(this).attr('id');
+              $('#form_result').html('');
+              $.ajax({
+               url:"{% url 'useredit' 1 %}".replace('1', id),
+               dataType:"json",
+               success:function(html){
+                $('#first_name').val(html.data.first_name);
+                $('#last_name').val(html.data.last_name);
+                $('#email').val(html.data.email);
+                $('#national_id').val(html.data.national_id);
+                $('#phone').val(html.data.phone_number);
+                $('#county').select2().val(html.county).trigger("change");
+                $('#usertype').val(html.data.usertype);
+                $('#location').val(html.data.location);
+                $('#password').val(html.data.password);
+                if (html.data.is_active) {
+                $('#status').select2().val(1).trigger("change");
+                } else {
+
+                $('#status').select2().val(0).trigger("change");
+                }
+        
+                 $('#hidden_id').val(html.data.id);
+                $('.modal-title').text("Edit  Record");
+                $('#action_button').val("Edit");
+                $('#action').val("Edit");
+                $('#formModal').modal('show');
+               }
+              })
+             });
+            
+
+
+             $(document).on('click', '.reset', function(){
+              var id = $(this).attr('id');
+              $('#form_result').html('');
+              $.ajax({
+               url:"{% url 'useredit' 1 %}".replace('1', id),
+               dataType:"json",
+               success:function(html){
+              
+                $('#mail').val(html.email);
+                
+                 $('#hidden_id').val(html.id);
+                $('.modal-title').text("Initiate_Password_Reset");
+                $('#act_button').val("Initiate");
+                $('#act').val("Initiate");
+                $('#resetModal').modal('show');
+               }
+              })
+             });
+
+             $(document).on('click', '.edocs', function(){
+             var id = $(this).attr('id');
+             window.location.href='/mans/vdocs/'+id;
+        
+              });
+
+
+
+            
+             var user_id;
+            
+             $(document).on('click', '.delete', function(){
+              user_id = $(this).attr('id');
+              $('.modal-title').text("Delete User");
+              $('#confirmModal').modal('show');
+             });
+            
+             $('#ok_button').click(function(){
+              $.ajax({
+                url:"{% url 'deleteuser' 1 %}".replace('1', user_id),
+               beforeSend:function(){
+                $('#ok_button').text('Deleting...');
+               },
+               success:function(data)
+               {
+                if (data.errors) {
+                  $('#confirmModal').modal('hide');
+                  $('#ok_button').text('OK');
+                  toastr.error('You Do Not Have Permission To Delete This User', 'Permission Denied');
+                }
+                else{
+                  toastr.success('User Deleted Successfully', 'Success');
+                  setTimeout(function(){
+                 $('#confirmModal').modal('hide');
+                 $('#ok_button').text('OK');
+                 $('#users_table').load(' #users_table');
+                }, 2);
+                }
+               }
+              })
+             });
+           
+          });
+        </script>
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      USERS
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

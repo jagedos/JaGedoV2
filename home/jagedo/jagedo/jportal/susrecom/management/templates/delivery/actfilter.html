@@ -1,0 +1,66 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+Active_Carts_Filter
+{% endblock %}
+
+{% block small %} 
+Active_Carts_Filter
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Active_Carts_Filter</h3>
+
+      <div class="card-tools">
+       
+       
+       
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <form method="get" id="sample_form" action="{% url 'vvorders' %}" enctype="multipart/form-data">        
+            {% csrf_token %}
+
+           
+            <div class="row">
+                <div class="form-group col-md-4 col-xs-12">
+                   
+                    <select class="form-control livecust" name="customer" id="customer" required="true" style="width: 100%;">
+                     
+                    </select>
+                  </div>
+
+
+                  
+                  <div class="form-group col-md-4 col-xs-12">
+                   
+                    <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-primary" value="Query" />
+                                          </div>
+
+
+                  
+        
+        
+                </div>
+        
+                   
+                  </form>
+
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        Vendor_Filter
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

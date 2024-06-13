@@ -1,0 +1,199 @@
+{% include 'layouts/pheader.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Experts</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="product-area shop-sidebar shop section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-3 col-md-4 col-12">
+    <div class="shop-sidebar">
+    
+    <div class="single-widget category">
+    <h3 class="title">Categories</h3>
+    <ul class="categor-list">
+        {% for cat in cats %}
+    <li><a href="{% url 'gproduct_listings' cat.name|encrypt_id %}">{{ cat.name }} <span>({{cat.id|pcat_total}})</span></a></li>
+    {% endfor %}
+    </ul>
+    </div>
+    
+    
+    
+     
+    
+    
+    
+    
+    <div class="single-widget category">
+        <h3 class="title">Need Building Materials ?</h3>
+       <p>Get building materials at the most competative prices <a href="{% url 'all_products' %}" style="color: #001399;">Here</a></p>
+    </div>
+    
+    
+    
+    
+    </div>
+    </div>
+    <style>
+        .disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
+    </style>
+    <div class="col-lg-9 col-md-8 col-12">
+    
+    <div class="shop-top">
+    <div class="row">
+    <div class="col-lg-4 filter-single">
+    <div class="filter-content">
+    <div class="my-auto filter-title"> {{ p_sum }} Items(s) Found</div>
+   
+    </div>
+    </div>
+    <div class="col-lg-6 filter-single">
+       
+        </div>
+   
+    <div class="col-lg-2 filter-single">
+    <ul class="view-mode">
+        <li ><a href="{% url 'gigs'  %}"><i class="fal fa-th-large"></i></a></li>
+        <li class="active"><a href="{% url 'gigs_lists'  %}"><i class="fal fa-th-list"></i></a></li>
+    </ul>
+    </div>
+    </div>
+    
+    </div>
+
+    <div class="col-12">
+    <button id="quote_custom" class="btn">Make_Custom_Request</button>
+    </div>
+
+    <div class="row" id="grid">
+        {% for i in products %}
+    <div class="col-12 mt-4">
+        <div class="single-product">
+        <div class="row">
+        <div class="col-lg-3">
+        <div class="product-img">
+        <a href="{% url 'product_profile' i.id|encrypt_id %}">
+            {{ i.id|gig_cover_image|safe}}
+        
+        </a>
+        <div class="button-head">
+        <div class="product-action">
+        <a href="{% url 'gproduct_profile' i.id|encrypt_id %}" ><i class="far fa-eye"></i><span>Item_Profile</span></a>
+        <!-- <a href="#" class="addwish" id="{{ i.id }}"><i class="far fa-heart"></i><span>Add to Wishlist</span></a> -->
+        
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="col-lg-8">
+        <div class="product-content">
+        <h3><a href="{% url 'gproduct_profile' i.id|encrypt_id %}">{{ i.name }}</a></h3>
+        <div class="product-rate">
+            <input id="input-21c" value="{{i.id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="xs"
+            disabled>
+        </div>
+        
+        <p class="my-2">
+            <a href="{% url 'gproduct_profile' i.id|encrypt_id %}"> {{ i.description|truncatechars:120 }} </a>
+        </p>
+        <div class="d-flex justify-content-between mt-4">
+        <div class="product-price">
+            <a href="{% url 'gproduct_profile' i.id|encrypt_id %}"> 
+            <span>Ksh. {{ i.price|floatformat:2|intcomma }}</span>
+            </a>
+        </div>
+        </div>
+        <div class="d-flex justify-content-between">
+        
+             
+            <div class="row g-0 cart-qty">
+                <div class="col-auto">
+                <button type="button"  class="qtyminus cat-qty-btn" id='{{i.id}}'> <i class="fal fa-minus "></i></button>
+                </div>
+                <div class="col-auto">
+                <input type="text" name="quantity"  class="itquant-{{i.id}} input-number"  data-min="1" data-max="1000" value="{% cartpq i.id user.id %}">
+                 </div>
+                <div class="col-auto">
+                <button type="button"  class="qtyplus cat-qty-btn" id='{{i.id}}'><i class="fal fa-plus"></i></button>
+                </div>
+                </div>
+                
+            <button class="gadd_cart product-cart-btn" type="button" id='{{i.id}}' ><i class="fal fa-shopping-cart"></i></button>
+        
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+
+
+        
+
+
+ {% endfor %}
+    
+    
+   
+    
+    
+    </div>
+    <div class="col-12">
+    
+        {% if products.has_other_pages %}
+        <div class="pagination center mt-2">
+        <ul class="pagination-list">
+            {% if products.has_previous %}
+        <li><a href="?page={{ products.previous_page_number }}"><i class="ti-arrow-left"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-left"></i></a></li>
+        {% endif %}
+        {% for i in products.paginator.page_range %}
+        {% if products.number == i %}
+        
+        <li class="active"><a href="#">{{ i }}</a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if products.has_next %}
+        <li><a href="?page={{ products.next_page_number }}"><i class="ti-arrow-right"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-right"></i></a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+    
+    </div>
+    </div>
+    </div>
+    </div>
+
+    </section>
+   
+
+{% include 'layouts/pfooter.html' %}

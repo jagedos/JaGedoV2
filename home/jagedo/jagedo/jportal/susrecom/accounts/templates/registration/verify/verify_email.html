@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Email Verification</title>
+    <meta name="viewport" content="width = 375, initial-scale = -1">
+  </head>
+
+  <body style="background-color: #ffffff; font-size: 16px;">
+    <center>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width:600px;">
+          <!-- BEGIN EMAIL -->
+          <tr>
+            <td align="center" bgcolor="#ffffff" style="padding:30px">
+               <p style="text-align:left">Hello {{ uname }},<br><br> You registered an account on {{ site_name }}, before being able to use your account you need to verify that this is your email address by clicking here:.
+              </p>
+              <p>
+                <a target="_blank" style="text-decoration:none; background-color: black; border: black 1px solid; color: #fff; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">
+                  <strong>Verify Email</strong></a>
+              </p>
+              <p style="text-align:left">This link can only be used once. If you need another validation link, please visit <a href="{{ protocol }}://{{domain}}">JaGedo.co.ke</a> and request another validation link.<br><br>If you did not make this request, you can simply ignore this email.</p>
+              <p style="text-align:left">
+              Sincerely,<br>{{ site_name }} Support Team
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+  </body>
+</html>

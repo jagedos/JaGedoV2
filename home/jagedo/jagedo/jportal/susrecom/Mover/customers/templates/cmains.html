@@ -1,0 +1,373 @@
+{% include 'layout/headerc.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+{% load vendor_filter %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+       
+        <div class="row mb-2">
+          <div class="col-sm-6">
+           
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/custs/">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard </li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+   
+    <!-- Main content -->
+    <section class="content">
+  
+       
+         
+         
+      <div class="container-fluid">
+   
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{ active }}</h3>
+
+                <p>Active Orders</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="{% url 'active_orders' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{ dispatched }}</h3>
+
+                <p>Dispatched Orders</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-truck"></i>
+              </div>
+              <a href="{% url 'active_orders' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{ completed }}</h3>
+
+                <p>Fulfilled Orders</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-boxes"></i>
+              </div>
+              <a href="{% url 'closed_orders' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{ user.id|pqs|floatformat:0|intcomma }}</h3>
+
+                <p>Pending Quotes</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-file"></i>
+              </div>
+              <a href="{% url 'pend_quotes' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+
+
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-teal">
+              <div class="inner">
+                <h3>{{ user.id|pjobs|floatformat:0|intcomma }}</h3>
+
+                <p>Pending Jobs</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-rocket"></i>
+              </div>
+              <a href="{% url 'pend_jobs' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+
+
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-fuchsia">
+              <div class="inner">
+                <h3>{{ user.id|actjobs|floatformat:0|intcomma }}</h3>
+
+                <p>Active Jobs</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-subway"></i>
+              </div>
+              <a href="{% url 'cactive_jobs' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+
+           <!-- ./col -->
+           <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-olive">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Completed Jobs</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-check"></i>
+              </div>
+              <a href="{% url 'call_jobs' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col -->
+          <section class="col-lg-12 connectedSortable">
+            <!-- Custom tabs (Charts with tabs)-->
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title">My_Profile</h3>
+                <div class="card-tools">
+                    <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+                    EDIT_PROFILE
+                      </button>
+                </div>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table id="prof"class="table table-striped table-valign-middle">
+                  <thead>
+                  <tr>
+                    <th>First_Name</th>
+                            <th>Last_Name</th>
+                            <th>Contact_Details</th>
+                            <th>Join Date</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>
+          <b> N_Id:</b> {{ user.national_id }}</br>
+          <b> Email:</b> {{ user.email }}</br>
+          <b> Phone:</b> {{ user.phone_number }}</br>
+          <b> Location:</b> {{ user.location }}</br></td>
+       
+        <td>{{ user.date_joined }}</td>
+
+
+
+
+                      </tr>
+                   
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- /.card -->
+
+            <div class="modal fade" id="formModal">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                   
+                    <h4 class="modal-title">ADD A NEW TAX</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                                <div class="modal-body">
+                       <span id="form_result"></span>
+             <form method="post" id="sample_form" enctype="multipart/form-data">        
+              {% csrf_token %}
+              <div class="row" id="prf">
+                <div class="col-lg-6">
+                <div class="mb-3">
+                <label for="fname" class="form-label">First Name</label>
+                <input type="text" class="form-control" value="{{ user.first_name}}" name="first_name" id="first_name" required>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="mb-3">
+                <label for="lname" class="form-label">Last Name</label>
+                <input type="text" class="form-control" value="{{ user.last_name}}" name="last_name" id="last_name" required>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control" value="{{ user.email}}" required>
+                </div>
+                </div>
+                
+                <div class="col-lg-6">
+                <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" name="phone" id="phone" minLength="10" maxLength="10"   pattern="[0]{1}[0-9]{9}" value="{{ user.phone_number}}" required>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                    <label for="phone" class="form-label">National_Id</label>
+                    <input type="text" class="form-control" name="national_id" id="national_id"  value="{{ user.national_id}}" required>
+                    </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                      <label for="phone" class="form-label">Location</label>
+                      <input type="text" class="form-control" name="location" id="location"  value="{{ user.location }}" required>
+                      </div>
+                  </div>
+                </div>
+
+                
+                     </div>
+
+                   
+                     <div class="form-group col-md-12 col-xs-12">
+                      <input type="hidden" name="action" id="action" />
+                <input type="hidden" name="hidden_id" id="hidden_id" value="{{ user.id }}" />
+                <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                      </div>
+                    </form>
+                  </div>
+          
+                  <div class="modal-footer">
+                                 
+                </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->   
+           
+            <script language="javascript">
+
+              $(function () {
+              
+          
+              $('#create_record').click(function(){
+                $('.modal-title').text("Profile_Details");
+                   $('#action_button').val("Edit");
+                   $('#action').val("Edit");
+                   $('#sample_form')[0].reset();
+                   $('#formModal').modal('show');
+               });
+              
+              $('#sample_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+                if($('#action').val() == 'Edit')
+                {
+                 $.ajax({
+                  url: "{% url 'update_customer_details' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#sample_form')[0].reset();
+                    $('.cFile').on('change',function(){
+                  //get the file name
+                  var fileName = $(this).val();
+                  //replace the "Choose a file" label
+                  $(this).next('.custom-file-label').html(fileName);
+              })
+                    $(':input[type="submit"]').prop('disabled', false);
+                    $('#prf').load(' #prf');
+                    $('#prof').load(' #prof');
+                    $('#formModal').modal('hide');
+                         }
+                   $('#form_result').html(html);
+                  }
+                 })
+                }
+               
+               
+              }
+               );
+              
+               
+              
+              
+               
+              
+               
+               
+             
+            });
+          </script>
+<script>
+
+
+  
+</script>
+         
+         
+           
+          </section>
+          <!-- /.Left col -->
+          <!-- right col (We are only adding the ID to make the widgets sortable)-->
+          
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+{% include 'layout/footerc.html' %}

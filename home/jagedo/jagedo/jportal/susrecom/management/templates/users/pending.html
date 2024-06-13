@@ -1,0 +1,393 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{% if utype == 1 %}
+ADMINS
+{% elif utype == 2 %}
+VENDORS
+{% elif utype == 3 %}
+CUSTOMERS
+{% endif %}
+PENDING APPROVALS
+{% endblock %}
+
+
+{% block small %} 
+{% if utype == 1 %}
+ADMINS
+{% elif utype == 2 %}
+VENDORS
+{% elif utype == 3 %}
+CUSTOMERS
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{% if utype == 1 %}
+        Admins_Register
+        {% elif utype == 2 %}
+        Vendors_Register
+        {% elif utype == 3 %}
+        Customers_Register
+        {% endif %}</h3>
+
+      <div class="card-tools">
+       
+        
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                     <span class="vdocs"></span>
+
+                </div>
+                   <div class="form-group col-md-12">
+                   
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->  
+          
+          
+
+
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="users_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Date_Joined</th>
+                            <th>First_Name</th>
+                            <th>Last_Name</th>
+                            <th>National_Id</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for x in  users %}
+                    <tr>
+                    <td>{{ x.date_joined }}</td>
+                    <td>{{ x.first_name }}</td>
+                    <td>{{ x.last_name }}</td>
+                    <td>{{ x.national_id }}</td>
+                    <td>{{ x.email }}</td>
+                    <td>{{ x.phone_number }}</td>
+                    <td>
+                    {% if x.is_vendor %}
+                    {% if x.is_approved %}
+                    <span class="btn btn-xs btn-info">Approved</span>
+                    {% else %}
+                    <span class="btn btn-xs btn-danger">Not-Approved</span>
+                    {% endif %}
+                    {% endif %}
+
+                    </td>
+                    <td><i  name="docs" id="{{ x.id }}" class="edocs fa fa-file" style="color: #058585;"></i> | <i   name="reset" id="{{ x.id }}" class="dreset fa fa-check" style="color: #3bc7d9;"></i> </td>
+        
+                    </tr>
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to approve this vendor? .</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="formM">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                    
+           
+        <span class="media"></span>
+                 
+        
+                   <div class="form-group col-md-12">
+                    
+                                    </div>
+                  
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal --> 
+
+        <script language="javascript">
+
+            $(function () {
+            $("#users_table").DataTable({
+                
+                pageLength: 10,
+                lengthChange: true,
+                autoWidth: true,
+                searching: true,
+            });
+        
+            $('#create_record').click(function(){
+              $('.modal-title').text("New User");
+                 $('#action_button').val("Add");
+                 $('#action').val("Add");
+                 $('#sample_form')[0].reset();
+                 $('#formModal').modal('show');
+             });
+            
+            $('#sample_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#action').val() == 'Add')
+              {
+               $.ajax({
+                url: "{% url 'storeuser' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                      $('#users_table').load(' #users_table');
+                       }
+                 $('#form_result').html(html);
+                }
+               })
+              }
+             
+             if($('#action').val() == "Edit")
+              {
+               $.ajax({
+                url:"{% url 'updateuser' %}",
+                method:"POST",
+                data:new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  html = '<div class="alert alert-danger">';
+                  for(var count = 0; count < data.errors.length; count++)
+                  {
+                   html += '<p>' + data.errors[count] + '</p>';
+                  }
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                  $('#users_table').load(' #users_table');
+                 }
+                 $('#form_result').html(html);
+                }
+               });
+              }
+             });
+
+
+
+
+             $('#samp_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#act').val() == 'Initiate')
+              {
+               $.ajax({
+                url: "{% url 'initiate_reset' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  
+                  $(':input[type="submit"]').prop('disabled', false);
+                     
+                       }
+                 $('#form_res').html(html);
+                }
+               })
+              }
+             
+             
+
+
+
+             
+             
+             
+             });
+
+
+
+             
+            
+             $(document).on('click', '.edocs', function(){
+             var id = $(this).attr('id');
+             window.location.href='/mans/vdocs/'+id;
+        
+              });
+
+
+             $(document).on('click', '.view', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'vupsview' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('.media').html(html.media);
+       
+        $('.modal-title').text("View_Upload");
+        $('#formM').modal('show');
+       }
+      })
+     });
+
+            
+
+
+            
+
+
+
+            
+             var user_id;
+            
+             $(document).on('click', '.dreset', function(){
+              user_id = $(this).attr('id');
+              $('.modal-title').text("Approve User");
+              $('#confirmModal').modal('show');
+             });
+            
+             $('#ok_button').click(function(){
+              $.ajax({
+                url:"{% url 'approveuser' 1 %}".replace('1', user_id),
+               beforeSend:function(){
+                $('#ok_button').text('Approving...');
+               },
+               success:function(data)
+               {
+                setTimeout(function(){
+                 $('#confirmModal').modal('hide');
+                 $('#ok_button').text('OK');
+                 $('#users_table').load(' #users_table');
+                }, 2);
+               }
+              })
+             });
+           
+          });
+        </script>
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      USERS
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+{% load static %}
+{% load encode_filter %} 
+{% load metrics_filter %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title> JaGedo || Your Trusted Builder</title>
+
+    <!-- responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- For IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- master stylesheet -->
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <!-- Responsive stylesheet -->
+    <link rel="stylesheet" href="{% static 'landing/css/responsive.css' %}">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/images/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'landing/images/favicon/favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'landing/images/favicon/favicon-16x16.png' %}" sizes="16x16">
+
+    <!-- Fixing Internet Explorer-->
+    <!--[if lt IE 9]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style>
+        .circle-btn {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          padding: 10px;
+          text-align: center;
+          vertical-align: middle;
+          white-space: nowrap;
+          box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.2);
+          text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+        }
+
+
+        
+      </style>
+
+</head>
+
+<body>
+    <div class="boxed_wrapper">
+
+        <!-- <div class="preloader"></div> -->
+
+        <!-- Start Top Bar style3 -->
+        
+        <!--End Top Bar style3 -->
+
+        <!--Start Header style3 Area-->
+        
+        <!--End Header style3 Area-->
+
+        <!--Start Mainmenu Style3 Area-->
+        <header class="main-header header-style2 stricky">
+            <div class="inner-container clearfix">
+                <div class="logo-box-style2 float-left">
+                    <a href="/">
+                        <img src="{% static 'landing/images/resources/logo.png' %}" alt="JaGedo">
+                    </a>
+                </div>
+                <div class="main-menu-box float-right">
+                    <nav class="main-menu style2 clearfix">
+                        <div class="navbar-header clearfix">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        </div>
+                        <div class="navbar-collapse collapse clearfix">
+                            <ul class="navigation clearfix">
+                                <li class=" current"> <a href="/">Home</a>
+                                    
+                                </li>
+                                <li><a href="{% url 'about' %}">About Us</a>
+                                    
+                                </li>
+                               <li><a href="{% url 'product_listings' cat.name|encrypt_id %}">Hardware</a>
+                                    
+                                </li>
+                                <li><a href="{% url 'gigs' %}">Experts</a>
+                                    
+                                </li>
+                                 <li><a href="{% url 'gskill_listings' 3|encrypt_id %}">Contractors</a>
+                                    
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div class="mainmenu-right style2">
+                        {% if user.is_authenticated %}
+                        <div class="cart-box">
+                            <a href="{% url 'product_carts' user.id|encrypt_id %}"><span class="icon-cart"><span class="tcount number">0</span></span></a>
+                        </div>
+                        {% endif %}
+
+                        {% if  user.is_authenticated %}
+                        <div class="button">
+                            <a class="btn-one" href="/custs/">Hi, {{ user.first_name }}<span class="flaticon-next"></span></a>
+                        </div>
+
+                        {% else %}
+                        <div class="button">
+                            <a class="btn-one" href="#" data-toggle="modal" data-target="#userTypeModal">Sign Up<span class="flaticon-next"></span></a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+<!-- Modal -->
+<div class="modal fade" id="userTypeModal" tabindex="-1" role="dialog" aria-labelledby="userTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userTypeModalLabel">Sign Up As: </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body d-flex justify-content-around">
+          <a href="{% url 'csign' %}" class="btn btn-success circle-btn">Customer</a>
+          <a href="{% url 'vsign' %}" class="btn btn-primary circle-btn">Hardware</a>
+          <a href="{% url 'esign' %}" class="btn btn-secondary circle-btn">Expert/Fundi</a>
+          <a href="{% url 'esign' %}" class="btn btn-info circle-btn">Contractor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+       
+        <!--End Mainmenu Style3 Area-->
+
+        <!--Main Slider-->
+        <section class="main-slider style3">
+            <div class="rev_slider_wrapper fullwidthbanner-container" id="rev_slider_one_wrapper" data-source="gallery">
+                <div class="rev_slider fullwidthabanner" id="rev_slider_three" data-version="5.4.1">
+                    <ul>
+                        <li data-description="Slide Description" data-easein="default" data-easeout="default" data-fsmasterspeed="1500" data-fsslotamount="7" data-fstransition="fade" data-hideafterloop="0" data-hideslideonmobile="off" data-index="rs-1689" data-masterspeed="default"
+                            data-param1="" data-param10="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-rotate="0" data-saveperformance="off" data-slotamount="default" data-thumb="images/slides/v3-1.jpg"
+                            data-title="Slide Title" data-transition="parallaxvertical">
+
+                            <img alt="" class="rev-slidebg" data-bgfit="cover" data-bgparallax="10" data-bgposition="center center" data-bgrepeat="no-repeat" data-no-retina="" src="{% static 'landing/images/slides/v3-1.jpg' %}">
+
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-145','-100','-100','-90']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1000,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="big-title">
+                                        Contractors<br> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-15','15','-5','0']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]' style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="text">Get a National Construction Authority(NCA) approved Contractors near you.</div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['85','115','90','90']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="btn-box">
+                                        <a class="btn-one" href="{% url 'gskill_listings' 3|encrypt_id %}">Find A Contractor<span class="flaticon-next"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+
+                        <li data-description="Slide Description" data-easein="default" data-easeout="default" data-fsmasterspeed="1500" data-fsslotamount="7" data-fstransition="fade" data-hideafterloop="0" data-hideslideonmobile="off" data-index="rs-1687" data-masterspeed="default"
+                            data-param1="" data-param10="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-rotate="0" data-saveperformance="off" data-slotamount="default" data-thumb="images/slides/v3-2.jpg"
+                            data-title="Slide Title" data-transition="parallaxvertical">
+
+                            <img alt="" class="rev-slidebg" data-bgfit="cover" data-bgparallax="10" data-bgposition="center center" data-bgrepeat="no-repeat" data-no-retina="" src="{% static 'landing/images/slides/v3-2.jpg' %}">
+
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-145','-100','-100','-90']" data-x="['right','right','right','right']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1000,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content">
+                                    <div class="big-title">
+                                        Find<br> Hardware.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-15','15','-5','0']" data-x="['right','right','right','right']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]' style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content">
+                                    <div class="text">Get quality products near you.</div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['800','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['85','115','90','90']" data-x="['right','right','right','right']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content">
+                                    <div class="btn-box">
+                                        <a class="btn-one" href="{% url 'product_listings' cat.name|encrypt_id %}">Shop Now<span class="flaticon-next"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+
+                        <li data-description="Slide Description" data-easein="default" data-easeout="default" data-fsmasterspeed="1500" data-fsslotamount="7" data-fstransition="fade" data-hideafterloop="0" data-hideslideonmobile="off" data-index="rs-1688" data-masterspeed="default"
+                            data-param1="" data-param10="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-rotate="0" data-saveperformance="off" data-slotamount="default" data-thumb="images/slides/v3-3.jpg"
+                            data-title="Slide Title" data-transition="parallaxvertical">
+
+                            <img alt="" class="rev-slidebg" data-bgfit="cover" data-bgparallax="10" data-bgposition="center center" data-bgrepeat="no-repeat" data-no-retina="" src="{% static 'landing/images/slides/v3-3.jpg' %}">
+
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['900','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-145','-100','-100','-90']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1000,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="big-title">
+                                        Find<br> An Expert.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['900','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['-15','15','-5','0']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[-100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},
+                        {"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]' style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="text">Get qualified and verified fundi or expert near you.</div>
+                                </div>
+                            </div>
+                            <div class="tp-caption" data-paddingbottom="[0,0,0,0]" data-paddingleft="[0,0,0,0]" data-paddingright="[0,0,0,0]" data-paddingtop="[0,0,0,0]" data-responsive_offset="on" data-type="text" data-height="none" data-width="['900','800','500','400']" data-whitespace="normal"
+                                data-hoffset="['15','15','15','15']" data-voffset="['85','115','90','90']" data-x="['left','left','left','left']" data-y="['middle','middle','middle','middle']" data-textalign="['top','top','top','top']" data-frames='[{"from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;","mask":"x:0px;y:0px;s:inherit;e:inherit;","speed":1500,"to":"o:1;","delay":1500,"ease":"Power3.easeInOut"},{"delay":"wait","speed":1000,"to":"auto:auto;","mask":"x:0;y:0;s:inherit;e:inherit;","ease":"Power3.easeInOut"}]'
+                                style="z-index: 7; white-space: nowrap;">
+                                <div class="slide-content left-slide">
+                                    <div class="btn-box">
+                                        <a class="btn-one" href="{% url 'gigs' %}">Find An Expert<span class="flaticon-next"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!--End Main Slider-->
+
+       <!--Start Highlights Area-->
+       <section class="highlights-area">
+        <div class="container">
+            <div class="row">
+                <!--Start single highlight box-->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="0ms" data-wow-duration="1200ms" >
+                        <a href="{% url 'product_listings' cat.name|encrypt_id %}"><div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-cart" ></span>
+                        </div></a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3>Hardware</h3>
+                                <p>Get quality products near you.</p>
+                                </br>
+                            </div>
+                            <a class="btn-one" href="{% url 'product_listings' cat.name|encrypt_id %}">Shop Now<span class="flaticon-next"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+                <!--Start single highlight box-->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1200ms">
+                        <a href="{% url 'gigs' %}"> <div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-scheme"></span>
+                        </div></a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3>Expert</h3>
+                                <p>Get qualified and verified fundi or expert near you.</p>
+                                
+                            </div>
+                            <a class="btn-one" href="{% url 'gigs' %}">Find An Expert<span class="flaticon-next"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+                <!--Start single highlight box-->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="400ms" data-wow-duration="1200ms">
+                        <a href="{% url 'gskill_listings' 3|encrypt_id %}"><div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-cupboard" ></span>
+                        </div> </a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3>Contractors</h3>
+                                <p>Get a National Construction Authority(NCA) approved Contractors near you.</p>
+                            </div>
+                            <a class="btn-one" href="{% url 'gskill_listings' 3|encrypt_id %}">Find A Contractor<span class="flaticon-next"></span></a>
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+            </div>
+        </div>
+    </section>
+    <!--End Highlights Area-->
+    
+      
+      
+
+        <!--Start services style2 area-->
+      
+
+       
+
+        
+
+       
+
+        <!--Start latest blog area style2-->
+        <section class="latest-blog-area style3">
+           
+        </section>
+         <!--Start footer area Style2-->
+         
+         <footer class="footer-area style3">
+            <div class="container">
+                <div class="row">
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="our-info-box style2">
+                                <div class="footer-logo">
+                                    <a href="/"><img width="250" src="{% static 'assets/img/lgo.png' %}" alt="#"></a>
+                                </div>
+                                <div class="text">
+                                    <p>{{ meta.about|truncatechars:120 }}</p>
+                                    <a class="btn-two more-info-about-company" href="{% url 'about' %}">More About Us<span class="flaticon-next"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Nairobi Office</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Address</h6>
+                                        <p>12TH Floor,
+                                            West Park Towers,
+                                            Westlands, Nairobi, Kenya</p>
+                                    </li>
+                                    
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Kisumu Office</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Address</h6>
+                                        <p>1ST Floor, Checkmulla Building,
+                                            Off Achieng’ Oneko Road,
+                                            Kisumu Town</p>
+                                    </li>
+                                   
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Get In Touch</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Phone</h6>
+                                        <p><a href="tel:{{ meta.phone }}" >{{ meta.phone }}</a></p>
+                                    </li>
+                                    <li>
+                                        <h6>Email</h6>
+                                        <p><a href="mailto:{{ meta.email }}" >{{ meta.email }}</a><br></p>
+                                    </li>
+
+                                    <li>
+                                        <h6>Office Hours</h6>
+                                        <p><span>Monday - Friday:</span> 9.00am to 5.00pm</p>
+                                    </li>
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                </div>
+            </div>
+        </footer>
+        <!--End footer area Style2-->
+
+        <!--Start footer bottom area-->
+        <section class="footer-bottom-area style2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="footer-bottom-content flex-box-two">
+                            <div class="copyright-text">
+                                <p>© {% now 'Y' %} All Rights Reserved by <a href="#">JaGedo.</a></p>
+                            </div>
+                            <div class="footer-social-links clr-white float-right">
+                                <span>We are On:</span>
+                                <ul class="sociallinks-style-one">
+                                    <li class="wow slideInUp" data-wow-delay="0ms" data-wow-duration="1200ms">
+                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                    </li>
+                                    <li class="wow slideInUp" data-wow-delay="100ms" data-wow-duration="1500ms">
+                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                    </li>
+                                    
+                                    <li class="wow slideInUp" data-wow-delay="400ms" data-wow-duration="1500ms">
+                                        <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--End footer bottom area-->
+
+    </div>
+
+
+    <script type="text/javascript">
+        (function () {
+            var options = {
+                facebook: "111394810582562", // Facebook page ID
+                whatsapp: "+254716108282", // WhatsApp number
+                call_to_action: "Talk To Us", // Call to action
+                button_color: "#001399", // Color of button
+                position: "right", // Position may be 'right' or 'left'
+                order: "facebook,whatsapp", // Order of buttons
+            };
+            var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+        })();
+        </script>
+
+
+    <script src="{% static 'landing/js/jquery.js' %}"></script>
+    <script src="{% static 'landing/js/appear.js' %}"></script>
+    <script src="{% static 'landing/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'landing/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'landing/js/isotope.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.bootstrap-touchspin.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.countTo.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.enllax.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.mixitup.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.paroller.min.js' %}"></script>
+    <script src="{% static 'landing/js/owl.js' %}"></script>
+    <script src="{% static 'landing/js/validation.js' %}"></script>
+    <script src="{% static 'landing/js/wow.js' %}"></script>
+
+    
+
+    <script src="{% static 'landing/assets/language-switcher/jquery.polyglot.language.switcher.js' %}"></script>
+    <script src="{% static 'landing/assets/timepicker/timePicker.js' %}"></script>
+    <script src="{% static 'landing/assets/html5lightbox/html5lightbox.js' %}"></script>
+
+    <!--Revolution Slider-->
+    <script src="{% static 'landing/plugins/revolution/js/jquery.themepunch.revolution.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/jquery.themepunch.tools.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.actions.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.carousel.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.migration.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.navigation.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.parallax.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
+    <script src="{% static 'landing/js/main-slider-script.js' %}"></script>
+
+    <!-- thm custom script -->
+    <script src="{% static 'landing/js/custom.js' %}"></script>
+
+    <!-- <div class="scroll-to-top scroll-to-target" data-target="html"><span class="fa fa-angle-up"></span></div> -->
+     <script>
+        $(document).ready(function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+
+
+
+      })
+     </script>
+
+</body>
+
+
+
+</html>

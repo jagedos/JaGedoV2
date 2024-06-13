@@ -1,0 +1,161 @@
+{% extends 'layout/layoutc.html' %}
+{% block title %} 
+My_Wishlist 
+{% endblock %}
+
+{% block small %} 
+My_Wishlist 
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+{% load encode_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">My_Wishlist </h3>
+
+      <div class="card-tools">
+        
+          <a href="{% url 'product_carts' user.id|encrypt_id %}" class="btn btn-xs btn-info" title="Go_To_Cart">Go_To_Cart</a>
+       
+        
+
+        <style>
+            .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+        }
+
+    
+        </style>
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="row pgrid">
+            {% for i in actives %}
+            {% if i.vproduct.stock > 0 %}
+            <div class="col-md-4  ">
+            {% else %}
+        <div class="col-md-4  disabledbutton">
+            {% endif %}
+            <div class="card">
+                {{ i.vproduct.product.id|shop_cover_image|safe}}
+                {% if i.vproduct.stock > 0 %}
+                {% if i.vproduct.discount > 0 %}
+                <span class="badge badge-warning">{{ i.vproduct.discount|floatformat:0|intcomma }}% Off</span>
+                {% endif %}
+                {% else %}
+                <span class="badge badge-danger">Out Of Stock</span>
+                {% endif %}
+                <span class="delwish badge bg-navy" id="{{ i.vproduct.id }}">Remove_From_Wishlist</span>
+              <div class="card-body">
+                <h5 class="card-title">{{ i.vproduct.product.name }}</h5>
+                
+                <p class="card-text">Ksh. {{ i.vproduct.id|price_final|floatformat:2|intcomma }}</p>
+                <form method="post" class="sample_form" enctype="multipart/form-data">        
+                    {% csrf_token %}
+                    <input type="hidden" name="vproduct" id="vproduct" value="{{ i.vproduct.id }}"/>
+                    <input type="hidden" name="quantity" id="quantity" value="1"/>
+                    <input type="hidden" name="action" id="action" value="Add"/>
+                    <input type="submit" name="action_button" id="action_button" class="btn btn-primary" value="Add to cart">
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor%}
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        My_wishlist 
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  <script>
+
+    $(document).on('click', '.delwish', function(){
+          var id = $(this).attr('id');
+          $('#form_result').html('');
+          $.ajax({
+           url:"{% url 'del_wish' 1 %}".replace('1', id),
+           dataType:"json",
+           success:function(data){
+            $('#total-count').load(' #total-count');
+            if(data.success)
+             {   
+            $('.pgrid').load(' .pgrid');     
+            toastr.success(data.success);
+             } else {
+            toastr.error(data.errors);
+    
+             }
+           }
+          })
+         });
+
+
+      $('.sample_form').on('submit', function(event){
+      event.preventDefault();
+      $(':input[type="submit"]').prop('disabled', true);
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "/addcart/",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+                 {
+                    $(':input[type="submit"]').prop('disabled', false);
+                  
+                   html = data.errors ;
+                  
+                
+                 }
+         if(data.success)
+         {
+          html =  data.success ;
+          $('.sample_form')[0].reset();
+          $('.tcount').html(data.count);
+          $('#calc').load(' #calc');
+          $('#carts').load(' #carts',function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+      });
+          $(':input[type="submit"]').prop('disabled', false);
+              
+
+               }
+         if(data.success)
+         {    
+        toastr.success(html);
+         } else {
+        toastr.error(html);
+
+         }
+        }
+       })
+      }
+     
+     
+     });
+    
+        </script>
+  {% endblock %}

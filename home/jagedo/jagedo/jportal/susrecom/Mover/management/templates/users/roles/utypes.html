@@ -1,0 +1,419 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+User_Types
+{% endblock %}
+
+{% block small %} 
+User_Types
+{% endblock %}
+
+{% block content %}
+
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">User_Types</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+          
+          ADD_NEW_TYPE
+        
+
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group col-12 ">
+                    <label for="exampleInputEmail1">Name</label>
+                    <input type="text" class="form-control" name="name" id="name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+                  
+                </div>
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="utype" id="utype" value="{{ utype }}"/>
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="cats_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                           
+                        </tr>
+                    </thead>
+            
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this category? There may be data attached to this category.</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="formModalr">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_res"></span>
+                    
+                     <form method="post" id="samp_form" enctype="multipart/form-data">
+                         {% csrf_token %}
+                         
+                         <div id="roles" class="row"></div>
+                         <div class="form-group">
+                             <input type="hidden" name="act" id="act" />
+                             <input type="hidden" name="hidd_id" id="hidd_id" />
+                             <input type="submit" name="act_button" id="act_button" class="btn btn-block btn-warning" value="Edit" />
+                         </div>
+                     </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+        
+
+        <script language="javascript">
+
+$(document).ready(function() {
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    $('#cats_table').DataTable({
+        "serverSide": true,
+        "ajax": {
+            "url": "{% url 'utypes_table' %}",
+            "type": "POST" ,
+            "headers": { "X-CSRFToken": csrf_token },
+        },
+        "columns": [
+            { "data": "name", "orderable": true, "searchable": true },
+            { "data": "status",
+              "render": function (data, type, row) {
+                if (row.status == 'True') {
+                  return "<span class='badge bg-green' >Active</span>";
+                } else {
+                  return "<span class='badge bg-gray' >De_Activated</span>";
+                }
+              },
+              "orderable": true, "searchable": true 
+            },
+
+            
+
+            { "data": "id",
+              "render": function (data, type, row) {
+                 
+                
+                  return "<button type='button' name='edit' id='"+data+"' class='edit btn btn-xs  btn-primary btn-sm'>Edit</button> | <button type='button' name='rolesedit' id='"+data+"' class='rolesedit btn btn-xs btn-info btn-sm'>Roles</button> | <button type='button' name='delete' id='"+data+"' class='delete btn btn-xs btn-danger btn-sm'>Delete</button>";
+                
+              },
+              "orderable": true, "searchable": true 
+            },
+           
+        ]
+    });
+
+    $('#create_record').click(function(){
+              $('.modal-title').text("New User Type");
+                 $('#action_button').val("Add");
+                 $('#action').val("Add");
+                 $('#sample_form')[0].reset();
+                 $('#formModal').modal('show');
+             });
+
+
+             $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'storetype' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+          $('#cats_table').DataTable().ajax.reload();
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     if($('#action').val() == "Edit")
+      {
+       $.ajax({
+        url:"{% url 'updatetype' %}",
+        method:"POST",
+        data:new FormData(this),
+        contentType: false,
+        cache: false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#sample_form')[0].reset();
+         
+          $('#cats_table').DataTable().ajax.reload();
+         }
+         $('#form_result').html(html);
+        }
+       });
+      }
+     });
+    
+     $(document).on('click', '.edit', function(){
+      var id = $(this).attr('id');
+      $('#form_result').html('');
+      $.ajax({
+       url:"{% url 'typeedit' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('#name').val(html.name);
+
+         $('#hidden_id').val(html.id);
+        $('.modal-title').text("Edit  Record");
+        $('#action_button').val("Edit");
+        $('#action').val("Edit");
+        $('#formModal').modal('show');
+       }
+      })
+     });
+    
+     $(document).on('click', '.rolesedit', function() {
+    var id = $(this).attr('id');
+    $('#form_result').html('');
+    $.ajax({
+        url: "{% url 'rolesedit' 1 %}".replace('1', id),
+        dataType: "json",
+        success: function(html) {
+            var roles_html = '';
+
+            // Group by modules
+            var groupedByModule = groupBy(html.roles, 'module_name');
+            for (var module in groupedByModule) {
+                roles_html += renderModule(groupedByModule[module]);
+            }
+            $('#form_res').html('');
+            $('#roles').show();
+            $('#roles').html(roles_html);
+            $('#hidd_id').val(html.id);
+            $('.modal-title').text("Edit Roles");
+            $('#act_button').val("Edit");
+            $('#act').val("Edit");
+            $('#formModalr').modal('show');
+        }
+    });
+});
+
+function groupBy(array, key) {
+    return array.reduce((result, currentItem) => {
+        (result[currentItem[key]] = result[currentItem[key]] || []).push(currentItem);
+        return result;
+    }, {});
+}
+
+function renderModule(moduleActions) {
+    var module_html = '<div class="col-xs-12 col-md-4 ">';
+    module_html += '<div class="card bg-primary text-white mb-3">';  // Note the change here
+    module_html += '<div class="card-header"><h4 class="mb-0" data-toggle="collapse" data-target="#collapse' + moduleActions[0].module_name + '">' + moduleActions[0].module_name + '</h4></div>';
+    module_html += '<div id="collapse' + moduleActions[0].module_name + '" class="collapse"><div class="card-body">';  // Note the change here
+
+    moduleActions.forEach(function(action) {
+        module_html += '<div class="form-group">';
+        module_html += '<label>';
+        module_html += '<input type="checkbox" class="flat-red" name="action_' + action.action_id + '" id="action_' + action.action_id + '" value="' + action.action_id + '" ' + (action.has_permission ? 'checked' : '') + '> ' + action.action_name;
+        module_html += '</label>';
+        module_html += '</div>';
+    });
+
+    module_html += '</div></div></div></div>';
+    return module_html;
+}
+
+
+
+$('#samp_form').on('submit', function(event) {
+    event.preventDefault();
+
+    if ($('#act').val() == "Edit") {
+        $.ajax({
+            url: "{% url 'rolesupdate' %}",
+            method: "POST",
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData: false,
+            dataType: "json",
+            success: function(data) {
+                var html = '';
+                if (data.errors) {
+                    html = '<div class="alert alert-danger">';
+                    
+                    html += '<p>' + data.errors + '</p>';
+                    
+                    html += '</div>';
+                }
+                if (data.success) {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#samp_form')[0].reset();
+                    $('#roles').hide();
+                    $('#cats_table').DataTable().ajax.reload();
+                }
+                $('#form_res').html(html);
+            }
+        });
+
+    } 
+});
+
+
+
+    
+     var user_id;
+    
+     $(document).on('click', '.delete', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete User Type");
+      $('#confirmModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'deletetype' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#cats_table').DataTable().ajax.reload();
+        }, 2);
+       }
+      })
+     });
+
+
+
+
+
+
+
+
+});
+        </script>
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        User_Types
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

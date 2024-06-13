@@ -1,0 +1,614 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+New_Order
+{% endblock %}
+
+{% block small %} 
+New_Order
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+{% load encode_filter %}
+<style>
+    .row.no-gutter {
+margin-left: 0;
+margin-right: 0;
+}
+
+.row.no-gutter > div[class*="col-"] {
+padding-left: 1px;
+padding-right: 1px;
+}
+
+
+</style>
+
+  <!-- Default box -->
+  <div class="row">
+    <div class="col-md-8 col-xs-12">
+  <div class="card">
+    <div class="card-header">
+        <span id="scarts">
+        {%  if checki %}
+        <input type="text" id="search" name="search" class="form-control" placeholder="Search Product......"    autofocus="autofocus"  autocomplete="off"/>
+{% else %}
+<input type="text" id="search" name="search" class="form-control" placeholder="Search Product......"    autofocus="autofocus"  autocomplete="off" disabled/>
+{% endif %}
+</span>
+        <div id="countList" class="dropdown">
+           </div>
+
+     
+    </div>
+    <div class="card-body">
+        <span id="icarts">
+        {%  if checki %}
+        <table class="table table-striped" >
+            <thead>
+             <tr>
+         
+           <th>Product</th>
+           <th>Price</th>
+           <th>Qty</th>
+           <th>SubTotal</th>
+           <th>#</th>
+             </tr>
+
+            </thead>
+            <tbody>
+                {% if items %}
+   
+                {% for i in items %}
+            <tr>
+
+
+ <td>{{ i.vproduct.name }}</td>
+ <td> Ksh. {{ i.vproduct.id|price_final|floatformat:2|intcomma }} </td>
+
+<td><div class="row no-gutter">
+    <div class=" col-auto">
+    <button type="submit" onclick="decrement_quantity( '{{ i.id }}' )" class=" minus btn btn-sm btn-primary"> <i class="fa fa-minus "></i></button>
+    </div>
+    <div class="col-2 ">
+    <input type="text"  id="quant-{{i.id}}" onchange="change_quantity( '{{ i.id }}' )" class="form-control form-control-sm" minLength="10"  style="text-align:center;"  value="{{ i.quantity }}" autocomplete="off">
+     </div>
+    <div class=" col-auto">
+    <button type="submit" onclick="increment_quantity( '{{ i.id }}' )" class="add btn btn-sm btn-primary"><i class="fa fa-plus"></i></button>
+    </div>
+    </div></td>
+    <td>
+        Ksh. {{ i.vproduct.id|price_final|floatformat:2|intcomma }} x {{i.quantity}}<br>
+        <b>Ksh. {{ i.id|cart_price|floatformat:2|intcomma }}</b>
+
+    </td>
+    <td>
+<i class="del fa fa-trash" id="{{i.id}}" style="color: red;"></i>
+
+    </td>
+
+            </tr>
+
+            {% endfor %}
+
+            {% else %}
+
+
+            <tr>
+     <td colspan="5"><center><h2><i>No Items Added To Cart</i></h2></center></td>
+
+            </tr>
+            {% endif %}
+            </tbody>
+ </table>
+ {% else %}
+
+ <center ><h2><i><b>No Items Added To Cart</b></i></h2></center>
+
+ {% endif %}
+</span>
+    </div>
+    <!-- /.card-body -->
+    
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+</div>
+
+<div class="col-md-4 col-xs-12">
+  <div class="card ">
+    <form method="post" id="sample_form" enctype="multipart/form-data">        
+        {% csrf_token %}
+    <span id="custs">
+    <div class="card-header">
+        
+        {%  if checki %}
+        <div class="form-group col-md-12 col-xs-12">
+            <label for="exampleInputEmail1">Customer</label>
+            <input type="text" class="form-control" value="{{ client }}"  autocomplete="off" readonly>
+          </div>
+      {% else %}
+        <select class="form-control col-md-12  col-xs-12 livecust" id="lcust" name="item">
+                 
+        </select>
+
+      {% endif %}
+  
+    </div>
+    <div class="card-body">
+        <span id="isums">
+            {%  if checki %}
+        <h2>Total:<b> Ksh {{ id|cart_totals|floatformat:2|intcomma }}</b></h2>
+        <input type="hidden" name="price" value="{{ id|cart_totals|floatformat:2 }}">
+    <input type="hidden" name="final_price" value="{{ id|cart_totals|floatformat:2 }}">
+    <input type="hidden" name="customer" value="{{ id }}">
+        {% else %}
+        <h2>Total:<b> Ksh 0.00</b></h2>
+        {% endif%}
+        </span>
+
+        <div class="form-group clearfix">
+            <label style="color: #32b87d;"><b>DELIVERY_METHOD</b></label><br>
+            <!-- <div class="form-check">
+                <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_method" value="1" name="radio1">
+                Pickup Station
+            </label>
+              </div>
+              <span id="pick" style="display : none;">
+                <div class="form-group ">
+                    <select class="form-control select2" name="pickup" id="pickup"  style="width: 100%;">
+                      <option value="" selected disabled>Select PickUp Station</option>
+                      {% for p in picks %}
+                      <option value="{{ p.id }}">{{ p.county.name }}, {{ p.name }}</option>
+                      {% endfor %}
+                     
+                    </select>
+                  </div>
+                  </span> -->
+              <div class="form-check">
+                <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="delivery_method" id="delivery_method" value="2" name="radio1" >
+                Delivery To Site 
+            </label>
+              </div>
+              <span id="site"  style="display : none;">
+                <div class="form-group ">
+                    
+                 <select class="form-control select2" name="county_site" id="county_site" style="width: 100%;">
+                   {% for pc in countys %}
+                   <option value="{{ pc.id }}">{{ pc.name }}</option>
+                   {% endfor %}
+                  
+                 </select>
+               </div>
+               <div class="form-group ">
+                 <label for="">Enter_Directions_To_The_Site</label>
+                 <textarea name="directions" id="directions" class="form-control" cols="30" rows="4" placeholder="Example : Rock 2, London Square, House No. 55, Kibomet, Kitale" ></textarea>
+               </div>
+             </span>
+            </div>
+       
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer " id="gates">
+       
+        <button type="button"   class=" btn btn-danger dropdown-toggle float-left" data-toggle="dropdown">Cancel</button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item empty" href="#" id="{{ id }}" >Cancel (Admin & Clients)</a>
+            <a class="dropdown-item emptyx" href="#" id="{{ id }}">Cancel (Admin Only)</a>
+           
+          </div>
+        <input type="submit" id="action" class="btn btn-success float-right" style="background-color: #32b87d;color: white;" value="Checkout">
+    
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+</span>
+</form>
+  </div>
+</div>
+<script>
+$(function(){
+
+    $(document).on('change', '#lcust', function(){
+      $value = $(this).val();
+      $.ajax({
+        
+        type : 'get',
+     
+        url : "{% url 'mcustomer' %}",
+     
+        data:{'customer':$value},
+      
+       success:function(data)
+       {
+        
+       if (data.errors) {
+        $('#lcust').select2().val('').trigger("change");
+        toastr.error(data.errors);
+       } else {
+        $('#custs').load(' #custs');
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        $('#scarts').load(' #scarts',function(){
+            $('#search').on('keyup',function(){
+     
+     $value=$(this).val();
+     if ($value == '') {
+      $('#countList').fadeOut();  
+      
+    
+    } else {
+      $.ajax({
+      
+      type : 'get',
+       
+      url : "/mans/vsearch/",
+       
+      data:{'search':$value},
+       
+      success:function(data){
+        
+                          $('#countList').fadeIn();  
+                          $('#countList').html(data.res);
+      
+      
+      }
+       });
+     
+  
+  
+    }
+  
+     });
+     
+      $(document).on('click', 'li', function(){  
+             $('#search').val('');  
+             $('#countList').fadeOut();  
+         });  
+
+
+
+        });
+        $('#gates').load(' #gates');
+        toastr.success(data.success);
+       }
+        
+       }
+      })
+     });
+
+
+     $('#sample_form').on('submit', function(event){
+          event.preventDefault();
+          $(':input[type="submit"]').prop('disabled', true);
+         
+          if($('#action').val() == 'Checkout')
+          {
+            $('#action').val('Creating Order, please wait...');
+           $.ajax({
+            url: "{% url 'vcreate_order_c' %}",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+                     {
+                        $(':input[type="submit"]').prop('disabled', false);
+                        $('#action').val('Checkout');
+                       html = data.errors ;
+                      
+                    
+                     }
+             if(data.success)
+             {
+              html =  data.success ;
+            
+              $(':input[type="submit"]').prop('disabled', false);
+              window.location.href = "/mans/vorder_summary/"+data.serial;
+                  
+    
+                   }
+             if(data.success)
+             {    
+            toastr.success(html);
+             } else {
+            toastr.error(html);
+    
+             }
+            }
+           })
+          }
+         
+         
+         });
+
+
+
+})
+</script>
+
+
+
+<script type="text/javascript">
+   $(document).ready(function(){
+   
+   $('#search').on('keyup',function(){
+     
+   $value=$(this).val();
+   if ($value == '') {
+    $('#countList').fadeOut();  
+    
+  
+  } else {
+    $.ajax({
+    
+    type : 'get',
+     
+    url : "/mans/vsearch/",
+     
+    data:{'search':$value},
+     
+    success:function(data){
+      
+                        $('#countList').fadeIn();  
+                        $('#countList').html(data.res);
+    
+    
+    }
+     });
+   
+
+
+  }
+
+   });
+   
+    $(document).on('click', 'li', function(){  
+           $('#search').val('');  
+           $('#countList').fadeOut();  
+       });  
+
+    $(document).on('click', '.addprod', function(){
+     
+     $value=$(this).attr('id');
+     
+      $.ajax({
+      
+      type : 'get',
+       
+      url : "{% url 'additem' %}",
+       
+      data:{'id':$value},
+       
+      success:function(data){
+        
+        if (data.errors) {
+        
+        toastr.error(data.errors);
+       } else {
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        
+        toastr.success(data.success);
+       }
+      
+      
+      }
+       });
+     
+  
+  
+    
+  
+     });
+     
+   
+   });
+   
+   </script>
+   <script>
+function change_quantity(cart_id) {
+    var inputQuantityElement = $("#quant-"+cart_id);
+    var newQuantity = parseInt($(inputQuantityElement).val());
+    save_to_db(cart_id, newQuantity);
+
+}
+
+function increment_quantity(cart_id) {
+    var inputQuantityElement = $("#quant-"+cart_id);
+    var newQuantity = parseInt($(inputQuantityElement).val())+1;
+    save_to_db(cart_id, newQuantity);
+
+}
+
+function decrement_quantity(cart_id) {
+    var inputQuantityElement = $("#quant-"+cart_id);
+    if($(inputQuantityElement).val() > 1) 
+    {
+    var newQuantity = parseInt($(inputQuantityElement).val()) - 1;
+    save_to_db(cart_id, newQuantity);
+    }
+}
+
+function save_to_db(cart_id, new_quantity) {
+  
+      $.ajax({
+         url : "{% url 'vnums' %}",
+         data : "cart_id="+cart_id+"&new_quantity="+new_quantity,
+         type : 'get',
+    success : function(data) {
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        if (data.success) {
+        toastr.success(data.success);
+        } else {
+            toastr.error(data.errors);
+
+
+        }
+    }
+
+});
+
+}
+
+$(document).on('click', '.del', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'vdelcartitem' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        toastr.success(data.success);
+        
+       }
+      })
+     });
+
+
+     $(document).on('click', '.empty', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'vempty' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        $('#gates').load(' #gates');
+        $('#custs').load(' #custs',function(){
+            
+            $(".livecust").select2({
+    placeholder: 'Select_Customer',
+    tags: true,
+    multiple: false,
+    minimumInputLength: 2,
+    minimumResultsForSearch: 10,
+    ajax: {
+        url: '/mans/mhcusts',
+        dataType: "json",
+        type: "GET",
+        data: function (params) {
+
+            var queryParameters = {
+                q: params.term
+            }
+            return queryParameters;
+        },
+        processResults: function (data) {
+            return {
+                results: $.map(data, function (item) {
+                    return {
+                      text: item.first_name+' '+item.last_name+'( '+item.phone_number+' )',
+                      id: item.id
+                    }
+                })
+            };
+        }
+    }
+});
+
+
+        });
+        $('#scarts').load(' #scarts');
+        toastr.success(data.success);
+        
+       }
+      })
+     });
+
+
+     $(document).on('click', '.emptyx', function(){
+      user_id = $(this).attr('id');
+      $.ajax({
+        url:"{% url 'vemptyx' 1 %}".replace('1', user_id),
+      
+       success:function(data)
+       {
+        
+        $('#icarts').load(' #icarts');
+        $('#isums').load(' #isums');
+        $('#gates').load(' #gates');
+        $('#custs').load(' #custs',function(){
+            
+            $(".livecust").select2({
+    placeholder: 'Select_Customer',
+    tags: true,
+    multiple: false,
+    minimumInputLength: 2,
+    minimumResultsForSearch: 10,
+    ajax: {
+        url: '/mans/mhcusts',
+        dataType: "json",
+        type: "GET",
+        data: function (params) {
+
+            var queryParameters = {
+                q: params.term
+            }
+            return queryParameters;
+        },
+        processResults: function (data) {
+            return {
+                results: $.map(data, function (item) {
+                    return {
+                      text: item.first_name+' '+item.last_name+'( '+item.phone_number+' )',
+                      id: item.id
+                    }
+                })
+            };
+        }
+    }
+});
+
+
+        });
+        $('#scarts').load(' #scarts');
+        toastr.success(data.success);
+        
+       }
+      })
+     });
+
+
+     $(document).on('click', '#delivery_method', function(){
+      var id = $(this).val();
+      if(id == 1) {
+      $('#pick').show();
+      $('#site').hide();
+      $('#pickup').attr('required', true);
+      $('#county_site').attr('required', false);
+      $('#directions').attr('required', false);
+      } else {
+
+      $('#pick').hide();
+      $('#site').show();
+      $('#pickup').attr('required', false);
+      $('#county_site').attr('required', true);
+      $('#directions').attr('required', true);
+
+      }
+     
+     });
+
+
+   </script>
+
+
+
+
+  {% endblock %}

@@ -1,0 +1,124 @@
+{% include 'layouts/header.html' %}
+{% load crispy_forms_tags %}
+
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-12 ">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Sign Up As :</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <style>
+
+        .nav-pills .nav-link.active {
+          background-color: #001399;
+        }
+            </style>
+    <nav class="nav nav-pills flex-column flex-sm-row">
+        <a class="flex-sm-fill text-sm-center nav-link "  href="{% url 'csign' %}">Customer</a>
+        <a class="flex-sm-fill text-sm-center nav-link " href="{% url 'vsign' %}">Hardware</a>
+        <a class="flex-sm-fill text-sm-center nav-link "  aria-current="page" href="{% url 'esign' %}">Expert</a>
+        <a class="flex-sm-fill text-sm-center nav-link active"  aria-current="page" href="{% url 'cosign' %}">Contractor</a>
+      </nav>
+    <section class="shop login section" >
+    <div class="container" >
+    <div class="row" >
+    <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
+    <div class="login-form" style="background-color: white;">
+    <h2>Create Your Account (Contractor)</h2>
+    <p>Sign Up As A Contractor</p>
+
+   
+    
+    
+    <form class="form" method="post" action="{% url 'estore' %}" onsubmit="document.getElementById('myButton').disabled=true;
+    document.getElementById('myButton').innerHTML='Creating Account, please wait...';">
+        {% csrf_token %}
+        {{ form_class|as_crispy_errors }}	
+        <div class="row">
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.first_name|as_crispy_field }}
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.last_name|as_crispy_field }}
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.email|as_crispy_field }}
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.national_id|as_crispy_field }}
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.phone_number|as_crispy_field }}
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.county|as_crispy_field }}
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.location|as_crispy_field }}
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.password1|as_crispy_field }}
+</div>
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+    {{ form_class.password2|as_crispy_field }}
+</div>
+<input type="hidden" name="is_contractor" value="1">
+<div class="col-lg-4 col-md-6 col-sm-12 ">
+
+        <label>Account_Verificaion</label><br>
+<i>(Choose the channel you'll use to validate your account)</i>
+        <div class="row">
+        <label >
+    <input class="form-check-input" type="radio" name="account_verify" value="1" id="account_verification_type" required>
+    Email
+    </label>
+  
+
+    <label>
+        <input class="form-check-input" type="radio" name="account_verify" value="2" id="account_verification_type" required>
+        SMS
+        </label>
+       </div>
+    </div>
+<hr></hr>      
+    <div class="col-12 ">
+        {% for doc in docs %}
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="agree" required>
+        <label class="form-check-label" for="agree">
+        I agree with the <a href="#" id="{{ doc.id }}" class="lview text-success" style="color: #001399;">{{ doc.type }}.</a>
+        </label>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-12 ">
+    <div class="form-group login-btn">
+    <button class="btn" id="myButton" type="submit">Create Account</button>
+    </div>
+    </div>
+    <p>Already have an account? <a href="/login">Login.</a></p>
+    </div>
+    </form>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </section>
+    
+    
+    
+
+{% include 'layouts/footerl.html' %}

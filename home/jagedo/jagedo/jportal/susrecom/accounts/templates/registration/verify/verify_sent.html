@@ -1,0 +1,41 @@
+{% include 'layouts/header.html' %}
+{% load crispy_forms_tags %}
+
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Email Verification</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    
+    <section class="mail-success section page">
+        <div class="container">
+        <div class="row">
+        <div class="col-lg-6 offset-lg-3 col-12">
+        <div class="mail-inner">
+        <i class="fal fa-envelope-open-text"></i>
+        <h2><span>Email Verification</span> </h2>
+        <p>We've sent a verification mail to the email address you provided, Please Confirm your email to complete registration.if you did not receive the email, click the button below to re-send verification.</p>
+        <div class="button">
+        <a class="btn primary" href="{% url 'v_resend' id=id %}">Re-Send Verification</a><br></br>
+        <a href="{% url 'v_change' id=id %}" style="color: #32b87d;">Validate Account Via SMS</a>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </section>
+    
+    
+
+{% include 'layouts/footer.html' %}

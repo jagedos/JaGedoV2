@@ -1,0 +1,78 @@
+<div class="modal" id="staticBackdrop{{ i.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-body">
+    <div class="row">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        {{ i.product.id|cov_image|safe}}
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <div class="quickview-content">
+    <h2>{{ i.product.name }}</h2>
+    <div class="d-flex mb-3">
+    <span>Brand:</span>
+    <b>{{ i.product.brand }}</b>
+    </div>
+    <div class="d-flex mb-3">
+    <span>Category:</span>
+    <b>{{ i.product.category }}</b>
+    </div>
+    <div class="d-flex mb-3">
+    <span>Rated:</span>
+    <div class="quickview-ratting-review">
+    <div class="quickview-ratting-wrap">
+    <div class="quickview-ratting">
+        <input id="input-21c" value="{{i.id|avg_total|floatformat:1}}" type="text" class="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.1 data-size="xs"
+        disabled>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <h3>Ksh. {{ i.id|price_final|floatformat:2|intcomma }}</h3>
+    <div class="quickview-stock">
+    <span><i class="fa fa-check-circle-o"></i> {{ i.stock }} {{i.product.units }} Left</span>
+    </div>
+
+    <div class="add-to-cart">
+        
+        <form method="post" class="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <input type="hidden" name="vproduct" id="vproduct" value="{{ i.id }}"/>
+            <input type="hidden" name="quantity" id="quantity" value="1"/>
+            <input type="hidden" name="action" id="action" value="Add"/>
+            <input type="submit" name="action_button" id="action_button" class="btn" value="Add to cart">
+        </form>
+    </div>
+    <a href="{% url 'product_profile' i.id|encrypt_id %}" style="color: #32b87d;" >View_Product_Profile</a>
+    <div class="default-social">
+    <h4 class="share-now">Share:</h4>
+    <ul>
+    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+    
+    </ul>
+    </div>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+    <div class="single-widget category">
+        <h3 class="title">Vendors</h3>
+        <ul class="categor-list">
+            {% for shop in shops %}
+        <li><a href="{% url 'vendor_store' shop.id|encrypt_id %}">{{ shop.name }} <span>({{shop.id|shop_total}})</span></a></li>
+        {% endfor  %}
+
+        <li><a href="{% url 'all_vendors'  %}">All_Vendors</a></li>
+        </ul>
+        </div>

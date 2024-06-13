@@ -1,0 +1,350 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+SMS
+{% endblock %}
+
+{% block small %} 
+SMS
+{% endblock %}
+
+{% block content %}
+
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Sms</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+          
+          Create_Sms
+        
+
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group col-12 ">
+                    <label for="exampleInputEmail1">Receipient Types</label>
+                    <select name="r_type" id="r_type" required="True" class="form-control">
+                     <option selected disabled>Select Receipient Type</option>
+                    
+                     <option value="1">All</option>
+                     <option value="3">Customers</option>
+                     <option value="4">Vendors</option>
+                     <option value="5">Partners</option>
+                     <option value="6">Management</option>
+                     <option value="2">Individual</option>
+                    
+                    </select>
+                    
+                  </div>
+        
+                  <div class="members form-group col-12 " style="display: none;">
+                    <label for="exampleInputEmail1">Receipient</label>
+                    <select class="form-control col-md-12  col-xs-12 liveall" id="lall" name="members">
+                 
+                    </select>
+                    
+                  </div>
+
+                  <div class="form-group col-12 ">
+                    <label for="exampleInputEmail1">Message</label>
+                    <textarea name="sms" id="sms" class="form-control" cols="30" rows="10" placeholder="Write Your Message Here" autocomplete="off"></textarea>
+                    <div id="the-count" class="float-right">
+      <span id="current">0</span>
+      <span id="maximum">/ 160</span>
+    </div>
+
+
+                  
+                </div>
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="utype" id="utype" value="{{ utype }}"/>
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+<script>
+   $('#r_type').on('change', function() {
+    var r_type = $(this).val();
+    if(r_type == 2){
+        $('.members').show();
+    } else{
+        $('.members').hide();
+    }
+    });
+
+
+
+</script>
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="cats_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>SMS</th>
+                            <th>Status</th>
+                            <th>Receipient</th>
+                            <th>User</th>
+                            <th>Action</th>
+                           
+                        </tr>
+                    </thead>
+            
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this category? There may be data attached to this category.</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+         
+
+        <script language="javascript">
+
+$(document).ready(function() {
+    var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+    $('#cats_table').DataTable({
+        "serverSide": true,
+        "ajax": {
+            "url": "{% url 'sms_table' %}",
+            "type": "POST" ,
+            "headers": { "X-CSRFToken": csrf_token },
+        },
+        "columns": [
+            { "data": "message", "orderable": true, "searchable": true },
+            { "data": "status", "orderable": true, "searchable": true },
+
+            { "data": "receipient",
+             "render": function (data, type, row) {
+                
+                if(data){
+                    return data;
+                } else{
+                   return "N/A";
+                }
+                
+              },
+             "orderable": true, "searchable": true
+            },
+
+            { "data": "user",
+             "render": function (data, type, row) {
+                
+                if(data){
+                    return data;
+                } else{
+                   return "N/A";
+                }
+                
+              },
+             "orderable": true, "searchable": true
+            },
+
+            { "data": "id",
+              "render": function (data, type, row) {
+                 
+                
+                  return " <button type='button' name='delete' id='"+data+"' class='delete btn btn-xs btn-danger btn-sm'>Delete</button>";
+                
+              },
+              "orderable": true, "searchable": true 
+            },
+           
+        ]
+    });
+
+    $('#create_record').click(function(){
+              $('.modal-title').text("New SMS");
+                 $('#action_button').val("Send");
+                 $('#action').val("Add");
+                 $('#sample_form')[0].reset();
+                 $('#formModal').modal('show');
+             });
+
+
+             $('#sample_form').on('submit', function(event){
+      event.preventDefault();
+      $('#action_button').val('Saving...');
+      $('#action_button').attr('disabled', 'disabled');
+      if($('#action').val() == 'Add')
+      {
+       $.ajax({
+        url: "{% url 'sendsms' %}",
+        method:"POST",
+        data: new FormData(this),
+        contentType: false,
+        cache:false,
+        processData: false,
+        dataType:"json",
+        success:function(data)
+        {
+         var html = '';
+         if(data.errors)
+         {
+          html = '<div class="alert alert-danger">';
+          for(var count = 0; count < data.errors.length; count++)
+          {
+           html += '<p>' + data.errors[count] + '</p>';
+          }
+          html += '</div>';
+         }
+         if(data.success)
+         {
+          html = '<div class="alert alert-success">' + data.success + '</div>';
+          $('#action_button').val('Send');
+          $('#action_button').attr('disabled', false);
+          $('#sample_form')[0].reset();
+          $('#cats_table').DataTable().ajax.reload();
+               }
+         $('#form_result').html(html);
+        }
+       })
+      }
+     
+     
+     });
+    
+     
+    
+    
+     var user_id;
+    
+     $(document).on('click', '.delete', function(){
+      user_id = $(this).attr('id');
+      $('.modal-title').text("Delete SMS");
+      $('#confirmModal').modal('show');
+     });
+    
+     $('#ok_button').click(function(){
+      $.ajax({
+        url:"{% url 'deletesms' 1 %}".replace('1', user_id),
+       beforeSend:function(){
+        $('#ok_button').text('Deleting...');
+       },
+       success:function(data)
+       {
+        setTimeout(function(){
+         $('#confirmModal').modal('hide');
+         $('#ok_button').text('OK');
+         $('#cats_table').DataTable().ajax.reload();
+        }, 2);
+       }
+      })
+     });
+
+
+
+
+
+
+
+
+});
+        </script>
+<script>
+    
+    $('textarea').keyup(function() {
+    
+  var characterCount = $(this).val().length,
+      current = $('#current'),
+      maximum = $('#maximum'),
+      theCount = $('#the-count');
+    
+  current.text(characterCount);
+ 
+  
+  /*This isn't entirely necessary, just playin around*/
+  if (characterCount < 70) {
+    current.css('color', '#666');
+  }
+  if (characterCount > 70 && characterCount < 90) {
+    current.css('color', '#6d5555');
+  }
+  if (characterCount > 90 && characterCount < 100) {
+    current.css('color', '#793535');
+  }
+  if (characterCount > 100 && characterCount < 120) {
+    current.css('color', '#841c1c');
+  }
+  if (characterCount > 120 && characterCount < 139) {
+    current.css('color', '#8f0001');
+  }
+  
+  if (characterCount >= 140) {
+    maximum.css('color', '#8f0001');
+    current.css('color', '#8f0001');
+    theCount.css('font-weight','bold');
+  } else {
+    maximum.css('color','#666');
+    theCount.css('font-weight','normal');
+  }
+  
+      
+});
+</script>
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      SMS
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

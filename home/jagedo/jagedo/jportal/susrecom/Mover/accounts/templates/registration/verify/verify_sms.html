@@ -1,0 +1,221 @@
+{% include 'layouts/header.html' %}
+{% load static %}
+
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Register</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  <!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Phone | {{ phone }}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form class="form" method="post" action="{% url 'v_phone' %}" onsubmit="document.getElementById('myButtonp').disabled=true;
+              document.getElementById('myButtonp').innerHTML='Changing, please wait...';">
+                {% csrf_token %}
+                <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                  <label>Enter_New_Number</label>
+                <input type="text" class="form-control" name="phone" minLength="10" maxLength="10"   pattern="[0]{1}[0-9]{9}" autocomplete="off" placeholder="Example : 0744000111" required/>
+</div>
+</div>
+</div>
+                <input type="hidden" name="id" value="{{id}}" required/>
+<div class="col-12"><br></br>
+  <div class="form-group ">
+                <button id="myButtonp" class="btn col-12">Update</button>
+                </div>
+               </div>
+                </form>
+      </div>
+
+      <!-- Modal footer -->
+     
+
+    </div>
+  </div>
+</div>
+    
+    
+    <section class="shop login section" >
+    <div class="container" >
+    <div class="row" >
+        <style>
+          #wrap {
+    font-family: Lato;
+    font-size: 1.5rem;
+    text-align: center;
+    box-sizing: border-box;
+    color: #333;
+  }
+    
+    #dialog {
+      border: solid 1px #ccc;
+      margin: 10px auto;
+      padding: 20px 30px;
+      display: inline-block;
+      box-shadow: 0 0 4px #ccc;
+      background-color: #FAF8F8;
+      overflow: hidden;
+      position: relative;
+      max-width: 650px;
+      }
+      h3 {
+        margin: 0 0 10px;
+        padding: 0;
+        line-height: 1.25;
+      }
+      
+      span {
+        font-size: 90%;
+      }
+      
+      #frm {
+        max-width: 550px;
+         margin: 25px auto 0;
+        }
+        #frm input {
+          margin: 0 5px;
+          text-align: center;
+          line-height: 80px;
+          font-size: 50px;
+          border: solid 1px #ccc;
+          box-shadow: 0 0 5px #ccc inset;
+          outline: none;
+          width: 11%;
+          transition: all .2s ease-in-out;
+          border-radius: 3px;
+          }
+          
+          input .focus {
+            border-color: purple;
+            box-shadow: 0 0 5px purple inset;
+          }
+          
+          input .selection {
+            background: transparent;
+          }
+        
+        
+        
+      
+      
+      
+      div {
+        position: relative;
+        z-index: 1;
+      }
+      
+    
+                </style>
+        <div id="wrap">
+            <div id="dialog">
+              
+              <h3>Please enter the 6-digit verification code we sent via SMS:</h3>
+              <span>(We need to make sure it's you before you login)</span>
+              <form class="form" method="post" action="{% url 'v_account' %}" onsubmit="document.getElementById('myButton').disabled=true;
+              document.getElementById('myButton').innerHTML='Verifying, please wait...';">
+                {% csrf_token %}
+              <div id="frm">
+                <input type="text" name="first" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autofocus="autofocus" autocomplete="off" required/>
+                <input type="text" name="second" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autocomplete="off" required/>
+                <input type="text" name="third" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autocomplete="off" required/>
+                <input type="text" name="fourth" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autocomplete="off" required/>
+                <input type="text" name="fifth" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autocomplete="off" required/>
+                <input type="text" name="sixth" maxLength="1" size="1" min="0" max="9" pattern="[0-9]{1}" autocomplete="off" required/>
+
+                <br></br>
+                <button id="myButton" class="btn btn-primary btn-embossed">Verify</button>
+              </div>
+
+              <input type="hidden" name="id" value="{{ id }}"/>
+              </form>
+              <div>
+                <br></br>
+                Didn't receive the code?<br />
+                <a href="{% url 'v_cresend' id=id %}" style="color: #001399;">Send code again</a><br />
+                <a href="" data-bs-toggle="modal" data-bs-target="#myModal">Change phone number</a><br />
+                <a href="{% url 'v_change' id=id %}" style="color: #001399;">Validate Account Via Email</a>
+              </div>
+               
+            </div>
+          </div>
+    </div>
+
+    </div>
+    </div>
+    
+    <script language="javascript">
+
+      $(function () {
+  'use strict';
+
+  var body = $('#frm');
+
+  function goToNextInput(e) {
+    var key = e.which,
+      t = $(e.target),
+      sib = t.next('input');
+
+    if (key != 9 && (key < 48 || key > 57)) {
+      e.preventDefault();
+      return false;
+    }
+
+    if (key === 9) {
+      return true;
+    }
+
+    if (!sib || !sib.length) {
+      // sib = body.find('input').eq(0);
+    }
+    sib.select().focus();
+  }
+
+  function onKeyDown(e) {
+    var key = e.which;
+
+    if (key === 9 || (key >= 48 && key <= 57)) {
+      return true;
+    }
+
+    e.preventDefault();
+    return false;
+  }
+  
+  function onFocus(e) {
+    $(e.target).select();
+  }
+
+  body.on('keyup', 'input', goToNextInput);
+  body.on('keydown', 'input', onKeyDown);
+  body.on('click', 'input', onFocus);
+
+})
+    </script>
+    </section>
+    
+    
+    
+
+{% include 'layouts/footer.html' %}

@@ -1,0 +1,26 @@
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<div class="account-sidebar">
+    <a href="/custs/" ><h6 {% if request.resolver_match.url_name == 'index' %}class="sidebar-title active"{% endif %}>DASHBOARD</h6></a>
+    <div class="sidebar-list">
+    <a href="{% url 'active_orders' %}" {% if request.resolver_match.url_name == 'active_orders' %} class="active"{% endif %}><i class="far fa-shopping-bag"></i> Active Orders <span>{{active}}</span></a>
+    <a href="{% url 'closed_orders' %}" {% if request.resolver_match.url_name == 'closed_orders' %} class="active"{% endif %}><i class="far fa-shopping-bag"></i> Fulfilled Orders <span>{{completed}}</span></a>
+    <a href="{% url 'pend_quotes' %}" {% if request.resolver_match.url_name == 'pend_quotes' %} class="active"{% endif %}><i class="far fa-tasks"></i> Pending_Quotes <span>{{ user.id|pqs|floatformat:0|intcomma }}</span></a>
+    <a href="{% url 'pend_jobs' %}" {% if request.resolver_match.url_name == 'pend_jobs' %} class="active"{% endif %}><i class="far fa-tasks"></i> Pending_Jobs <span>{{ user.id|pjobs|floatformat:0|intcomma }}</span></a>
+    <a href="{% url 'cactive_jobs' %}" {% if request.resolver_match.url_name == 'cactive_jobs' %} class="active"{% endif %}><i class="far fa-tasks"></i> Active_Jobs <span>{{ user.id|actjobs|floatformat:0|intcomma }}</span></a>
+    <a href="{% url 'call_jobs' %}" {% if request.resolver_match.url_name == 'call_jobs' %} class="active"{% endif %}><i class="far fa-tasks"></i> All_Jobs <span></span></a>
+    <a href="{% url 'pending_reviews' %}" {% if request.resolver_match.url_name == 'pending_reviews' %} class="active"{% endif %}><i class="far fa-star"></i> Pending Reviews <span>{{user.id|pending_reviews}}</span></a>
+    <a href="{% url 'call_reviews' %}" {% if request.resolver_match.url_name == 'call_reviews' %} class="active"{% endif %}><i class="far fa-database"></i> All Reviews</a>
+    <a href="{% url 'my_wishlist' %}" {% if request.resolver_match.url_name == 'my_wishlist' %} class="active"{% endif %}><i class="far fa-heart"></i> Saved Items <span>{{user.id|wishlist}}</span></a>
+    <a href="#"><i class="far fa-credit-card"></i> Vouchers <span>0</span></a>
+    </div>
+    <h6 class="sidebar-title mt-4">SETTINGS</h6>
+    <div class="sidebar-list">
+    
+    <a href="{% url 'customer_profile' %}" {% if request.resolver_match.url_name == 'customer_profile' %} class="active"{% endif %}><i class="far fa-user"></i> Profile</a>
+    <a href="/password_reset" target="_parent"><i class="far fa-lock"></i> Change_Password</a>
+    <!-- <a href="#"><i class="far fa-headset"></i> Support Tickets<span>0</span></a> -->
+    <a href="/logout" ><i class="far fa-power-off"></i> Logout</a>
+    </div>
+    </div>

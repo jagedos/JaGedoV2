@@ -1,0 +1,94 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block small %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block content %}
+{% load avatar %}
+{% load encode_filter %} 
+{% load static %}
+{% load operations_filter %} 
+{% load vendor_filter %}
+
+  <!-- Default box -->
+  <div class="card">
+
+    <div class="card-header">
+      <h3 class="card-title">{{ ptitle }}</h3>
+
+      <div class="card-tools">
+       
+        <a href="{% url 'vusers' %}" id="create_record" class="btn btn-xs btn-primary"  title="Experts_Register">
+         
+          Back
+         
+
+        </a>
+
+       
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        {% if vdocs %}
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+      
+          <tbody>
+            <tr>
+              <td>Id_Front</td>
+              <td> {% if  vdocs.idfront|docs_checker == False %} 
+                <span class="vdoc_view badge bg-olive" data-doctype="idfront" id="{{ vdocs.id }}">View_Document</span>
+                {% endif %}
+            <a href="/media/{{ vdocs.idfront }}" class=" badge bg-info" target="_blank">Download</a></td>
+            </tr>
+            <tr>
+              <td>Id_Back</td>
+              <td>{% if  vdocs.idback|docs_checker == False %} 
+                <span class="vdoc_view badge bg-olive" data-doctype="idback" id="{{ vdocs.id }}">View_Document</span>
+                {% endif %}
+            <a href="/media/{{ vdocs.idback }}" class=" badge bg-info" target="_blank">Download</a></td>
+            </tr>
+            <tr>
+              <td>Business_Registration_Cerificate</td>
+              <td>{% if  vdocs.bizreg|docs_checker == False %} 
+                <span class="vdoc_view badge bg-olive" data-doctype="bizreg" id="{{ vdocs.id }}">View_Document</span>
+                {% endif %}
+            <a href="/media/{{ vdocs.bizreg }}" class=" badge bg-info" target="_blank">Download</a></td>
+            </tr>
+            <tr>
+              <td>Tax_Compliance_Certificate</td>
+              <td>{% if  vdocs.taxcomp|docs_checker == False %} 
+                <span class="vdoc_view badge bg-olive" data-doctype="taxcomp" id="{{ vdocs.id }}">View_Document</span>
+                {% endif %}
+            <a href="/media/{{ vdocs.taxcomp }}" class=" badge bg-info" target="_blank">Download</a></td>
+            </tr>
+          </tbody>
+        </table>
+        {% endif %}
+    
+
+
+
+      
+
+    </div>
+     
+    <!-- /.card-body -->
+    <div class="card-footer">
+      {{ ptitle }}
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

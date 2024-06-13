@@ -1,0 +1,258 @@
+{% include 'layouts/pheader.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<style>
+
+/* CSS */
+.button-3 {
+  appearance: none;
+  background-color: #001399;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.button-3:focus:not(:focus-visible):not(.focus-visible) {
+  box-shadow: none;
+  outline: none;
+}
+
+.button-3:hover {
+  background-color: #001399;
+}
+
+.button-3:focus {
+  box-shadow: rgba(46, 164, 79, .4) 0 0 0 3px;
+  outline: none;
+}
+
+.button-3:disabled {
+  background-color: #94d3a2;
+  border-color: rgba(27, 31, 35, .1);
+  color: rgba(255, 255, 255, .8);
+  cursor: default;
+}
+
+.button-3:active {
+  background-color: #001399;
+  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
+}
+</style>
+<div class="breadcrumbs">
+    <div class="container">
+    <div class="row">
+    <div class="col-12">
+    <div class="bread-inner">
+    <ul class="bread-list">
+    <li><a href="/">Home<i class="ti-arrow-right"></i></a></li>
+    <li class="active"><a href="#">Experts</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+    
+    <section class="product-area shop-sidebar shop section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-3 col-md-4 col-12">
+    <div class="shop-sidebar">
+    
+    <div class="single-widget category">
+    <h3 class="title">Categories</h3>
+    <ul class="categor-list">
+        {% for cat in cats %}
+    <li><a href="{% url 'gskill_listings' cat.id|encrypt_id %}">{{ cat.name }} <span></span></a></li>
+    {% endfor %}
+    </ul>
+    </div>
+    
+    
+    
+     
+    
+    
+    
+    
+    <div class="single-widget category">
+        <h3 class="title">Need Building Materials ?</h3>
+       <p>Get building materials at the most competative prices <a href="{% url 'product_listings' cat.name|encrypt_id %}" style="color: #001399;">Here</a></p>
+    </div>
+    
+    
+    
+    
+    </div>
+    </div>
+    <style>
+        .disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
+    </style>
+    <div class="col-lg-9 col-md-8 col-12">
+    
+    <div class="shop-top">
+    <div class="row">
+    <div class="col-lg-4 filter-single">
+    <div class="filter-content">
+    <div class="my-auto filter-title"> {{ p_sum }} Items(s) Found</div>
+   
+    </div>
+    </div>
+    <div class="col-lg-6 filter-single">
+       
+        </div>
+   
+    <div class="col-lg-2 filter-single">
+    <ul class="view-mode">
+    <li class="active"><a href="#"><i class="fal fa-th-large"></i></a></li>
+    </ul>
+    </div>
+    </div>
+    
+    </div>
+
+    <div class="col-12">
+    <p>{{ dets.description|truncatechars:120 }} <a href="#" data-bs-toggle="modal" data-bs-target="#descModal" style="color: #001399;" >Read_More</a></p>
+     <!-- Modal -->
+<div class="modal fade" id="descModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{ dets.name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            {{ dets.description }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary float-left"  data-bs-dismiss="modal">Close</button>
+          
+
+    
+        </div>
+      </div>
+    </div>
+  </div>
+
+    </div>
+
+    
+      
+       
+    <div class="row" id="grid">
+        {% for i in slides %}
+    
+        
+        <div class="col-lg-4 col-md-6 col-12 mt-4 ">
+      
+    <div class="single-product">
+    <div class="product-img">
+    <a href="#" class="quote_custom" id="{{ i.id }}">
+    
+        <img class="product-img" src="/media/{{ i.cover }}" alt="{{ i.name }}" title="{{ i.name }}" loading="lazy">
+        
+    </a>
+    <div class="button-head">
+    <div class="product-action">
+       
+     </div>
+    </div>
+    </div>
+    <div class="product-content">
+    <h3><a href="#" class="quote_custom" id="{{ i.id }}" style="font-size: 20px;">{{ i.name }}</a></h3>
+   
+    
+   
+
+    <div class="d-flex justify-content-between">
+    <div class="product-price">
+        
+    </div>
+    
+    
+    </div>
+    
+    
+    <button class="quote_custom button-3" id="{{ i.id }}" role="button" > Make_Request</button>
+    
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+    
+    
+ {% endfor %}
+
+    
+   
+    
+    
+    </div>
+    <span class="cato" id="{{ id }}"></span>
+    <div class="col-12">
+<!--     
+        {% if products.has_other_pages %}
+        <div class="pagination center mt-2">
+        <ul class="pagination-list">
+            {% if products.has_previous %}
+        <li><a href="?page={{ products.previous_page_number }}"><i class="ti-arrow-left"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-left"></i></a></li>
+        {% endif %}
+        {% for i in products.paginator.page_range %}
+        {% if products.number == i %}
+        
+        <li class="active"><a href="#">{{ i }}</a></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if products.has_next %}
+        <li><a href="?page={{ products.next_page_number }}"><i class="ti-arrow-right"></i></a></li>
+            {% else %}
+        <li class="disabled" ><a href="#"><i class="ti-arrow-right"></i></a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %} -->
+    
+    </div>
+    </div>
+    </div>
+    </div>
+
+    </section>
+   
+
+{% include 'layouts/pfooter.html' %}

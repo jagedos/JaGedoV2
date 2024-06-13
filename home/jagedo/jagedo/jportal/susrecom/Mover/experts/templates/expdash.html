@@ -1,0 +1,945 @@
+{% include 'layout/headerx.html' %}
+{% load static %}
+{% load humanize %}
+{% load metrics_filter %} 
+{% load operations_filter %} 
+{% load encode_filter %} 
+{% load vendor_filter %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/fundis/">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard </li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+   
+    <!-- Main content -->
+    <section class="content">
+  
+       
+         
+         
+      <div class="container-fluid">
+        <span id="details">
+        {% if not user.is_approved %}
+        {% if vdocs.has_details %}
+        <div class="alert alert-info">Details under review. Visit <a href="{% url 'eprofile' %}" class="duploads btn btn-xs bg-lightblue" >here</a> to update any details !</div>
+       
+        {% else %}
+        {% if m_data and m_data.regas == 3 %}
+        <div class="alert alert-warning">Kindly provide additional details <a href="{% url 'contractor_meta' %}" class="duploads btn btn-xs bg-lightblue" >here</a>  to complete your account setup !</div>
+        {% else %}
+        <div class="alert alert-warning">Kindly provide additional details <a  class="duploads btn btn-xs bg-lightblue" id="create_record">here</a> to complete your account setup !</div>
+        {% endif %}
+        {% endif %}
+        {% endif %}
+      </span>
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{ user.id|tavailable|floatformat:0|intcomma }}</h3>
+
+                <p>Available Jobs</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="{% url 'available_jobs' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% else %}
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Available Jobs</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% endif %}
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{ user.id|tpbids|floatformat:0|intcomma }}</h3>
+
+                <p>Pending_Bids</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-clock"></i>
+              </div>
+              <a href="{% url 'pending_bids' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% else %}
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Pending_Bids</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-clock"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% endif %}
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-olive">
+              <div class="inner">
+                <h3>{{ user.id|tabids|floatformat:0|intcomma }}</h3>
+
+                <p>Bids_Approved_Today</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-check"></i>
+              </div>
+              <a href="{% url 'active_bids' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+           {% else %}
+           <div class="small-box bg-olive">
+            <div class="inner">
+              <h3>{{ 0 }}</h3>
+
+              <p>Bids_Aapproved_Today</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-check"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+          {% endif %}
+
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-pink">
+              <div class="inner">
+                <h3>{{ user.id|pending|floatformat:0|intcomma }}</h3>
+
+                <p>Pending Orders</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-boxes"></i>
+              </div>
+              <a href="{% url 'xorders' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% else %}
+            <div class="small-box bg-pink">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Pending Orders</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-boxes"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% endif %}
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+          {% if  user.is_approved %}
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3>{{ user.id|todays_revs|floatformat:2 }}</h3>
+
+                <p>Today's Review</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-star"></i>
+              </div>
+              <a href="{% url 'xnvreviews' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          {% else %}
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{ 0 }}</h3>
+
+              <p>Today's Review</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-star"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        
+
+          {% endif %}
+
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{ user.id|delays|floatformat:0|intcomma }}</h3>
+
+                <p>Delayed Dispatches</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-truck"></i>
+              </div>
+              <a href="{% url 'xdelays' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% else %}
+
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Delayed Dispatches</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-truck"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+
+            {% endif %}
+          </div>
+          <!-- ./col -->
+
+
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-teal">
+              <div class="inner">
+                <h3>{{ user.id|delpending|floatformat:0|intcomma }}</h3>
+
+                <p>Orders_On_Transit</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-rocket"></i>
+              </div>
+              <a href="{% url 'xtracker' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% else %}
+            <div class="small-box bg-teal">
+              <div class="inner">
+                <h3>{{ 0 }}</h3>
+
+                <p>Orders_On_Transit</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-rocket"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+            {% endif %}
+          </div>
+          <!-- ./col -->
+
+
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            {% if  user.is_approved %}
+            <div class="small-box bg-fuchsia">
+              <div class="inner">
+                <h3>{{ user.id|delaysdel|floatformat:0|intcomma }}</h3>
+
+                <p>Delayed Deliveries</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-subway"></i>
+              </div>
+              <a href="{% url 'xtrackerdelays' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+           {% else %}
+           <div class="small-box bg-fuchsia">
+            <div class="inner">
+              <h3>{{ 0 }}</h3>
+
+              <p>Delayed Deliveries</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-subway"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+          {% endif %}
+
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col -->
+          <section class="col-lg-6 col-xs-12 connectedSortable">
+            <!-- Custom tabs (Charts with tabs)-->
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title">Available Jobs</h3>
+                <div class="card-tools">
+                 
+                </div>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table id="brands_table" width="100%" class="table table-striped table-valign-middle">
+                
+                  <thead>
+                      <tr>
+                          <th>#</th>
+                          <th>Date</th>
+                          <th>Job_Category</th>
+                          <th>Details</th>
+                         <th>Expert</th>
+                        
+                          <th>Actions</th>
+                         
+                      </tr>
+                  </thead>
+                  {% if user.is_approved %}
+                  {% for a in  gigs %}
+                  {% job_check a.id user.id as result %}
+                  {% if result == 1 %}
+                  <tr>
+                  <td>{{ a.id }}</td>
+                  <td>{{ a.created_at|date:'d/m/y' }}</td>
+                  <td>{{ a.job.name}}</td>
+                  <td><b>Duration |</b><b>Start:</b>{{ a.start }} - <b>End:</b>{{ a.end }}</br>
+                      <!-- <b> Product:</b> {% if not a.product %} <b>N/A</b> {% else %} {{a.product.name}} {% endif %}</br>
+                      <b> Quantity:</b> {{a.quantity}}</br> -->
+                      <b> Customer:</b> {{ a.customer.first_name }} {{ a.customer.last_name }}</br>
+                      <b> Key_Skill:</b> {{ a.skill.name }}</br>
+                      <b> Description:</b> <span class="badge bg-primary" data-toggle="modal" data-target="#descModal{{ a.id }}" >Show_Description</span>
+                  </td>
+                  <td>{% if not a.expert %} <span class="btn btn-sm bg-pink">OPEN</span> {% else %}{{ a.expert.first_name }} {{ a.expert.last_name }}</br>
+                      {{ a.expert.phone_number }} {% endif %}
+                  </td>
+                  
+                  <td><a href="{% url 'ecreate_quote' a.id  %}" class="edit btn btn-xs  btn-primary btn-sm">Create_Quote</a> </td>
+      
+                  </tr>
+
+
+      <div class="modal fade" id="descModal{{ a.id }}">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               
+                <h4 class="modal-title">Job_Description</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+                            <div class="modal-body">
+                              {{ a.description }}
+                 <div class="form-group col-md-12">
+                
+                                  </div>
+              
+              </div>
+      
+              <div class="modal-footer">
+                             
+            </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->   
+        {% endif %}
+                  {% endfor %}
+                  {% endif %}
+
+          </table>
+
+              </div>
+            </div>
+            <!-- /.card -->
+            <div class="modal fade" id="formModal">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                   
+                    <h4 class="modal-title">ADD A NEW TAX</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                                <div class="modal-body">
+                       <span id="form_result"></span>
+             <form method="post" id="sample_form" enctype="multipart/form-data">        
+              {% csrf_token %}
+  <div class="row">
+    <div class="form-group col-md-4 col-xs-12">
+
+      <label>Gender </label><br>
+
+      <div class="row">
+        <div class="icheck-success col-12">
+          <input type="radio" name="gender" class="gender" value="1" oninvalid="this.setCustomValidity('Kindly Provide Your Gender')"
+          oninput="setCustomValidity('')" id="radioSuccess1" required>
+          
+            <label for="radioSuccess1">
+                Male
+              </label>
+          
+        </div>
+        
+        <div class="icheck-success  col-12">
+          <input type="radio" name="gender" class="gender" value="2" oninvalid="this.setCustomValidity('Kindly Provide Your Gender')"
+          oninput="setCustomValidity('')" id="radioSuccess2" required>
+          <label for="radioSuccess2">
+              Female
+          </label>
+        </div> 
+     </div>
+  </div>
+    <div class="form-group col-md-4 col-xs-12">
+
+      <label>Register As </label><br>
+
+      <div class="row">
+        <div class="icheck-success col-12">
+          <input type="radio" name="reg_as" class="reg_as" value="1" oninvalid="this.setCustomValidity('Kindly Provide Your Registration Type')"
+          oninput="setCustomValidity('')" id="radioSuccess3" required>
+          
+            <label for="radioSuccess3">
+                Professional
+              </label>
+          
+        </div>
+        
+        <div class="icheck-success  col-12">
+          <input type="radio" name="reg_as" class="reg_as" value="2" id="radioSuccess4" oninvalid="this.setCustomValidity('Kindly Provide Your Registration Type')"
+          oninput="setCustomValidity('')" required>
+          <label for="radioSuccess4">
+              Fundi
+          </label>
+        </div> 
+     </div>
+  </div>
+
+  <div class="form-group col-md-4 col-xs-12">
+
+    <label>Agreement(s) </label><br>
+
+    <div class="row">
+      {% if ldocs %}
+      {% for doc in ldocs %}
+      <div class="icheck-success col-12">
+       
+        <input type="radio" name="agreement{{ doc.pk|agreement_id }}" class="agreement{{ doc.pk|agreement_id }}" value="1" oninvalid="this.setCustomValidity('Kindly Provide Your Registration Type')"
+        oninput="setCustomValidity('')" id="radioSuccess{{ doc.pk|agreement_id }}" required>
+        
+          <label for="radioSuccess{{ doc.pk|agreement_id }}">
+              I agree to the <a href="#" id="{{ doc.id }}" class="lview " >  {{ doc.type}}</a>
+            </label>
+      
+        
+      </div>
+      {% endfor %}
+
+      {% endif %}
+     
+   </div>
+</div>
+
+  <div class="form-group col-md-6 col-xs-12">
+    <label for="exampleInputEmail1">Years_Of_Experience</label>
+    <input type="number" class="form-control" name="yrs_of_experience" id="yrs_of_experience" autocomplete="off" oninvalid="this.setCustomValidity('Kindly Provide Valid Years Of Experience')"
+    oninput="setCustomValidity('')"  required>
+  </div>
+
+  <div class="form-group col-md-6 col-xs-12">
+
+    <label for="exampleInputEmail1">Field</label>
+    <select class="field form-control select2" name="field" id="field" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Field')"
+    oninput="setCustomValidity('')" style="width: 100%;">
+      <option selected="selected" disabled value="">Select_Your_Field</option>
+      {% for x in  fields %}
+      <option value="{{ x.id }}">{{ x.name }}</option>
+      {% endfor %}
+    </select>
+
+
+    </div>
+    <span id="specs" style="display: none;" class="col-12"> 
+     
+    <div class="form-group col-12">
+
+      <label for="exampleInputEmail1">Specialisation(Maximum Of 2)</label>
+
+      <script type="text/javascript">
+
+        function add_row(field)
+        {
+         $rowno=$("#employee_table tr").length;
+         $rowno=$rowno+1;
+         var lx=$rowno;
+         var setid = lx +"."+ field
+         var finder= Number(setid)
+        
+         if(lx <= 3){
+         $.ajax({
+       url:"{% url 'getskillsx' 1 %}".replace('1', finder),
+       dataType:"json",
+       success:function(html){
+        $('.skills'+html.fid).html(html.img);
+       }
+      });
+
+         $("#employee_table tr:last").after("<tr id='row"+$rowno+"'><td><span class='skills"+$rowno+"'></span></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_row('row"+$rowno+"')></td></tr>");
+    }
+                          
+              $('.select2').select2()
+        
+        }
+        
+        function delete_row(rowno)
+        {
+         $('#'+rowno).remove();
+        }
+        </script>          
+      <table id="employee_table" class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+
+   <th>Skill</th> 
+  <th>Add</th> 
+          </tr>
+  
+  
+        </thead>
+     <tr id="row1">
+      
+ 
+    <td> <span class="skills"></span></td>
+    
+   
+      <td><input type="button" onclick="add_row( document.getElementById('field').value );" class="btn btn-info" value="+"></td>
+     </tr>
+    </table>
+
+
+    </div><div class="form-group col-12 ">
+      <label for="exampleInputEmail2">Location</label>
+      <select class="form-control select2" name="location" id="location" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Location')"
+      oninput="setCustomValidity('')" >
+        <option selected="selected" disabled value="">Select_Your_Location</option>
+        {% for x in  locs %}
+        <option value="{{ x.id }}" {% if vdocs.county.pk == x.id %} selected {% endif %}>{{ x.name }}</option>
+        {% endfor %}
+      </select>
+  
+  
+      </div>
+    
+
+                    <div class="cv1 form-group col-12">
+                      <label for="exampleInputEmail1">Upload Your CV <span class="note"><i style="color: red;">(Optional)</i></span></label>
+                      <div  class="custom-file">
+                      <input type="file" class="cFile custom-file-input" id="cv" name="cv" required oninvalid="this.setCustomValidity('Please Upload Your CV')"
+                      oninput="setCustomValidity('')"/> 
+                       <label class="custom-file-label" for="customFile">Upload CV</label>
+                     
+                     </div>
+                    </div>
+
+                    
+                   
+                    
+                  
+                    <div class="form-group col-6  float-left">
+                      <label for="exampleInputEmail1">National_Id_Front </label>
+                      <div  class="custom-file">
+                      <input type="file" class="cFile custom-file-input" id="id_front" name="id_front" required oninvalid="this.setCustomValidity('Please Upload Your National_Id_Front')"
+                      oninput="setCustomValidity('')"/> 
+                       <label class="custom-file-label" for="customFile">Upload National_Id_Front</label>
+                     
+                     </div>
+                    </div>
+
+
+                    <div class="form-group col-6 float-right">
+                      <label for="exampleInputEmail1">National_Id_Back </label>
+                      <div  class="custom-file">
+                      <input type="file" class="cFile custom-file-input" id="id_back" name="id_back" required oninvalid="this.setCustomValidity('Please Upload Your National_Id_Back ')"
+                      oninput="setCustomValidity('')"/> 
+                       <label class="custom-file-label" for="customFile">Upload National_Id_Back</label>
+                     
+                     </div>
+                    </div>
+
+                     <div class="form-group col-12">
+
+                      <label for="exampleInputEmail1">Upload Available Academic/Practice Certificates(Maximum Of 4) <span class="note"><i style="color: red;">(Optional)</i></span></label>
+                
+                      <script type="text/javascript">
+                
+                        function cadd_row(certs)
+                        {
+                         $rowno=$("#certs_table tr").length;
+                         $rowno=$rowno+1;
+                         var lx=$rowno;
+                         if(lx <= 5){
+                         $("#certs_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='form-control select2' name='cert_name' id='cert_name'  style='width: 100%;'><option selected='selected' disabled >Select_Certificate_Name</option>"+certs+"</select></td><td><input type='file'  name='certs' class='form-control' autocomplete='off' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_crow('row"+$rowno+"')></td></tr>");
+                               
+                              $('.select2').select2()
+                         }
+                        
+                        }
+                        
+                        function delete_crow(rowno)
+                        {
+                         $('#'+rowno).remove();
+                        }
+                        </script>          
+                      <table id="certs_table" class="table table-striped table-bordered table-hover">
+                        <thead>
+                          <tr>
+                
+                   <th>Name</th>
+                   <th>Upload</th>  
+                  <th>Add</th> 
+                          </tr>
+                  
+                  
+                        </thead>
+                     <tr id="row1">
+                      
+                 
+                    <td> <select class="form-control select2" name="cert_name" id="cert_name"  style="width: 100%;">
+                        <option selected="selected" disabled value="">Select_Certificate_Name</option>
+                       
+                       {{ certs|safe }}
+                       
+                      </select> </td>
+                    <td><input type="file"  name="certs" class="form-control" value="" autocomplete="off" /></td>
+                   
+                      <td><input type="button" onclick="cadd_row( '{{ certs }}' );" class="btn btn-info" value="+"></td>
+                     </tr>
+                    </table>
+                
+                
+                    </div>
+
+
+
+
+
+                    <div class="form-group col-12">
+
+                      <label for="exampleInputEmail1">Partner Availability</label>
+                      <div class="form-group col-12">
+                      <select class="aset form-control" name="aset" id="aset" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Availability')"
+                      oninput="setCustomValidity('')" style="width: 100%;">
+                       
+                        
+                        <option value="0">Everyday( 9 A.M - 5 P.M)</option>
+                        <option value="1">Custom(Set Available Days)</option>
+                      
+                      </select>
+                  </div>
+                  
+                
+                      <script type="text/javascript">
+                
+                        function dadd_row(days)
+                        {
+                         $rowno=$("#days_table tr").length;
+                         $rowno=$rowno+1;
+                         var lx=$rowno;
+                         if(lx <= 6){
+                         $("#days_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='field form-control select2' name='day' id='day' required='true' style='width: 100%;'>"+days+"</select></td><td><input type='time'  name='start' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='time'  name='end' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_drow('row"+$rowno+"')></td></tr>");
+                               
+                              $('.select2').select2()
+                         }
+                        
+                        }
+                        
+                        function delete_drow(rowno)
+                        {
+                         $('#'+rowno).remove();
+                        }
+                        </script>  
+                        <span id="days" style="display: none;" class="col-12"> 
+                      <table id="days_table" class="table table-striped table-bordered table-hover">
+                        <thead>
+                          <tr>
+                
+                   <th>Day</th>
+                   <th>From</th>  
+                   <th>To</th>  
+                  <th>Add</th> 
+                          </tr>
+                  
+                  
+                        </thead>
+                     <tr id="row1">
+                      
+                 
+                    <td> <select class="field form-control select2" name="day" id="day" required="true" style="width: 100%;">
+                       
+                       
+                       {{ days|safe }}
+                       
+                      </select> </td>
+                    <td><input type="time"  name="start" class="form-control" value="" autocomplete="off"onfocus="this.showPicker()" /></td>
+                    <td><input type="time"  name="end" class="form-control" value="" autocomplete="off" onfocus="this.showPicker()" /></td>
+                   
+                      <td><input type="button" onclick="dadd_row( '{{ days }}' );" class="btn btn-info" value="+"></td>
+                     </tr>
+                    </table>
+                  </span>       
+                </span>  
+                    </div>
+
+
+                   
+                     <div class="form-group col-md-12 col-xs-12">
+                      <input type="hidden" name="action" id="action" />
+                <input type="hidden" name="hidden_id" id="hidden_id" value="{{ user.id }}" />
+                <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Submit" />
+                                      </div>
+                    </form>
+                  </div>
+          
+                  <div class="modal-footer">
+                                 
+                </div>
+                </div>
+                <!-- /.modal-content -->
+              </div>
+              <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->   
+            <script>
+              $('.cFile').on('change',function(){
+                  //get the file name
+                  var fileName = $(this).val();
+                  //replace the "Choose a file" label
+                  $(this).next('.custom-file-label').html(fileName);
+              })
+          </script>
+            <script language="javascript">
+
+              $(function () {
+              
+          
+              $('#create_record').click(function(){
+                $('.modal-title').text("Required Details");
+                   $('#action_button').val("Submit");
+                   $('#action').val("Add");
+                   $('#sample_form')[0].reset();
+                   $('#formModal').modal('show');
+               });
+
+
+
+
+               $(document).on('change', '.field', function(){
+      var id = $(this).val();
+    
+      $.ajax({
+       url:"{% url 'getskills' 1 %}".replace('1', id),
+       dataType:"json",
+       success:function(html){
+        $('.skills').html(html.img);
+        $('#specs').show();
+       }
+      })
+     });
+
+
+
+     $(document).on('change', '.aset', function(){
+      var id = $(this).val();
+
+      if(id == 0) {
+
+        $('#days').hide();
+
+      } else {
+
+        $('#days').show();
+
+      }
+
+
+    });
+
+    // function to get reg_as value and show/hide the cv divs
+    $(document).on('change', '.reg_as', function(){
+      var id = $(this).val();
+      if(id == 1) { 
+        
+       
+        $('.note').hide();
+        $('.cv1 input').prop('required', true);
+        
+        
+      } else {
+        $('.note').show();
+        $('.cv1 input').prop('required', false);
+        
+      }
+     });
+
+    
+     
+              
+              $('#sample_form').on('submit', function(event){
+                event.preventDefault();
+                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  
+                $(':input[type="submit"]').prop('disabled', true);
+                if($('#action').val() == 'Add')
+                {
+                 $.ajax({
+                  url: "{% url 'estoredetails' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                   var html = '';
+                   if(data.errors)
+                           {
+                            $(':input[type="submit"]').prop('disabled', false);
+                            html = '<div class="alert alert-danger">';
+                            
+                             html += '<p>' + data.errors + '</p>';
+                            
+                            html += '</div>';
+                           }
+                   if(data.success)
+                   {
+                    // html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#sample_form')[0].reset();
+                    $(':input[type="submit"]').prop('disabled', false);
+                    $('#details').load(' #details');
+                    $('#formModal').modal('hide');
+                    
+                   
+          
+                         }
+                         if(data.errors) {
+                   $('#form_result').html(html);
+                         } else {
+
+                          toastr.success(data.success); 
+                         }
+                  }
+                 })
+                }
+               
+               
+              }
+               );
+              
+               
+              
+              
+               
+              
+               
+               
+             
+            });
+          </script>
+
+           
+
+           
+          </section>
+
+
+          <section class="col-lg-6 col-xs-12 connectedSortable">
+            <!-- Custom tabs (Charts with tabs)-->
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title">Active_Jobs</h3>
+                <div class="card-tools">
+                 
+                </div>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table id="prods_table" width="100%" class="table table-striped table-valign-middle">
+                
+                  <thead>
+                      <tr>
+                          
+                          <th>Job</th>
+                          <th>Milestone</th>
+                          <th>Actions</th>
+                         
+                      </tr>
+                  </thead>
+                  {% for a in  acts %}
+                   
+                  <tr>
+                 
+                  <td><b> Job:</b> {{a.job.job.name}}</br>
+                      <b>Duration |</b><b>Start:</b>{{ a.job.start }} - <b>End:</b>{{ a.job.end }}</br>
+                      <!-- <b> Product:</b> {% if not a.job.product %} <b>N/A</b> {% else %} {{a.job.product.name}} {% endif %}</br>
+                      <b> Quantity:</b> {{a.job.quantity}}</br> -->
+                      <b> Description:</b> <span class="badge bg-primary" data-toggle="modal" data-target="#descModal{{ a.job.id }}" >Show_Description</span>
+                  </td>
+                  <td>{{ a.pk|fmiles }}</td>
+                  <td>
+              
+                    <span class="finish btn btn-xs btn-warning" id="{{ a.pk|fimiles }}"><i class="fas fa-check"></i></span>
+                  </td>
+                  
+                 
+      
+                  </tr>
+
+
+     
+                  {% endfor %}
+                  </table>
+                  </div>
+                  </div>
+          <!-- /.Left col -->
+          <!-- right col (We are only adding the ID to make the widgets sortable)-->
+          
+          <!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+{% include 'layout/footer.html' %}

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+{% load static %}
+{% load encode_filter %} 
+{% load metrics_filter %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title> JaGedo || Your Trusted Builder</title>
+
+    <!-- responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- For IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- master stylesheet -->
+    <link rel="stylesheet" href="{% static 'landing/css/style.css' %}">
+    <!-- Responsive stylesheet -->
+    <link rel="stylesheet" href="{% static 'landing/css/responsive.css' %}">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/images/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'landing/images/favicon/favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'landing/images/favicon/favicon-16x16.png' %}" sizes="16x16">
+
+    <!-- Fixing Internet Explorer-->
+    <!--[if lt IE 9]>
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <style>
+         .circle-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 80vw;
+            height: 80vw;
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 50%;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+
+        .modal-body {
+            display: flex;
+            flex-direction: row; /* Default to horizontal layout */
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+            /* Responsive Design for Small Screens */
+            @media (max-width: 768px) {
+                .modal-body {
+                    flex-direction: column; /* Stack circles vertically on small screens */
+                }
+            }
+
+            
+            .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            }
+            
+            .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            }
+            
+            .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+            }
+
+            .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            }
+
+
+        
+      </style>
+
+</head>
+
+<body>
+    <div class="boxed_wrapper">
+
+        <!-- <div class="preloader"></div> -->
+
+        <!-- Start Top Bar style3 -->
+        
+        <!--End Top Bar style3 -->
+
+        <!--Start Header style3 Area-->
+        
+        <!--End Header style3 Area-->
+
+        <!--Start Mainmenu Style3 Area-->
+        <header class="main-header header-style2 stricky">
+            <div class="inner-container clearfix">
+                <div class="logo-box-style2 float-left">
+                    <a href="/">
+                        <img src="{% static 'landing/images/resources/logo.png' %}" alt="JaGedo">
+                    </a>
+                </div>
+                <div class="main-menu-box float-right">
+                    <nav class="main-menu style2 clearfix">
+                        <div class="navbar-header clearfix">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        </div>
+                        <div class="navbar-collapse collapse clearfix">
+                            <ul class="navigation clearfix">
+                                <li class=" current"> <a href="/">Home</a>
+                                    
+                                </li>
+                                <li><a href="{% url 'about' %}">About Us</a>
+                                    
+                                </li>
+                                 <li><a href="{% url 'gigs' %}">Experts</a>
+                                    
+                                </li>
+                                 <li><a href="{% url 'gskill_listings' 3|encrypt_id %}">Contractors</a>
+                                    
+                                </li>
+                               <li><a href="{% url 'product_listings' cat.name|encrypt_id %}">Hardware</a>
+                                    
+                                </li>
+                               
+                                
+                               {% if not user.is_authenticated %}
+                                <li><a href="{% url 'login'  %}">Login</a>
+                                    {% else %}
+                                <li><a href="{% url 'logout'  %}">Logout</a>
+                                   {% endif %}
+                                   
+                                 {% if not  user.is_authenticated %}   
+                                <li><a href="#" data-toggle="modal" data-target="#userTypeModal">Sign-Up</a></li>
+                                {% endif %}
+                                    
+                                </li>
+                                 
+                            </ul>
+                        </div>
+                        
+                    </nav>
+                    <div class="mainmenu-right style2">
+                        {% if user.is_authenticated %}
+                        <div class="cart-box">
+                            <a href="{% url 'product_carts' user.id|encrypt_id %}"><span class="icon-cart"><span class="tcount number">0</span></span></a>
+                        </div>
+                        {% endif %}
+
+                        {% if  user.is_authenticated %}
+                        <div class="button">
+                            <a class="btn-one" href="/custs/">Hi, {{ user.first_name }}<span class="flaticon-next"></span></a>
+                        </div>
+
+                        {% else %}
+                        <!--<div class="button">-->
+                        <!--    <a class="btn-one" href="#" data-toggle="modal" data-target="#userTypeModal">Sign Up<span class="flaticon-next"></span></a>-->
+                        <!--</div>-->
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+
+<!-- Modal -->
+<div class="modal fade" id="userTypeModal" tabindex="-1" role="dialog" aria-labelledby="userTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userTypeModalLabel">Sign Up As: </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body d-flex justify-content-around">
+          <a href="{% url 'csign' %}" class="btn btn-success circle-btn">Customer</a>
+          <a href="{% url 'vsign' %}" class="btn btn-primary circle-btn">Hardware</a>
+          <a href="{% url 'esign' %}" class="btn btn-secondary circle-btn">Expert/Fundi</a>
+          <a href="{% url 'cosign' %}" class="btn btn-info circle-btn">Contractor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+       <!-- Location Modal -->
+<div class="modal fade" id="LocationModal" tabindex="-1" role="dialog" aria-labelledby="LocationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title ltitle" id="LocationModalLabel">: </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body d-flex justify-content-around">
+
+<span id="map"></span>
+         
+        </div>
+      </div>
+    </div>
+  </div>
+        <!--End Mainmenu Style3 Area-->
+        <style>
+            .banner-section {
+                position: relative;
+                text-align: center;
+            }
+    
+            .banner-section img {
+                width: 100%;
+                height: auto;
+            }
+    
+            .banner-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+    
+            .banner-text {
+               font-size: 48px;
+               font-weight: bold;
+               color: #ffffff;
+               align-self: center;
+             }
+    
+            .circle-container a {
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .circle-container a:hover .circle {
+                transform: scale(1.1);
+            }
+
+            .circle {
+                width: 250px;
+                height: 250px;
+                border-radius: 50%;
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 24px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 10px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s ease-in-out;
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            }
+
+            .circle-container a:nth-child(1) .circle {
+                background: linear-gradient(45deg, #001399, #000066);
+            }
+
+            .circle-container a:nth-child(2) .circle {
+                background: linear-gradient(45deg, #007ACC, #003A60); /* Shades of blue */
+            }
+
+            .circle-container a:nth-child(3) .circle {
+                background: linear-gradient(45deg, #FFA500, #FF4500); /* Shades of orange */
+            }
+
+    
+            /* Small devices (landscape phones, less than 768px) */
+            @media (max-width: 767.98px) {
+                .banner-text {
+                    font-size: 24px; /* Smaller font size */
+                    padding-left: 10%; /* Smaller padding */
+                }
+            
+                .circle-container {
+                    display: flex;
+                    flex-wrap: wrap; /* Allows circles to wrap onto the next line if they don't fit */
+                    justify-content: center; /* Centers the circles */
+                }
+            
+                .circle {
+                    width: 100px; /* Further reduced width */
+                    height: 100px; /* Further reduced height */
+                    font-size: 12px; /* Smaller font size */
+                    margin: 5px; /* Reduced margin */
+                }
+            }
+    
+            /* Medium devices (tablets, less than 992px) */
+            @media (max-width: 991.98px) and (min-width: 768px) {
+                .banner-text {
+                    font-size: 36px; /* Slightly smaller font size */
+                    padding-left: 15%; /* Slightly smaller padding */
+                }
+    
+                .circle {
+                    width: 200px;
+                    height: 200px;
+                    font-size: 16px;
+                }
+            }
+        </style>
+
+        <!--Main Slider-->
+        <div class="banner-section">
+            <img src="{% static 'landing/images/slides/v3-2.jpg' %}" alt="Banner Image">
+            <div class="banner-overlay">
+                <div class="banner-text" >Find</div><br>
+                <div class="circle-container">
+                    
+                     <a  href="{% url 'gigs' %}"><div class="circle">Experts</div></a>
+                    <a  href="{% url 'product_listings' cat.name|encrypt_id %}"><div class="circle">Hardware</div></a>
+                    <a  href="{% url 'gskill_listings' 3|encrypt_id %}"><div class="circle">Contractors</div></a>
+                   
+                </div>
+            </div>
+        </div>
+        <!--End Main Slider-->
+
+       <!--Start Highlights Area-->
+       <section class="highlights-area">
+        <div class="container">
+            <div class="row">
+                 <!--Start single highlight box-->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="200ms" data-wow-duration="1200ms">
+                        <a href="{% url 'gigs' %}"> <div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-scheme"></span>
+                        </div></a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3></h3>
+                                <p>Get qualified and verified fundi or expert near you.</p>
+                                
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+                
+                <!--Start single highlight box-->
+                <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="0ms" data-wow-duration="1200ms" >
+                        <a href="{% url 'product_listings' cat.name|encrypt_id %}"><div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-cart" ></span>
+                        </div></a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3></h3>
+                                <p>Get quality products near you.</p>
+                                </br>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+                 <!--Start single highlight box-->
+                 <div class="col-xl-4 col-lg-4">
+                    <div class="single-highlight-box text-center wow fadeInUp" data-wow-delay="400ms" data-wow-duration="1200ms">
+                        <a href="{% url 'gskill_listings' 3|encrypt_id %}"><div class="icon-holder" style="background-color:  #001399;">
+                            <span class="icon-cupboard" ></span>
+                        </div> </a>
+                        <div class="inner-content">
+                            <div class="text">
+                                <h3></h3>
+                                <p>Get a National Construction Authority(NCA) approved Contractors near you.</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!--End single highlight box-->
+               
+               
+            </div>
+        </div>
+    </section>
+    <!--End Highlights Area-->
+    
+      
+      
+
+        <!--Start services style2 area-->
+      
+
+       
+
+        
+
+       
+
+        <!--Start latest blog area style2-->
+        <!--<section class="latest-blog-area style3">-->
+           
+        <!--</section>-->
+         <!--Start footer area Style2-->
+         
+         <footer class="footer-area style3">
+            <div class="container">
+                <div class="row">
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="our-info-box style2">
+                                <div class="footer-logo">
+                                    <a href="/"><img width="250" src="{% static 'assets/img/lgo.png' %}" alt="#"></a>
+                                </div>
+                                <div class="text">
+                                    <p>{{ meta.about|truncatechars:120 }}</p>
+                                    <a class="btn-two more-info-about-company" href="{% url 'about' %}">More About Us<span class="flaticon-next"></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" id="nairobi_record">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Nairobi Office</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Address</h6>
+                                        <p>12TH Floor,
+                                            West Park Towers,
+                                            Westlands, Nairobi, Kenya</p>
+                                    </li>
+                                    
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" id="kisumu_record" >
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Kisumu Office</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Address</h6>
+                                        <p>1ST Floor, Checkmulla Building,
+                                            Off Achieng’ Oneko Road,
+                                            Kisumu Town</p>
+                                    </li>
+                                   
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                    <!--Start single footer widget-->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                        <div class="single-footer-widget marbtm50-s3">
+                            <div class="title-style2">
+                                <h3>Get In Touch</h3>
+                            </div>
+                            <div class="contact-info-box">
+                                <ul>
+                                    <li>
+                                        <h6>Phone</h6>
+                                        <p><a href="tel:{{ meta.phone }}" >{{ meta.phone }}</a></p>
+                                    </li>
+                                    <li>
+                                        <h6>Email</h6>
+                                        <p><a href="mailto:{{ meta.email }}" >{{ meta.email }}</a><br></p>
+                                    </li>
+
+                                    <li>
+                                        <h6>Office Hours</h6>
+                                        <p><span>Monday - Friday:</span> 9.00am to 5.00pm</p>
+                                    </li>
+                                </ul>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!--End single footer widget-->
+                </div>
+            </div>
+        </footer>
+        <!--End footer area Style2-->
+
+        <!--Start footer bottom area-->
+        <section class="footer-bottom-area style2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="footer-bottom-content flex-box-two">
+                            <div class="copyright-text">
+                                <p>© {% now 'Y' %} All Rights Reserved by <a href="#">JaGedo.</a></p>
+                            </div>
+                            <div class="footer-social-links clr-white float-right">
+                                <span>We are On:</span>
+                                <ul class="sociallinks-style-one">
+                                    <li class="wow slideInUp" data-wow-delay="0ms" data-wow-duration="1200ms">
+                                        <a href="https://www.facebook.com/SusRecomm"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                    </li>
+                                    <li class="wow slideInUp" data-wow-delay="100ms" data-wow-duration="1500ms">
+                                        <a href="https://twitter.com/LtdSusrecomm"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                    </li>
+                                    
+                                    <li class="wow slideInUp" data-wow-delay="400ms" data-wow-duration="1500ms">
+                                        <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--End footer bottom area-->
+
+    </div>
+
+
+    <script type="text/javascript">
+        (function () {
+            var options = {
+                facebook: "111394810582562", // Facebook page ID
+                whatsapp: "+254716108282", // WhatsApp number
+                call_to_action: "Talk To Us", // Call to action
+                button_color: "#001399", // Color of button
+                position: "right", // Position may be 'right' or 'left'
+                order: "facebook,whatsapp", // Order of buttons
+            };
+            var proto = document.location.protocol, host = "getbutton.io", url = proto + "//static." + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+        })();
+        </script>
+
+
+    <script src="{% static 'landing/js/jquery.js' %}"></script>
+    <script src="{% static 'landing/js/appear.js' %}"></script>
+    <script src="{% static 'landing/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'landing/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'landing/js/isotope.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.bootstrap-touchspin.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.countTo.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.enllax.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.fancybox.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.mixitup.min.js' %}"></script>
+    <script src="{% static 'landing/js/jquery.paroller.min.js' %}"></script>
+    <script src="{% static 'landing/js/owl.js' %}"></script>
+    <script src="{% static 'landing/js/validation.js' %}"></script>
+    <script src="{% static 'landing/js/wow.js' %}"></script>
+
+    
+
+    <script src="{% static 'landing/assets/language-switcher/jquery.polyglot.language.switcher.js' %}"></script>
+    <script src="{% static 'landing/assets/timepicker/timePicker.js' %}"></script>
+    <script src="{% static 'landing/assets/html5lightbox/html5lightbox.js' %}"></script>
+
+    <!--Revolution Slider-->
+    <script src="{% static 'landing/plugins/revolution/js/jquery.themepunch.revolution.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/jquery.themepunch.tools.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.actions.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.carousel.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.migration.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.navigation.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.parallax.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js' %}"></script>
+    <script src="{% static 'landing/plugins/revolution/js/extensions/revolution.extension.video.min.js' %}"></script>
+    <script src="{% static 'landing/js/main-slider-script.js' %}"></script>
+
+    <!-- thm custom script -->
+    <script src="{% static 'landing/js/custom.js' %}"></script>
+
+    <!-- <div class="scroll-to-top scroll-to-target" data-target="html"><span class="fa fa-angle-up"></span></div> -->
+     <script>
+        $(document).ready(function(){
+        $.ajax({
+          url:"/ctals/",
+          dataType:"json",
+          success:function(html){
+            $('.tcount').html(html.count);
+          }
+        })
+
+
+
+      })
+       $('#nairobi_record').click(function(){
+              $('.ltitle').text("12TH Floor, West Park Towers, Westlands, Nairobi, Kenya");
+                $('#map').html('<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.387091512415!2d36.78866224975181!3d-1.2644506814619647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f17665083bdc3%3A0xdb244bc5e7746d75!2sJenga%20Leo%20Coworking!5e0!3m2!1sen!2ske!4v1688033272864!5m2!1sen!2ske" width="800" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>');
+                 $('#LocationModal').modal('show');
+             });
+                $('#kisumu_record').click(function(){
+                $('.ltitle').text("2nd Floor, Mega Plaza, Oginga Odinga Street, Kisumu, Kenya");
+                $('#map').html('<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d997.4529527866348!2d34.75432998804081!3d-0.10349629999524881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182aa5194bb223a7%3A0x178d0dcdb9dd4b10!2sBiko&#39;s%20Juice%20Parlour!5e0!3m2!1sen!2ske!4v1588242304540!5m2!1sen!2ske" width="800" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>')
+                $('#LocationModal').modal('show');
+                });
+     </script>
+<script>
+    $(document).ready(function() {
+        // When the Sign-Up link is clicked
+        $('.main-menu .navigation li a[data-target="#userTypeModal"]').click(function() {
+            // If the navbar-collapse is visible (meaning we're on a small screen)
+            if ($('.navbar-collapse').is(':visible')) {
+                // Trigger the navbar-toggle button to collapse the navbar
+                $('.navbar-toggle').click();
+            }
+        });
+    });
+</script>
+
+</body>
+
+
+
+</html>

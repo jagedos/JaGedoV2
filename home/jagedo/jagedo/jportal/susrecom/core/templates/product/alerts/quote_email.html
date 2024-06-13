@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Order Confirmation</title>
+    <meta name="viewport" content="width = 375, initial-scale = -1">
+  </head>
+
+  <body style="background-color: #ffffff; font-size: 16px;">
+    <center>
+      <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width:600px;">
+          <!-- BEGIN EMAIL -->
+          <tr>
+            <td align="center" bgcolor="#ffffff" style="padding:30px">
+               <p style="text-align:left">Hello {{ uname }},<br><br> A new quote  #0{{ site_order }} has been placed by one of our experts. View your quote by clicking here:.
+              </p>
+              <p>
+                <a target="_blank" style="text-decoration:none; background-color: black; border: black 1px solid; color: #fff; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'order_summary' serial=serial %}">
+                  <strong>Order #0{{ site_order }}</strong></a>
+              </p>
+              <p style="text-align:left">Thanks for giving us the chance to send you the quotation. If you have any questions please contact us through the details on <a href="{{ protocol }}://{{domain}}">JaGedo.co.ke</a> .<br><br>Remember to quote the quote number in any enquiries.</p>
+              <p style="text-align:left">
+              Sincerely,<br>{{ site_name }} 
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+  </body>
+</html>

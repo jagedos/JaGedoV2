@@ -1,0 +1,56 @@
+{% extends 'layout/layoutx.html' %}
+{% block title %} 
+Product_Filter
+{% endblock %}
+
+{% block small %} 
+Product_Filter
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+{% load encode_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Product_Filter</h3>
+
+      <div class="card-tools">
+       
+       
+       
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        
+           
+        <div class=" dropdown">
+            <button class="col-md-6 col-xs-12 btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Shop
+            </button>
+            <div class="col-md-6 col-xs-12 dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for x in shops %}
+              <a class="dropdown-item" href="{% url 'eproducts' x.id|encrypt_id %}">{{ x.name}}</a>
+              {% endfor %}
+              
+            </div>
+          </div>
+
+
+                  
+
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        Product_Filter
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

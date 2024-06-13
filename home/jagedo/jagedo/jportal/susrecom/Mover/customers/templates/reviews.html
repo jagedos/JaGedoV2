@@ -1,0 +1,329 @@
+{% extends 'layout/layoutc.html' %}
+{% block title %} 
+Reviews ({{ title }})
+{% endblock %}
+
+{% block small %} 
+Reviews ({{ title }})
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+{% load encode_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Reviews ({{ title }}) </h3>
+
+      <div class="card-tools">
+       
+        
+
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="products_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Order</th>
+                            <th>Date</th>
+                            <th>Price</th>
+                            <th>Review</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for a in actives %}
+                </tr>
+                <tr class="account-order-list">
+                <td><center>{{ a.vproduct.product.id|cover_image|safe}}<br>{{ a.id|itemsc|safe }}</center></td>
+                <td>{{ a.serial|orderid}}</td>
+                <td>{{ a.created_at }}</td>
+                <td>Ksh. {{ a.final_price|floatformat:2|intcomma }}</td>
+                <td><b>Rating:</b> {{ a.id|rev_rating|floatformat:1}}<br>
+                    <span class="badge bg-info text-white" data-toggle="modal" data-target="#exampleModal{{a.id}}">Check_Review</span>
+            
+                </td>
+                <td>{% if a.is_reviewed %}
+                <span class="badge bg-success ">Reviewed</span>
+                
+                {% else %}
+                <span class="badge bg-secondary">Pending</span>
+                {% endif %}
+                
+                </td>
+                <td class="text-center">{% if a.is_reviewed %} <a href="#" id="{{ a.id|rev_id }}" class="edit content-action badge bg-primary text-dark">Edit_Review</a>{% else %}<a href="#" id="{{ a.id }}" class="add content-action badge bg-warning text-dark">Add_Review</a>{% endif %} </br><a href="{% url 'order_summary' a.serial %}" class="content-action"><i class="far fa-eye"></i></a></td>
+                </tr>
+            
+            
+            
+                <div class="modal fade" id="exampleModal{{ a.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel"><b>Order:</b> {{ a.serial|orderid}} | {{ a.vproduct.product.name }} Review <br>
+                        <input id="input-21b" value="{{ a.id|rev_rating|floatformat:1}}" type="text" class="rating" name="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
+                        disabled>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ a.id|get_review|safe }}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               {% endfor %}
+            </table>
+
+
+           
+        </div>
+
+       
+        <div class="col-12">
+            {% if actives.has_other_pages %}
+        <div >
+        <ul class="pagination justify-content-center">
+            {% if actives.has_previous %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.previous_page_number }}">«</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">«</a></li>
+        {% endif %}
+        {% for i in actives.paginator.page_range %}
+        {% if actives.number == i %}
+        
+        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if actives.has_next %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.next_page_number }}">»</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">»</a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+        </div>
+
+    
+       
+    
+    
+    
+          <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">  <br>
+               
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="samp_form" enctype="multipart/form-data">        
+                        {% csrf_token %}
+    
+                       
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <div class="form-group">
+                                    <label>Rating<span style="color: red;">*</span></label>
+                                <input id="input-21b" value="0" type="text" class="rating" name="rating" id="rating" data-theme="krajee-fas" data-min=0 data-max=5 data-step=0.5 data-size="sm"
+                                required >
+                                    </div>
+                               </div>
+       
+                            <div class="col-lg-12 col-12">
+                            <div class="form-group">
+                            <label>Write a review<span style="color: red;">*</span></label>
+                            <textarea name="review" id="review" class="form-control" rows="6" placeholder="Enter Your Review ..." required></textarea>
+                            </div>
+                            </div>
+    
+                        </div>
+                        
+                        <input type="hidden" name="serial" id="serial" />
+                        <input type="hidden" name="pid" id="pid" />
+                        <input type="hidden" name="act" id="act" value="Add"/>
+                        <input type="hidden" name="hidden_id" id="hidden_id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="act_button" name="act_button" class="btn btn-success">Submit</button>
+                  
+                </div>
+            </form>
+              </div>
+            </div>
+          </div>
+          <script>
+            $(function () {
+    
+                $('#samp_form').on('submit', function(event){
+          event.preventDefault();
+          $('#act_button').prop('disabled', true);
+          if($('#act').val() == 'Add')
+          {
+           $.ajax({
+            url: "/addreview/",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+                     {
+                        $('#act_button').prop('disabled', False);
+                      
+                       html = data.errors ;
+                      
+                    
+                     }
+             if(data.success)
+             {
+              html =  data.success ;
+              $('#samp_form')[0].reset();
+             
+              $('#product_reviews').load(' #product_reviews');
+              $('#act_button').prop('disabled', false);
+                  
+    
+                   }
+             if(data.success)
+             {    
+            toastr.success(html);
+             } else {
+            toastr.error(html);
+    
+             }
+            }
+           })
+          }
+    
+    
+    
+          if($('#act').val() == 'Edit')
+          {
+           $.ajax({
+            url: "/editreview/",
+            method:"POST",
+            data: new FormData(this),
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(data)
+            {
+             var html = '';
+             if(data.errors)
+                     {
+                        $('#act_button').prop('disabled', False);
+                      
+                       html = data.errors ;
+                      
+                    
+                     }
+             if(data.success)
+             {
+              html =  data.success ;
+              $('#samp_form')[0].reset();
+             
+              $('#product_reviews').load(' #product_reviews');
+              $('#act_button').prop('disabled', false);
+                  
+    
+                   }
+             if(data.success)
+             {    
+            toastr.success(html);
+             } else {
+            toastr.error(html);
+    
+             }
+            }
+           })
+          }
+    
+    
+         });
+    
+         $(document).on('click', '.add', function(){
+          var id = $(this).attr('id');
+          $('#form_result').html('');
+          $.ajax({
+           url:"{% url 'reviewdetails' 1 %}".replace('1', id),
+           dataType:"json",
+           success:function(html){
+            $('#serial').val(html.cart.serial);
+            $('#pid').val(html.cart.vproduct);
+           
+            //  $('#hidden_id').val(html.title);
+            $('.modal-title').html(html.title);
+            $('#act_button').val("Submit");
+            $('#act').val("Add");
+            $('#formModal').modal('show');
+           }
+          })
+         });
+    
+         $(document).on('click', '.edit', function(){
+          var id = $(this).attr('id');
+          $('#form_result').html('');
+          $.ajax({
+           url:"{% url 'reviewdets' 1 %}".replace('1', id),
+           dataType:"json",
+           success:function(html){
+            $('#rating').val(html.cart.rating);
+            $('#review').val(html.cart.review);
+           
+            $('#hidden_id').val(html.cart.id);
+            $('.modal-title').html('Edit_Review');
+            $('#act_button').val("Submit");
+            $('#act').val("Edit");
+            $('#formModal').modal('show');
+           }
+          })
+         });
+    
+    
+    
+    
+    
+            });
+    
+            </script>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        {{ title }} 
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

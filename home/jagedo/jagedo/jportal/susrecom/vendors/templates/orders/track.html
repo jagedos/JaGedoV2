@@ -1,0 +1,223 @@
+{% extends 'layout/layoutv.html' %}
+{% block title %} 
+Orders {{ ptitle }}
+{% endblock %}
+
+{% block small %} 
+Orders {{ ptitle }} 
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Orders {{ ptitle }}</h3>
+
+      <div class="card-tools">
+       
+        
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+<div class="row">
+    <div class="form-group col-md-12 col-xs-12 clearfix">
+        <label for="exampleInputEmail1" class="col-md-12 col-xs-12">Action <span style="color:red;">*</span></label>
+        <div class="icheck-success d-inline">
+          <input type="radio" name="dispatch" class="dispatch" value="1" id="radioSuccess1" required>
+          
+            <label for="radioSuccess1">
+                Dispatch Order (To Customer)
+              </label>
+          
+        </div>
+        <div class="icheck-success d-inline">
+           
+            
+          </div>
+        <!-- <div class="icheck-success d-inline">
+          <input type="radio" name="dispatch" class="dispatch" value="3" id="radioSuccess2" required>
+          <label for="radioSuccess2">
+              Cancel Order
+          </label>
+        </div> -->
+       
+    
+                </div>
+
+                <div class="form-group col-md-12 col-xs-12" id="site"  style="display : none;">
+                  <label for="exampleInputEmail1">ETA</label>
+                  <input type="datetime-local" class="form-control" name="eta" id="eta" placeholder="" onfocus="this.showPicker()" > 
+                </div>
+
+                <div class="form-group col-md-12 col-xs-12" >
+                    <label for="exampleInputEmail1">Note/Narration</label>
+                    <textarea name="narration" id="narration" class="form-control" placeholder="Any comments and/or instructions..." ></textarea>
+                  </div>
+                 
+
+                  <div class="form-group col-md-12 col-xs-12" id="siteb" style="display : none;">
+                    <label for="exampleInputEmail1">Transport</label>
+                   <select name="transport" id="transport" class="select2">
+                   <option value="0">SELF (By Vendor)</option>
+
+
+                   </select>
+                  </div>
+                   <div class="form-group col-md-12 col-xs-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="products_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>#Track_Id</th>
+                             <th>#Order</th>
+                            <th>Dispatch_Time</th>
+                            <th>ETA</th>
+                            <th>Items</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for x in  products %}
+                    <tr>
+                    <td>{{ x.tid }}</td>
+                    <td>{{ x.sid|orderid}}</td>
+                    <td>{{ x.action_at }}</td>
+                    <td>{{ x.eta }}</td>
+                    <td>{{ x.sid|items|safe }}</td>
+                    <td>{{ x.sid|customer }}</td>
+                    <td>{% if x.status %}
+                        <span class="btn btn-xs btn-success">Delivered</span>
+                        {% else %}             
+                        <span class="btn btn-xs bg-gray">On_Transit</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'orderdetails' x.sid %}" class="btn btn-xs bg-gray" title="Order Details"><i class="fa fa-eye"></i></a>&nbsp;&nbsp;{% if not x.status %}<button type="button" name="conf" id="{{ x.id }}" class="conf btn btn-xs  btn-primary btn-sm" title="Confirm_Delivery"><i class="fa fa-truck"></i></button>{% endif %}</td>
+        
+                    </tr>
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to confirm delivery ?</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <script language="javascript">
+
+    $(function () {
+    $("#products_table").DataTable({
+        
+        pageLength: 10,
+        lengthChange: true,
+        autoWidth: true,
+        searching: true,
+        
+        
+     
+    });
+
+    
+    
+    
+     var user_id;
+    
+    $(document).on('click', '.conf', function(){
+     user_id = $(this).attr('id');
+     $('.modal-title').text("Confirm Delivery");
+     $('#confirmModal').modal('show');
+    });
+   
+    $('#ok_button').click(function(){
+     $.ajax({
+       url:"{% url 'vconfdelivery' 1 %}".replace('1', user_id),
+      beforeSend:function(){
+       $('#ok_button').text('Confirming...');
+      },
+      success:function(data)
+      {
+       setTimeout(function(){
+        $('#confirmModal').modal('hide');
+        $('#ok_button').text('OK');
+        $('#products_table').load(' #products_table');
+       }, 2);
+      }
+     })
+    });
+  
+    
+     
+   
+  });
+</script>
+
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        Orders {{ ptitle }}
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

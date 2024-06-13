@@ -1,0 +1,156 @@
+{% extends 'layout/layoutc.html' %}
+{% block title %} 
+{{ title }} 
+{% endblock %}
+
+{% block small %} 
+{{ title }} 
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load vendor_filter %} 
+{% load encode_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{ title }} </h3>
+
+      <div class="card-tools">
+       
+        
+
+
+
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="products_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Job_Category</th>
+                            <th>Duration</th>
+                            <th>Specs</th>
+    
+                            <th>Status</th>
+                            <th>Milestones</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for a in actives %}
+                </tr>
+                <tr class="account-order-list">
+               
+                <td>{{ a.created_at|date:'d/m/y' }}</td>
+                <td>{{ a.job.name }}</br>{{ a.rexpert.name }}</td>
+                <td><b>Start:</b>{{ a.start }} </br> <b>End:</b>{{ a.end }}</td>
+                <td>
+                    
+                    <b> Description:</b> <span class="showmo badge bg-primary" data-toggle="modal" data-target="#descModal{{ a.id }}" >Show_Description</span>
+                    
+                </td>
+               
+            
+                <td>
+                {% if  a.status == 3  %}
+                <span class="badge bg-warning">Awaiting_Client_Approval</span><br>
+                {% elif  a.status == 4 %}
+                <span class="badge bg-success">Active</span><br>
+                {% elif  a.status == 5  %}
+                <span class="badge bg-danger">Cancelled</span><br>
+                {% else %}
+                <span class="badge bg-secondary">Pending</span><br>
+                {% endif %}
+                {% if  a.status > 3 %}
+               
+                {% else %}
+                <a href="{% url 'cqlists' a.id  %}" class="badge bg-primary">View_Quotes</a>
+                {% endif %}
+                </td>
+                <td class="text-center"><a href="{% url 'miles_summary' a.id|find_serial|encrypt_id %}" class="content-action"><i class="far fa-eye"></i></a></td>
+                </tr>
+            
+            
+            
+            
+            
+            
+            
+                <div class="modal fade" id="descModal{{ a.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Job_Description</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          {{ a.description }}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               {% endfor %}
+            </table>
+
+
+           
+        </div>
+
+       
+        <div class="col-12">
+            {% if actives.has_other_pages %}
+        <div >
+        <ul class="pagination justify-content-center">
+            {% if actives.has_previous %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.previous_page_number }}">«</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">«</a></li>
+        {% endif %}
+        {% for i in actives.paginator.page_range %}
+        {% if actives.number == i %}
+        
+        <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+        
+        {% endfor %}
+       
+        {% if actives.has_next %}
+        <li class="page-item active"><a class="page-link" href="?page={{ actives.next_page_number }}">»</a></li>
+            {% else %}
+        <li class="disabled" ><a class="page-link" href="#">»</a></li>
+        {% endif %}
+        
+        </ul>
+        </div>
+        {% endif %}
+        </div>
+
+    
+       
+    <script>
+        $(document).on('click', '.showmo', function(e) {
+          e.preventDefault();
+          var id = $(this).attr('id');
+          $('.full-text-'+id).toggle();
+        });
+      </script>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        {{ title }} 
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+{% load static %}
+{% load avatar %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+{% load vendor_filter %} 
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administartion | Portal</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css' %}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+
+  <link href="{% static 'ratings/css/star-rating.css' %}" media="all" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'ratings/themes/krajee-fas/theme.css' %}" media="all" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'ratings/themes/krajee-svg/theme.css' %}" media="all" rel="stylesheet" type="text/css"/> 
+  <!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<script type="text/javascript">
+  function printcontent(el) {
+     var restorepage = document.body.innerHTML;
+     var printcontent = document.getElementById(el).innerHTML;
+     document.body.innerHTML = printcontent;
+     window.print();
+     document.body.innerHTML = restorepage;
+  
+  }
+  
+   </script>
+
+
+</head>
+{% if 'vnew_orders' in request.path %}
+<body class="hold-transition sidebar-mini sidebar-closed sidebar-collapse layout-fixed">
+{% else %}
+<body class="hold-transition sidebar-mini layout-fixed">
+{% endif %}
+<div class="wrapper">
+
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="{% static 'assets/img/favicon.png' %}" alt="AdminLTELogo" height="60" width="60">
+  </div>
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Navbar Search -->
+     
+
+      <!-- Messages Dropdown Menu -->
+      
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item">
+        <a class="nav-link"  href="/" role="button"><i class="fas fa-globe"><b>_View_Site</b></i></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">My_Profile</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+          <li><a href="{% url 'mprofile' %}" class="dropdown-item">Edit Profile <i class="fa fa-edit"></i></a></li>
+          <li><a href="/password_reset" class="dropdown-item" target="_parent">Change_Password  <i class="fa fa-lock"></i></a> </li>
+
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+
+      </li>
+    
+     
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/mans/" class="brand-link">
+      <img src="{% static 'assets/img/favicon.png' %}" alt="JengaCart" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">JaGedo</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{{ user|gravatar:50 }}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">Hi, {{ user.first_name }}</a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+       
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+               <li class="nav-item ">
+                <a href="/mans" {% if request.resolver_match.url_name == 'index' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                  <p>
+                    Dashboard
+                    
+                  </p>
+                </a>
+                
+              </li>
+              <li class="nav-header">CMS</li>
+              {% if user|has_permission:"Access_Products_Master" %}
+              <li {% if request.resolver_match.url_name == 'product' or request.resolver_match.url_name == 'cat' or request.resolver_match.url_name == 'brand' or request.resolver_match.url_name == 'unit' %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'product' or request.resolver_match.url_name == 'cat' or request.resolver_match.url_name == 'brand' or request.resolver_match.url_name == 'unit' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fas fa-th"></i>
+                  <p>
+                    Products_Master
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'product' %}" {% if request.resolver_match.url_name == 'product' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Products Register</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'cat' %}" {% if request.resolver_match.url_name == 'cat' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Categories</p>
+                      
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'brand' %}" {% if request.resolver_match.url_name == 'brand' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Brands</p>
+                    </a>
+                  </li>
+                 
+                  <li class="nav-item">
+                    <a href="{% url 'unit' %}" {% if request.resolver_match.url_name == 'unit' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Measurement_Units</p>
+                    </a>
+                  </li>
+                 
+                </ul>
+              </li>
+              {% endif %}
+              {% if user|has_permission:"Manage_Legal_Documents" %}
+              <li {% if request.resolver_match.url_name == 'legal_docs' or request.resolver_match.url_name == 'legal_types'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'legal_docs' or request.resolver_match.url_name == 'legal_types' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fas fa-archive"></i>
+                  <p>
+                    Legal Documents
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'legal_docs' %}" {% if request.resolver_match.url_name == 'legal_docs' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Documents</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'legal_types' %}" {% if request.resolver_match.url_name == 'legal_types' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Document_Types</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  
+                 
+                </ul>
+              </li>
+              {% endif %}
+
+
+
+              {% if user|has_permission:"Manage_SMS" %}
+              <li class="nav-item">
+                <a href="{% url 'sms' %}" {% if request.resolver_match.url_name == 'sms' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-comment-alt"></i>
+                  <p>
+                     SMS
+                   
+                  </p>
+                </a>
+              </li>
+              {% endif %}
+
+              {% if user|has_permission:"Manage_Locations" %}  
+              <li {% if request.resolver_match.url_name == 'county' or request.resolver_match.url_name == 'picks'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'county' or request.resolver_match.url_name == 'picks' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fas fa-map"></i>
+                  <p>
+                    Locations
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'county' %}" {% if request.resolver_match.url_name == 'county' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Counties</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'picks' %}" {% if request.resolver_match.url_name == 'picks' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>PickUp Points</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  
+                 
+                </ul>
+              </li>
+              {% endif %}
+
+          
+              <li class="nav-header">Orders</li>
+              <li class="nav-item ">
+                <a href="{% url 'vnew_orders' %}" {% if request.resolver_match.url_name == 'vnew_orders' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                  <i class="nav-icon fas fa-cart-plus"></i>
+                  <p>
+                    New_Order
+                    
+                  </p>
+                </a>
+                
+              </li>
+              <li class="nav-item ">
+                <a href="{% url 'unorders' %}" {% if request.resolver_match.url_name == 'unorders' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                  <i class="nav-icon fas fa-truck"></i>
+                  <p>
+                    Unassigned_Orders
+                    
+                  </p>
+                </a>
+              </li>
+              <li {% if request.resolver_match.url_name == 'vporders' or request.resolver_match.url_name == 'vpdels'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'vporders' or request.resolver_match.url_name == 'vpdels' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fas fa-cubes"></i>
+                  <p>
+                    Vendor Dispatch
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'vporders' %}" {% if request.resolver_match.url_name == 'vporders' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pending Dispatches</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'vovdelays' %}" {% if request.resolver_match.url_name == 'vovdelays' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Delayed Dispatches</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  
+                 
+                </ul>
+              </li>
+       
+
+
+
+              <li {% if request.resolver_match.url_name == 'mvtracker' or request.resolver_match.url_name == 'mvtrackerdelays'   or request.resolver_match.url_name == 'verifydel' or request.resolver_match.url_name == 'vfcomplete'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %} >
+                <a href="#" {% if request.resolver_match.url_name == 'mvtracker' or request.resolver_match.url_name == 'mvtrackerdelays'   or request.resolver_match.url_name == 'verifydel' or request.resolver_match.url_name == 'vfcomplete'  %}  class="nav-link active" {% else %} class="nav-link" {% endif %} >
+                  <i class="nav-icon fas fa-clock"></i>
+                  <p>
+                    Delivery Tracking
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'mvtracker' %}" {% if request.resolver_match.url_name == 'mvtracker' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Orders_In_Transit</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'mvtrackerdelays' %}" {% if request.resolver_match.url_name == 'mvtrackerdelays' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Delayed Delivery</p>
+                      
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'verifydel' %}" {% if request.resolver_match.url_name == 'verifydel' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Delivery Confirmation</p>
+                      
+                    </a>
+                  </li>
+
+                  
+                  <li class="nav-item">
+                    <a href="{% url 'vfcomplete' %}" {% if request.resolver_match.url_name == 'vfcomplete' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Fulfilled Orders</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                </ul>
+              </li>
+             
+              <li class="nav-item">
+                <a href="{% url 'vorderfilter' %}" {% if request.resolver_match.url_name == 'vorderfilter' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-book"></i>
+                  <p>
+                    All_Orders
+                   
+                  </p>
+                </a>
+              </li> 
+              
+              <li class="nav-header">Customers</li>
+              <li class="nav-item">
+                <a href="{% url 'act_filter' %}" {% if request.resolver_match.url_name == 'act_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-shopping-cart"></i>
+                  <p>
+                    Active_Carts
+                   
+                  </p>
+                </a>
+              </li>  
+              <li class="nav-item">
+                <a href="{% url 'mnreviews' %}" {% if request.resolver_match.url_name == 'mnreviews' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-star"></i>
+                  <p>
+                    Reviews
+                  </p>
+                </a>
+              </li>  
+              <li class="nav-item">
+                <a href="{% url 'cusers' %}" {% if request.resolver_match.url_name == 'cusers' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Customers_Register
+                   
+                  </p>
+                </a>
+              </li>  
+              
+              <li class="nav-header">Hardware</li>
+              <li class="nav-item">
+                <a href="{% url 'vofilter' %}" {% if request.resolver_match.url_name == 'vofilter' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-cube"></i>
+                  <p>
+                    Vendor_Orders
+                   
+                  </p>
+                </a>
+              </li>  
+              <li {% if request.resolver_match.url_name == 'vproducts_filter' or request.resolver_match.url_name == 'vvproducts_filter'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'vproducts_filter' or request.resolver_match.url_name == 'vvproducts_filter' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fas fa-cubes"></i>
+                  <p>
+                    Products
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'vproducts_filter' %}" {% if request.resolver_match.url_name == 'vproducts_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Filter_By_Shop </p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'vvproducts_filter' %}" {% if request.resolver_match.url_name == 'vvproducts_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Filter_By_Vendor</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  
+                 
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'vshops' %}" {% if request.resolver_match.url_name == 'vshops' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-store"></i>
+                  <p>
+                    Shops
+                   
+                  </p>
+                </a>
+              </li>  
+
+              <li class="nav-item">
+                <a href="{% url 'pvusers' %}" {% if request.resolver_match.url_name == 'pvusers' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-user"></i>
+                  <p>
+                    Pending_Approvals
+                  </p>
+                </a>
+              </li>  
+              <li class="nav-item">
+                <a href="{% url 'vusers' %}" {% if request.resolver_match.url_name == 'vusers' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Vendors_Register
+                   
+                  </p>
+                </a>
+              </li>  
+              <li class="nav-header">Partners</li>
+              <li {% if request.resolver_match.url_name == 'partner_fields' or request.resolver_match.url_name == 'tech_skills' or request.resolver_match.url_name == 'req_certs' or request.resolver_match.url_name == 'work_days' or request.resolver_match.url_name == 'ecategory' or request.resolver_match.url_name == 'excat' or  request.resolver_match.url_name == 'exskill'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'partner_fields' or request.resolver_match.url_name == 'tech_skills' or request.resolver_match.url_name == 'req_certs' or request.resolver_match.url_name == 'work_days' or request.resolver_match.url_name == 'ecategory' or request.resolver_match.url_name == 'excat' or  request.resolver_match.url_name == 'exskill' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fa fa-cog"></i>
+                  <p>
+                    Settings
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'partner_fields' %}" {% if request.resolver_match.url_name == 'partner_fields' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Fields</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'tech_skills' %}" {% if request.resolver_match.url_name == 'tech_skills' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Technical_Skills</p>
+                      
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'req_certs' %}" {% if request.resolver_match.url_name == 'req_certs' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Required_Certificates</p>
+                      
+                    </a>
+                  </li>
+
+
+                  <li class="nav-item">
+                    <a href="{% url 'work_days' %}" {% if request.resolver_match.url_name == 'work_days' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Work_Days</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  <!-- <li class="nav-item">
+                    <a href="{% url 'ecategory' %}" {% if request.resolver_match.url_name == 'ecategory' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Product_Categories</p>
+                      
+                    </a>
+                  </li> -->
+
+                  <li {% if request.resolver_match.url_name == 'excat' or  request.resolver_match.url_name == 'exskill'   %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon fas fa-circle"></i>
+                      <p>
+                        Expert_Lists
+                        <i class="right fas fa-angle-left"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{% url 'excat' %}" {% if request.resolver_match.url_name == 'excat' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Categories</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'exskill' %}" {% if request.resolver_match.url_name == 'exskill' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Skill_List</p>
+                        </a>
+                      </li>
+                      </ul>
+                      </li>
+                 
+                </ul>
+              </li>
+
+              <li {% if request.resolver_match.url_name == 'exp_jobs' or  request.resolver_match.url_name == 'qrequests' or  request.resolver_match.url_name == 'unreviewed' or  request.resolver_match.url_name == 'active_jobs'   %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'exp_jobs' or request.resolver_match.url_name == 'qrequests' or  request.resolver_match.url_name == 'unreviewed' or  request.resolver_match.url_name == 'active_jobs'  %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Jobs
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'exp_jobs' %}" {% if request.resolver_match.url_name == 'exp_jobs' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Unreviewed_Requests</p>
+                     
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'unreviewed' %}" {% if request.resolver_match.url_name == 'unreviewed' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Unreviewed_Quotes</p>
+                     
+                    </a>
+                  </li>
+
+            
+                  <li class="nav-item">
+                    <a href="{% url 'qrequests' %}" {% if request.resolver_match.url_name == 'qrequests' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pending_Requests</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'active_jobs' %}" {% if request.resolver_match.url_name == 'active_jobs' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Active_Jobs</p>
+                     
+                    </a>
+                  </li>
+
+                 
+                 
+                  
+                 
+                </ul>
+              </li>
+
+              <li {% if request.resolver_match.url_name == 'fexpert_filter' or  request.resolver_match.url_name == 'f_expert_filter'   %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'fexpert_filter' or request.resolver_match.url_name == 'f_expert_filter'  %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Fundis_Register
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'f_expert_filter' %}" {% if request.resolver_match.url_name == 'f_expert_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pending_Approval</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'fexpert_filter' %}" {% if request.resolver_match.url_name == 'fexpert_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>All</p>
+                      
+                    </a>
+                  </li>
+
+                 
+                 
+                  
+                 
+                </ul>
+              </li>
+
+
+
+              <li {% if request.resolver_match.url_name == 'expert_filter' or  request.resolver_match.url_name == 'p_expert_filter'   %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'expert_filter' or request.resolver_match.url_name == 'p_expert_filter'  %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Experts_Register
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'p_expert_filter' %}" {% if request.resolver_match.url_name == 'p_expert_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pending_Approval</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'expert_filter' %}" {% if request.resolver_match.url_name == 'expert_filter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>All</p>
+                      
+                    </a>
+                  </li>
+
+                 
+                 
+                  
+                 
+                </ul>
+              </li>
+              
+              <li class="nav-header">Management</li>
+
+              <li {% if request.resolver_match.url_name == 'vssfilter' or request.resolver_match.url_name == 'vsvfilter'  %} class="nav-item menu-open" {% else %} class="nav-item" {% endif %}>
+                <a href="#" {% if request.resolver_match.url_name == 'vssfilter' or request.resolver_match.url_name == 'vsvfilter' %} class="nav-link active" {% else %} class="nav-link" {% endif %}>
+                  <i class="nav-icon fa fa-chart-bar"></i>
+                  <p>
+                    Sales
+                    <i class="fas fa-angle-left right"></i>
+                    
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{% url 'vssfilter' %}" {% if request.resolver_match.url_name == 'vssfilter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Filter_By_Shop</p>
+                     
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'vsvfilter' %}" {% if request.resolver_match.url_name == 'vsvfilter' %} class="nav-link active" {% else %} class="nav-link " {% endif %}>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Filter_By_Vendor</p>
+                      
+                    </a>
+                  </li>
+                  
+                 
+                  
+                 
+                </ul>
+              </li>
+
+
+
+              {% if user|has_permission:"Access_User_Management" %} 
+              {% if user|has_permission:"Manage_Roles" %} 
+              <li class="nav-item">
+                <a href="{% url 'utypes' %}" {% if request.resolver_match.url_name == 'utypes' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-lock"></i>
+                  <p>
+                    Roles
+                   
+                  </p>
+                </a>
+              </li>  
+              {% endif %}
+             
+             
+              <li class="nav-item">
+                <a href="{% url 'users' %}" {% if request.resolver_match.url_name == 'users' %} class="nav-link active" {% else %} class="nav-link " {% endif %} >
+                  <i class="nav-icon fa fa-users"></i>
+                  <p>
+                    Admins
+                   
+                  </p>
+                </a>
+              </li>  
+
+              {% endif %}
+                  
+                 
+                  
+              <li class="nav-header">Logout</li>
+             
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a href="/logout" class="nav-link">
+                  <i class="nav-icon fas fa-power-off"></i>
+                  <p>Logout</p>
+                </a>
+              </li>
+              {% else %}
+    
+              <li class="nav-item">
+                <a href="/login" class="nav-link">
+                  <i class="nav-icon fas fa-power-off"></i>
+                  <p>Login</p>
+                </a>
+              </li>
+    
+              {% endif %}
+          
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

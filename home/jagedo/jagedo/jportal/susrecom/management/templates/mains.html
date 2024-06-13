@@ -1,0 +1,379 @@
+{% include 'layout/header.html' %}
+{% load static %}
+{% load humanize %}
+{% load operations_filter %} 
+{% load encode_filter %} 
+{% load vendor_filter %}
+{% load metrics_filter %}  
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Management</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+   
+    <!-- Main content -->
+    <section class="content">
+  
+       
+         
+         
+      <div class="container-fluid">
+   
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-boxes"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Un-Assigned_Orders</span>
+                <span class="info-box-number">
+                  {{ 1|assign_delays|floatformat:0|intcomma }}
+                  
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Pending_Dispatches(Vendors)</span>
+                <span class="info-box-number">
+                  {{ 1|order_delays|floatformat:0|intcomma }}
+                  
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-clock"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Delayed_Dispatches(Vendors)</span>
+                <span class="info-box-number">{{ 1|vendor_delays|floatformat:0|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-olive elevation-1"><i class="fas fa-rocket"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Orders_In_Transit</span>
+                <span class="info-box-number">{{ 1|in_transit|floatformat:0|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-truck"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Delayed_Deliveries</span>
+                <span class="info-box-number">{{ 1|delivery_delays|floatformat:0|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-fuchsia elevation-1"><i class="fas fa-check"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Unverified_Deliveries</span>
+                <span class="info-box-number">{{ 1|unverified_dels|floatformat:0|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-purple elevation-1"><i class="fas fa-file"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Unreviewed_Quotes</span>
+                <span class="info-box-number">{{ 1|unverified_quotes|floatformat:0|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <a href="#" data-toggle="modal" data-target="#modal-sms"  ><div class="info-box mb-3">
+              <span class="info-box-icon bg-gray elevation-1"><i class="fas fa-comment-alt"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">SMS_BALANCE</span>
+                <span class="info-box-number">{{ balance|floatformat:2|intcomma }}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div></a>
+            <!-- /.info-box -->
+          </div> 
+
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">System Summary</h5>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                 
+                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-8">
+                    <p class="text-center">
+                      <strong>User_Metrics</strong>
+                    </p>
+
+                    <div class="chart">
+                      <!-- Sales Chart Canvas -->
+                      
+                      <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                    <!-- /.chart-responsive -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-md-4">
+                    <p class="text-center">
+                      <strong></strong>
+                      </br>
+                    </p>
+                    
+                    
+                    <div class="progress-group">
+                      Customers
+                      <span class="float-right"><b>{{ 1|total_customers|floatformat:0|intcomma }}</b></span>
+                      <div class="progress progress-sm">
+                        <div class=" progress-bar bg-primary" id="xcust" ></div>
+                      </div>
+                    </div>
+                    <!-- /.progress-group -->
+
+                    <div class="progress-group">
+                      Vendors
+                      <span class="float-right"><b>{{ 1|total_vendors|floatformat:0|intcomma }}</b></span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-danger" id="xvend"></div>
+                      </div>
+                    </div>
+
+                     <!-- /.progress-group -->
+                     <div class="progress-group">
+                      Total_Partners
+                       <span class="float-right"><b>{{ 1|total_partners|floatformat:0|intcomma }}</b></span>
+                       <div class="progress progress-sm">
+                         <div class="progress-bar bg-warning" id="xexp"></div>
+                       </div>
+                     </div>
+
+                     <div class="progress-group">
+                      Verified_Partners
+                       <span class="float-right"><b>{{ 1|total_vpartners|floatformat:0|intcomma }}</b></span>
+                       <div class="progress progress-sm">
+                         <div class="progress-bar bg-green" id="xvexp"></div>
+                       </div>
+                     </div>
+
+                     <div class="progress-group">
+                      UnVerified_Partners
+                       <span class="float-right"><b>{{ 1|total_uvpartners|floatformat:0|intcomma }}</b></span>
+                       <div class="progress progress-sm">
+                         <div class="progress-bar bg-danger" id="xuvexp"></div>
+                       </div>
+                     </div>
+
+                    <!-- /.progress-group -->
+                    <!--<div class="progress-group">-->
+                    <!--  <span class="progress-text">Managers</span>-->
+                    <!--  <span class="float-right"><b>{{ 1|total_managers|floatformat:0|intcomma }}</b></span>-->
+                    <!--  <div class="progress progress-sm">-->
+                    <!--    <div class="progress-bar bg-success" id="xmans"></div>-->
+                    <!--  </div>-->
+                    <!--</div>-->
+
+                   
+                    <!-- /.progress-group -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- ./card-body -->
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-sm-3 col-6">
+                    <div class="description-block border-right">
+                      <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 0%</span>
+                      <h5 class="description-header">Ksh {{ 1|mtoday_sales|floatformat:0|intcomma }}</h5>
+                      <span class="description-text">TOTAL SALES</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-3 col-6">
+                    <div class="description-block border-right">
+                      <span class="description-percentage text-warning"><i class="fas fa-caret-down"></i> 0%</span>
+                      <h5 class="description-header">Ksh 0</h5>
+                      <span class="description-text">TOTAL COST</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                   <!-- /.col -->
+                   <div class="col-sm-3 col-6">
+                    <div class="description-block border-right">
+                      <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 0%</span>
+                      <h5 class="description-header">Ksh 0</h5>
+                      <span class="description-text">TOTAL EXPENSES</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                  <!-- /.col -->
+                  <div class="col-sm-3 col-6">
+                    <div class="description-block border-right">
+                      <span class="description-percentage text-success"><i class="fas fa-caret-up"></i> 0%</span>
+                      <h5 class="description-header">Ksh 0</h5>
+                      <span class="description-text">TOTAL INCOME</span>
+                    </div>
+                    <!-- /.description-block -->
+                  </div>
+                  <!-- /.col -->
+                 
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <!-- /.row (main row) -->
+      </div><!-- /.container-fluid -->
+
+      <div class="modal fade" id="modal-sms">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+             
+              <h4 class="modal-title">SMS_TOP_UP_PROCEDURE</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            </div>
+           
+            <div class="modal-body">
+                         <h2 style="color:red;"><i>Note: If You Do Not Have A <b>Premium Account</b>, Do Not Top_Up <b>Above Ksh. 500</b></i></h2>
+            <ul class="list-group">
+            <li class="list-group-item list-group-item-success"><b style="font-size:20px;">Using your MPesa-enabled phone, select "Pay Bill" from the M-Pesa menu</b></li>
+            <li class="list-group-item list-group-item-warning"><b style="font-size:20px;">Enter Africa's Talking Business Number 525900</b></li>
+            <li class="list-group-item list-group-item-success"><b style="font-size:20px;">Enter your Africa's Talking Account Number. Your account number is {{ username }}.api</b></li>
+            <li class="list-group-item list-group-item-warning"><b style="font-size:20px;">Enter the Amount of credits you want to buy</b></li>
+            <li class="list-group-item list-group-item-success"><b style="font-size:20px;">Confirm that all the details are correct and press Ok</b></li>
+            <li class="list-group-item list-group-item-warning"><b style="font-size:20px;">Check your statement Or refresh this page to see your payment. Your account will also be updated</b></li>
+
+            </ul>
+               
+           
+           
+
+           
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+              
+             
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+    </section>
+    <!-- /.content -->
+    <span class="gcust" id="{{ 1|total_customers|floatformat:0|intcomma }}"></span>
+    <span class="gvend" id="{{ 1|total_vendors|floatformat:0|intcomma }}"></span>
+    <span class="gmans" id="{{ 1|total_managers|floatformat:0|intcomma }}"></span>
+    <span class="gexp" id="{{ 1|total_partners|floatformat:0|intcomma }}"></span>
+    <span class="gvexp" id="{{ 1|total_vpartners|floatformat:0|intcomma }}"></span>
+    <span class="guvexp" id="{{ 1|total_uvpartners|floatformat:0|intcomma }}"></span>
+    <script>
+    $(document).ready(function(){
+      $.ajax({
+        url:"/mans/metrics/",
+        dataType:"json",
+        success:function(html){
+          $('#xcust').attr("style", "width:"+html.cavg+"%");
+          $('#xvend').attr("style", "width:"+html.vavg+"%");
+          $('#xmans').attr("style", "width:"+html.mavg+"%");
+          $('#xinac').attr("style", "width:"+html.iavg+"%");
+          $('#xexp').attr("style", "width:"+html.pavg+"%");
+          $('#xexp').attr("style", "width:"+html.pavg+"%");
+          $('#xvexp').attr("style", "width:"+html.vpavg+"%");
+          $('#xuvexp').attr("style", "width:"+html.uvpavg+"%");
+          
+          
+        }
+      })
+
+    });
+      </script>
+  </div>
+{% include 'layout/footer.html' %}

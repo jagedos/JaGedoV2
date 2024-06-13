@@ -1,0 +1,1195 @@
+{% extends 'layout/layout.html' %}
+{% block title %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block small %} 
+{{ ptitle }}
+{% endblock %}
+
+{% block content %}
+{% load operations_filter %} 
+  <!-- Default box -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{ ptitle }}</h3>
+
+      <div class="card-tools">
+       
+        <button type="button" id="create_record" class="btn btn-xs btn-info"  title="Remove">
+         
+          ADD_NEW_EXPERT
+         
+
+        </button>
+
+        <button type="button" id="concreate_record" class="btn btn-xs btn-primary"  title="create_record">
+         
+          ADD_NEW_CONTRACTOR
+         
+
+        </button>
+
+        <div class="modal fade" id="formModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_result"></span>
+           <form method="post" id="sample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">First_Name</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+        
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Last_Name</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name"  autocomplete="off" placeholder="" required>
+                  </div>
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Gender</label>
+                    <select class="form-control select2" name="gender" id="gender" style="width: 100%;" required>
+                      
+                        <option selected="selected" disabled value="">Select_Gender</option>
+                      <option value="1">Male</option>
+                      <option value="2">Female</option>
+                      
+                    </select>
+                  </div>
+        
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="email" class="form-control"  id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">National_Id</label>
+                    <input type="text" class="form-control" name="national_id" id="national_id"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Phone_Number</label>
+                    <input type="text" class="form-control" name="phone" id="phone" minLength="10" maxLength="10"   pattern="[0]{1}[0-9]{9}" autocomplete="off" placeholder="Example : 0744000111" required>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">County</label>
+                    <select class="form-control select2" name="location" id="location" required="true" style="width: 100%;" >
+                      
+                     
+                        <option selected="selected" disabled value="">Select_County</option>
+                       {% for x in  locs %}
+                        <option value="{{ x.id }}">{{ x.name }}</option>
+                       {% endfor %}
+                    </select>
+                  </div>
+
+                  
+                <div class="form-group col-md-6 col-xs-12">
+                  <label for="exampleInputEmail1">Location</label>
+                  <input type="text" class="form-control" name="county" id="county"  autocomplete="off" placeholder="Example : EMBAKASI, NAIROBI" required>
+                </div>
+
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Registering_As</label>
+                    <select class="form-control select2" name="reg_as" id="reg_as" required="true" style="width: 100%;" >
+                      
+                      <option selected="selected" disabled value="">Select_Registration</option>
+                      <option value="1">Professional</option>
+                      <option value="2">Fundi</option>
+                      
+                    </select>
+                  </div>
+
+                  <div class=" form-group col-md-4 col-xs-12" id="ffield">
+                    <label for="exampleInputEmail1">Field</label>
+                    <select class="field form-control select2" name="field" id="field" required="true" style="width: 100%;" >
+                      
+                     
+                        <option selected="selected" disabled value="">Select_Expert_Field</option>
+                        {% for x in  fields %}
+                        <option value="{{ x.id }}">{{ x.name }}</option>
+                        {% endfor %}
+                      
+                    </select>
+                  </div>
+
+                  <div class="form-group col-12" id="specs" style="display: none;">
+
+                    <div id="accordion">
+                        <div class="card card-primary">
+                          <div class="card-header">
+                            <h4 class="card-title w-100">
+                              <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+                                Skills
+                              </a>
+                            </h4>
+                          </div>
+                          <div id="collapseOne" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="form-group col-12">
+
+                                    <label for="exampleInputEmail1">Specialisation(Maximum Of 2)</label>
+                              
+                                    <script type="text/javascript">
+                              
+                                      function add_row(field)
+                                      {
+                                       $rowno=$("#employee_table tr").length;
+                                       $rowno=$rowno+1;
+                                       var lx=$rowno;
+                                       var setid = lx +"."+ field
+                                       var finder= Number(setid)
+                                      
+                                       if(lx <= 3){
+                                       $.ajax({
+                                     url:"{% url 'mgetskillsx' 1 %}".replace('1', finder),
+                                     dataType:"json",
+                                     success:function(html){
+                                      $('.skills'+html.fid).html(html.img);
+                                     }
+                                    });
+                              
+                                       $("#employee_table tr:last").after("<tr id='row"+$rowno+"'><td><span class='skills"+$rowno+"'></span></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_row('row"+$rowno+"')></td></tr>");
+                                  }
+                                                        
+                                            $('.select2').select2()
+                                      
+                                      }
+                                      
+                                      function delete_row(rowno)
+                                      {
+                                       $('#'+rowno).remove();
+                                      }
+                                      </script>          
+                                    <table id="employee_table" class="table table-striped table-bordered table-hover">
+                                      <thead>
+                                        <tr>
+                              
+                                 <th>Skill</th> 
+                                <th>Add</th> 
+                                        </tr>
+                                
+                                
+                                      </thead>
+                                   <tr id="row1">
+                                    
+                               
+                                  <td> <span class="skills"></span></td>
+                                  
+                                 
+                                    <td><input type="button" onclick="add_row( document.getElementById('field').value );" class="btn btn-info" value="+"></td>
+                                   </tr>
+                                  </table>
+                              
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card card-danger">
+                          <div class="card-header">
+                            <h4 class="card-title w-100">
+                              <a class="d-block w-100" data-toggle="collapse" href="#collapseTwo">
+                                Qualifications
+                              </a>
+                            </h4>
+                          </div>
+                          <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="form-group col-12">
+                                    <label for="exampleInputEmail1">Upload Your CV</label>
+                                    <div  class="custom-file">
+                                    <input type="file" class="cFile custom-file-input" id="cv" name="cv" /> 
+                                     <label class="custom-file-label" for="customFile">Upload CV</label>
+                                   
+                                   </div>
+                                  </div>
+              
+              
+                                 
+                                  
+                                
+                                  <div class="form-group col-6  float-left">
+                                    <label for="exampleInputEmail1">National_Id_Front </label>
+                                    <div  class="custom-file">
+                                    <input type="file" class="cFile custom-file-input" id="id_front" name="id_front" oninvalid="this.setCustomValidity('Please Upload Your National_Id_Front')"
+                                    oninput="setCustomValidity('')"/> 
+                                     <label class="custom-file-label" for="customFile">Upload National_Id_Front</label>
+                                   
+                                   </div>
+                                  </div>
+              
+              
+                                  <div class="form-group col-6 float-right">
+                                    <label for="exampleInputEmail1">National_Id_Back </label>
+                                    <div  class="custom-file">
+                                    <input type="file" class="cFile custom-file-input" id="id_back" name="id_back"  oninvalid="this.setCustomValidity('Please Upload Your National_Id_Back ')"
+                                    oninput="setCustomValidity('')"/> 
+                                     <label class="custom-file-label" for="customFile">Upload National_Id_Back</label>
+                                   
+                                   </div>
+                                  </div>
+              
+                                   <div class="form-group col-12">
+              
+                                    <label for="exampleInputEmail1">Upload Available Academic/Practice Certificates(Maximum Of 4)</label>
+                              
+                                    <script type="text/javascript">
+                              
+                                      function cadd_row(certs)
+                                      {
+                                       $rowno=$("#certs_table tr").length;
+                                       $rowno=$rowno+1;
+                                       var lx=$rowno;
+                                       if(lx <= 5){
+                                       $("#certs_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='form-control select2' name='cert_name' id='cert_name'  style='width: 100%;'><option selected='selected' disabled >Select_Certificate_Name</option>"+certs+"</select></td><td><input type='file'  name='certs' class='form-control' autocomplete='off' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_crow('row"+$rowno+"')></td></tr>");
+                                             
+                                            $('.select2').select2()
+                                       }
+                                      
+                                      }
+                                      
+                                      function delete_crow(rowno)
+                                      {
+                                       $('#'+rowno).remove();
+                                      }
+                                      </script>          
+                                    <table id="certs_table" class="table table-striped table-bordered table-hover">
+                                      <thead>
+                                        <tr>
+                              
+                                 <th>Name</th>
+                                 <th>Upload</th>  
+                                <th>Add</th> 
+                                        </tr>
+                                
+                                
+                                      </thead>
+                                   <tr id="row1">
+                                    
+                               
+                                  <td> <select class="form-control select2" name="cert_name" id="cert_name"  style="width: 100%;">
+                                      <option selected="selected" disabled value="">Select_Certificate_Name</option>
+                                     
+                                     {{ certs|safe }}
+                                     
+                                    </select> </td>
+                                  <td><input type="file"  name="certs" class="form-control" value="" autocomplete="off" /></td>
+                                 
+                                    <td><input type="button" onclick="cadd_row( '{{ certs }}' );" class="btn btn-info" value="+"></td>
+                                   </tr>
+                                  </table>
+                              
+                              
+                                  </div>
+              
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card card-success">
+                          <div class="card-header">
+                            <h4 class="card-title w-100">
+                              <a class="d-block w-100" data-toggle="collapse" href="#collapseThree">
+                                Availability
+                              </a>
+                            </h4>
+                          </div>
+                          <div id="collapseThree" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                <div class="form-group col-12">
+
+                                    <label for="exampleInputEmail1">Partner Availability</label>
+                                    <div class="form-group col-12">
+                                    <select class="aset form-control" name="aset" id="aset" required="true" oninvalid="this.setCustomValidity('Kindly Provide Your Availability')"
+                                    oninput="setCustomValidity('')" style="width: 100%;">
+                                     
+                                      
+                                      <option value="0">Everyday( 9 A.M - 5 P.M)</option>
+                                      <option value="1">Custom(Set Available Days)</option>
+                                    
+                                    </select>
+                                </div>
+                                
+                              
+                                    <script type="text/javascript">
+                              
+                                      function dadd_row(days)
+                                      {
+                                       $rowno=$("#days_table tr").length;
+                                       $rowno=$rowno+1;
+                                       var lx=$rowno;
+                                       if(lx <= 6){
+                                       $("#days_table tr:last").after("<tr id='row"+$rowno+"'><td><select class='field form-control select2' name='day' id='day' required='true' style='width: 100%;'>"+days+"</select></td><td><input type='time'  name='start' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='time'  name='end' class='form-control' value='' autocomplete='off' onfocus='this.showPicker()' /></td><td><input type='button' class='btn btn-danger' value='-' onclick=delete_drow('row"+$rowno+"')></td></tr>");
+                                             
+                                            $('.select2').select2()
+                                       }
+                                      
+                                      }
+                                      
+                                      function delete_drow(rowno)
+                                      {
+                                       $('#'+rowno).remove();
+                                      }
+                                      </script>  
+                                      <span id="days" style="display: none;" class="col-12"> 
+                                    <table id="days_table" class="table table-striped table-bordered table-hover">
+                                      <thead>
+                                        <tr>
+                              
+                                 <th>Day</th>
+                                 <th>From</th>  
+                                 <th>To</th>  
+                                <th>Add</th> 
+                                        </tr>
+                                
+                                
+                                      </thead>
+                                   <tr id="row1">
+                                    
+                               
+                                  <td> <select class="field form-control select2" name="day" id="day" required="true" style="width: 100%;">
+                                     
+                                     
+                                     {{ days|safe }}
+                                     
+                                    </select> </td>
+                                  <td><input type="time"  name="start" class="form-control" value="" autocomplete="off"onfocus="this.showPicker()" /></td>
+                                  <td><input type="time"  name="end" class="form-control" value="" autocomplete="off" onfocus="this.showPicker()" /></td>
+                                 
+                                    <td><input type="button" onclick="dadd_row( '{{ days }}' );" class="btn btn-info" value="+"></td>
+                                   </tr>
+                                  </table>
+                                </span> 
+                            </div>
+                          </div>
+                        </div>
+
+
+                  </div>
+                </div>
+            </div>
+           
+                  <span class="row col-12" id="sectlast" style="display: none;">
+                    <div class="form-group col-md-4 col-xs-12">
+                        <label for="exampleInputEmail1">Years_Of_Experience</label>
+                        <input type="nember" class="form-control" name="yrs_of_experience" id="yrs_of_experience" autocomplete="off" oninvalid="this.setCustomValidity('Kindly Provide Valid Years Of Experience')"
+    oninput="setCustomValidity('')" pattern= "[0-9]" maxlength="2" required>
+                      </div>
+    
+                  <div class="form-group pass col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Password</label>
+                    <input type="text" class="form-control" name="password" id="password" placeholder="" autocomplete="off" required>
+                  </div>
+
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Approval_Status</label>
+                    <select class="form-control select2" name="astatus" id="astatus" style="width: 100%;" required>
+                      
+                     
+                      <option value="0">Pending</option>
+                      <option value="1">Approved</option>
+                      
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Account_Status</label>
+                    <select class="form-control select2" name="status" id="status" style="width: 100%;" required>
+                      
+                     
+                      <option value="0">In_Active</option>
+                      <option value="1">Active</option>
+                      
+                    </select>
+                  </div>
+                 
+               
+               
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="action" id="action" />
+              <input type="hidden" name="hidden_id" id="hidden_id" />
+              <input type="submit" name="action_button" id="action_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                                </span>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+
+          <script>
+            $('.cFile').on('change',function(){
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+        </script>
+
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" id="users_tabs">
+            <table id="users_table" width="100%" class="table table-striped table-bordered dt-responsive compact nowrap">
+                
+                    <thead>
+                        <tr>
+                            <th>Date_Joined</th>
+                            <th>Name</th>
+                            <th>Reg_As</th>
+                            <th>Details</th>
+                            <th>Skills</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                           
+                        </tr>
+                    </thead>
+                    {% for x in  users %}
+                    <tr>
+                    <td>{{ x.date_joined|date:"d/m/Y" }}</td>
+                    <td>{{ x.first_name }} {{ x.last_name }}</td>
+                    <td>{{ x.id|reg_as|safe }} </td>
+                    <td>{{ x.id|reg_details|safe }}</td>
+                    <td>{{ x.id|reg_skills|safe }}</td>
+                    <td>{% if x.is_active %}
+<span class="btn btn-xs btn-success">Active</span><br>
+                      {% else %}
+                      <span class="btn btn-xs btn-warning">In-Active</span><br>
+                    {% endif %}
+                    
+                    {% if x.is_approved %}
+                    <span class="btn btn-xs btn-info">Approved</span>
+                    {% else %}
+                    <span class="btn btn-xs btn-danger">Not-Approved</span>
+                    {% endif %}
+                   
+
+                    </td>
+                    
+                    <td>{% if x.id|reg_ast == 3 %} <i  name="conedit" id="{{ x.id }}" class="conedit fa fa-edit" style="color: #058585;"></i>{% else %}<i  name="edit" id="{{ x.id }}" class="edit fa fa-edit" style="color: #058585;"></i>{% endif %} | <i   name="reset" id="{{ x.id }}" class="reset fa fa-lock" style="color: #3bc7d9;"></i> | <i  name="eprof" id="{{ x.id }}" class="eprof fa fa-file" style="color: #058585;"></i> | <i  id="{{ x.id }}" class="delete fa fa-trash" style="color: #ec0f0f;"></i></td>
+        
+                    </tr>
+                    {% endfor %}
+
+            </table>
+
+
+           
+        </div>
+
+        <div id="confirmModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                        <h2 class="modal-title">Confirmation</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                    </div>
+                    <div class="modal-body">
+                        <h4 align="center" style="margin:0;">Are you sure you want to remove this user? There may be data attached to this account.</h4>
+                    </div>
+                    <div class="modal-footer">
+                     <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="resetModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="form_res"></span>
+           <form method="post" id="samp_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="text" class="form-control" name="mail" id="mail"  autocomplete="off" placeholder="" readonly required>
+                  </div>
+        
+                </div>
+                   <div class="form-group col-md-12">
+                    <input type="hidden" name="act" id="act" />
+             
+              <input type="submit" name="act_button" id="act_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->   
+          <div class="modal fade" id="contModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                 
+                  <h4 class="modal-title">ADD A NEW TAX</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                              <div class="modal-body">
+                     <span id="cform_result"></span>
+           <form method="post" id="contsample_form" enctype="multipart/form-data">        
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">First_Name</label>
+                    <input type="text" class="form-control" name="first_name" id="cfirst_name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+        
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Last_Name</label>
+                    <input type="text" class="form-control" name="last_name" id="clast_name"  autocomplete="off" placeholder="" required>
+                  </div>
+        
+                  
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="text" class="form-control" name="email" id="cemailx"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">National_Id</label>
+                    <input type="text" class="form-control" name="national_id" id="cnational_id"  autocomplete="off" placeholder="" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Phone_Number</label>
+                    <input type="text" class="form-control" name="phone" id="cphone" minLength="10" maxLength="10"   pattern="[0]{1}[0-9]{9}" autocomplete="off" placeholder="Example : 0744000111" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1" >County</label>
+                    <!-- select box from counties array -->
+                    <select class="form-control select2" name="county" id="ccounty" style="width: 100%;" required>
+                      <option value="">Select County</option>
+                      {% for county in locs %}
+                      <option value="{{ county.id }}">{{ county.name }}</option>
+                      {% endfor %}
+                    </select>
+
+
+
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Location</label>
+                    <input type="text" class="form-control" name="location" id="clocation"  autocomplete="off" placeholder="Example : EMBAKASI, NAIROBI" required>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Company_Name</label>
+                    <input type="text" class=" form-control" name="company_name" id="company_name" value=""  required>
+                  </div>
+            
+            
+            
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Company_Email</label>
+                    <input type="email" class=" form-control" name="company_email" id="company_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  value="" placeholder=""  required>
+                  </div>
+            
+            
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Company_Phone</label>
+                    <input type="text" class=" form-control" name="company_phone" id="company_phone" minLength="10" maxLength="10" pattern="[0]{1}[0-9]{9}" value="" placeholder=""  required>
+                  </div>
+
+
+          
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Password</label>
+                    <input type="text" class="form-control" name="password" id="cpassword" placeholder="" autocomplete="off" required>
+                  </div>
+
+                   <div class="form-group col-md-4 col-xs-12">
+                    <label for="exampleInputEmail1">Approval_Status</label>
+                    <select class="form-control select2" name="astatus" id="castatus" style="width: 100%;" required>
+                      
+                     
+                      <option value="0">Pending</option>
+                      <option value="1">Approved</option>
+                      
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label for="exampleInputEmail1">Account_Status</label>
+                    <select class="form-control select2" name="status" id="cstatus" style="width: 100%;" required>
+                      
+                     
+                      <option value="0">In_Active</option>
+                      <option value="1">Active</option>
+                      
+                    </select>
+                  </div>
+
+
+
+                </div>
+                   <div class="form-group col-md-12">
+                   
+                    <input type="hidden" name="caction" id="caction" />
+              <input type="hidden" name="chidden_id" id="chidden_id" />
+              <input type="submit" name="caction_button" id="caction_button" class="btn btn-block btn-warning" value="Add" />
+                                    </div>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                               
+              </div>
+              </div>
+              <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!-- /.modal -->
+        <script language="javascript">
+  
+  function simplifySkills(html) {
+    let skillList = $(`<div>${html}</div>`); // Wrapping in div for proper parsing
+    let skills = [];
+
+    skillList.find('li').each(function() {
+        let skill = $(this).text().trim();
+        if (skill) skills.push(skill);
+    });
+
+    return skills.join(', '); // Join skills with a comma
+}
+
+function simplifyRegDetails(html) {
+    let details = $(`<div>${html}</div>`); // Wrapping in div for proper parsing
+    let textDetails = [];
+
+    // Iterate over each bold element and extract its following text
+    details.find('b').each(function() {
+        let label = $(this).text().trim(); // Extract label
+        let detailText = $(this).get(0).nextSibling.nodeValue; // Get the text node value immediately following the bold tag
+
+        if (detailText) {
+            textDetails.push(`${label} ${detailText.trim()}`);
+        }
+    });
+
+    return textDetails.join(', '); // Join details with a line break
+}
+
+$(function () {
+    $("#users_table").DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Expert Data',
+                exportOptions: {
+                    columns: ':not(:eq(6))', // Excludes the 6th column (Actions)
+                    orthogonal: 'export' // Use orthogonal data for export
+                }
+            },
+            {
+                extend: 'csvHtml5',
+                title: 'User Data',
+                exportOptions: {
+                    columns: ':not(:eq(6))', // Excludes the 6th column (Actions)
+                    orthogonal: 'export' // Use orthogonal data for export
+                }
+            }
+            // ... other buttons
+        ],
+        columnDefs: [
+            {
+                targets: 5, // The 'Status' column
+                render: function (data, type, row) {
+                    if (type === 'export') {
+                        // Simplify the format for export
+                        let isActive = $(data).filter('.btn-success').length > 0;
+                        let isApproved = $(data).filter('.btn-info').length > 0;
+
+                        let statusText = '';
+                        // statusText += (isActive ? 'Active' : 'In-Active') + ' / ';
+                        statusText += (isApproved ? 'Approved' : 'Not-Approved');
+
+                        return statusText;
+                    }
+                    return data; // Return the original data for other purposes
+                }
+            },
+            {
+                targets: 4, // The 'Skills' column
+                render: function (data, type, row) {
+                    if (type === 'export') {
+                        // Simplify the format for export
+                        return simplifySkills(data);
+                    }
+                    return data; // Return the original data for other purposes
+                }
+            },
+            {
+                targets: 3, // The 'Details' column
+                render: function (data, type, row) {
+                    if (type === 'export') {
+                        // Simplify the format for export
+                        return simplifyRegDetails(data);
+                    }
+                    return data; // Return the original data for other purposes
+                }
+            }
+
+            // ... any other columnDefs
+        ],
+        pageLength: 10,
+        lengthChange: true,
+        autoWidth: true,
+        searching: true,
+        // ... other options
+    });
+        
+            $('#create_record').click(function(){
+              $('.modal-title').text("New Expert");
+                 $('#action_button').val("Add");
+                 $('#action').val("Add");
+                 $('#sample_form')[0].reset();
+                 $('#formModal').modal('show');
+             });
+
+             $('#concreate_record').click(function(){
+              $('.modal-title').text("New Contractor");
+                 $('#caction_button').val("Add");
+                 $('#caction').val("Add");
+                 $('#samp_form')[0].reset();
+                 $('#contModal').modal('show');
+             });
+            
+            $('#sample_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#action').val() == 'Add')
+              {
+               $.ajax({
+                url: "{% url 'storeexpert' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                      $('#users_table').load(' #users_table');
+                       }
+                 $('#form_result').html(html);
+                }
+               })
+              }
+             
+             if($('#action').val() == "Edit")
+              {
+               $.ajax({
+                url:"{% url 'updateexperts' %}",
+                method:"POST",
+                data:new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  html = '<div class="alert alert-danger">';
+                  for(var count = 0; count < data.errors.length; count++)
+                  {
+                   html += '<p>' + data.errors[count] + '</p>';
+                  }
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  $('#sample_form')[0].reset();
+                  $(':input[type="submit"]').prop('disabled', false);
+                  $('#status').select2().val('').trigger("change");
+                  $('#users_table').load(' #users_table');
+                 }
+                 $('#form_result').html(html);
+                }
+               });
+              }
+             });
+
+
+
+
+             $('#samp_form').on('submit', function(event){
+              event.preventDefault();
+              $(':input[type="submit"]').prop('disabled', true);
+              if($('#act').val() == 'Initiate')
+              {
+               $.ajax({
+                url: "{% url 'initiate_reset' %}",
+                method:"POST",
+                data: new FormData(this),
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(data)
+                {
+                 var html = '';
+                 if(data.errors)
+                 {
+                  $(':input[type="submit"]').prop('disabled', false);
+                  html = '<div class="alert alert-danger">';
+                  
+                   html += '<p>' + data.errors + '</p>';
+                  
+                  html += '</div>';
+                 }
+                 if(data.success)
+                 {
+                  html = '<div class="alert alert-success">' + data.success + '</div>';
+                  
+                  $(':input[type="submit"]').prop('disabled', false);
+                     
+                       }
+                 $('#form_res').html(html);
+                }
+               })
+              }
+             
+             
+
+
+
+             
+             
+             
+             });
+
+
+
+              $('#contsample_form').on('submit', function(event){
+                event.preventDefault();
+                $(':input[type="submit"]').prop('disabled', true);
+                if($('#caction').val() == 'Add')
+                {
+                $.ajax({
+                  url: "{% url 'mstorecontractor' %}",
+                  method:"POST",
+                  data: new FormData(this),
+                  contentType: false,
+                  cache:false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                  var html = '';
+                  if(data.errors)
+                  {
+                    $(':input[type="submit"]').prop('disabled', false);
+                    html = '<div class="alert alert-danger">';
+                    
+                    html += '<p>' + data.errors + '</p>';
+                    
+                    html += '</div>';
+                  }
+                  if(data.success)
+                  {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#contsample_form')[0].reset();
+                    $(':input[type="submit"]').prop('disabled', false);
+                    $('#status').select2().val('').trigger("change");
+                        $('#users_table').load(' #users_table');
+                        }
+                  $('#cform_result').html(html);
+                  }
+                })
+                }
+
+                if($('#caction').val() == "Edit")
+                {
+                $.ajax({
+                  url:"{% url 'mupdatecontractor' %}",
+                  method:"POST",
+                  data:new FormData(this),
+                  contentType: false,
+                  cache: false,
+                  processData: false,
+                  dataType:"json",
+                  success:function(data)
+                  {
+                  var html = '';
+                  if(data.errors)
+                  {
+                    html = '<div class="alert alert-danger">';
+                    for(var count = 0; count < data.errors.length; count++)
+                    {
+                    html += '<p>' + data.errors[count] + '</p>';
+                    }
+                    html += '</div>';
+                  }
+                  if(data.success)
+                  {
+                    html = '<div class="alert alert-success">' + data.success + '</div>';
+                    $('#contsample_form')[0].reset();
+                    $(':input[type="submit"]').prop('disabled', false);
+                    $('#status').select2().val('').trigger("change");
+                    $('#users_table').load(' #users_table');
+                  }
+                  $('#cform_result').html(html);
+                  }
+                });
+                }
+
+                });
+
+
+             
+             // edit contractor
+             $(document).on('click', '.conedit', function(){
+              var id = $(this).attr('id');
+              $('#form_result').html('');
+              $.ajax({
+               url:"{% url 'conuseredit' 1 %}".replace('1', id),
+               dataType:"json",
+               success:function(html){
+                $('#cfirst_name').val(html.dets.first_name);
+                $('#clast_name').val(html.dets.last_name);
+                $('#cemailx').val(html.dets.email);
+                $('#cnational_id').val(html.dets.national_id);
+                $('#cphone').val(html.dets.phone_number);
+                $('#cpassword').val(html.dets.password);
+                $('#ccounty').select2().val(html.county).trigger("change");
+                $('#clocation').val(html.dets.location);
+                $('#company_name').val(html.company_name);
+                $('#company_email').val(html.company_email);
+                $('#company_phone').val(html.company_phone);
+                if (html.is_approved) {
+                $('#castatus').select2().val(1).trigger("change");
+                } else {
+
+                $('#castatus').select2().val(0).trigger("change");
+                }
+                if (html.dets.is_active) {
+                $('#cstatus').select2().val(1).trigger("change");
+                } else {
+
+                $('#cstatus').select2().val(0).trigger("change");
+                }
+             
+        
+                 $('#chidden_id').val(html.dets.id);
+               
+                $('.modal-title').text("Edit Contractor  Record");
+                $('#caction_button').val("Edit");
+                $('#caction').val("Edit");
+                $('#contModal').modal('show');
+               }
+              })
+             });
+
+            
+             $(document).on('click', '.edit', function(){
+              var id = $(this).attr('id');
+              $('#form_result').html('');
+              $.ajax({
+               url:"{% url 'euseredit' 1 %}".replace('1', id),
+               dataType:"json",
+               success:function(html){
+                $('#first_name').val(html.dets.first_name);
+                $('#last_name').val(html.dets.last_name);
+                $('#email').val(html.dets.email);
+                $('#national_id').val(html.dets.national_id);
+                $('#phone').val(html.dets.phone_number);
+                $('#password').val(html.dets.password);
+                $('#gender').select2().val(html.gender).trigger("change");
+                $('#location').select2().val(html.location).trigger("change");
+                $('#county').val(html.dets.location);
+                $('#reg_as').select2().val(html.regas).trigger("change");
+                $('#yrs_of_experience').val(html.yrs);
+                if (html.is_approved) {
+                $('#astatus').select2().val(1).trigger("change");
+                } else {
+
+                $('#astatus').select2().val(0).trigger("change");
+                }
+                if (html.dets.is_active) {
+                $('#status').select2().val(1).trigger("change");
+                } else {
+
+                $('#status').select2().val(0).trigger("change");
+                }
+                $('#county').val(html.dets.location);
+        
+                 $('#hidden_id').val(html.dets.id);
+                $('#sectlast').show();
+                $('#ffield').hide();
+                $('#field').prop('required',false);
+                $('.modal-title').text("Edit  Record");
+                $('#action_button').val("Edit");
+                $('#action').val("Edit");
+                $('#formModal').modal('show');
+               }
+              })
+             });
+
+            
+
+
+             $(document).on('click', '.reset', function(){
+              var id = $(this).attr('id');
+              $('#form_result').html('');
+              $.ajax({
+               url:"{% url 'useredit' 1 %}".replace('1', id),
+               dataType:"json",
+               success:function(html){
+              
+                $('#mail').val(html.email);
+                
+                 $('#hidden_id').val(html.id);
+                $('.modal-title').text("Initiate_Password_Reset");
+                $('#act_button').val("Initiate");
+                $('#act').val("Initiate");
+                $('#resetModal').modal('show');
+               }
+              })
+             });
+
+
+             $(document).on('change', '.field', function(){
+             var id = $(this).val();
+    
+             $.ajax({
+             url:"{% url 'mgetskills' 1 %}".replace('1', id),
+             dataType:"json",
+             success:function(html){
+             $('.skills').html(html.img);
+             $('#specs').show();
+             $('#sectlast').show();
+             }
+             })
+             });
+
+
+             $(document).on('change', '.aset', function(){
+             var id = $(this).val();
+
+              if(id == 0) {
+
+                $('#days').hide();
+
+              } else {
+
+                $('#days').show();
+
+               }
+
+
+             });
+
+
+             $(document).on('click', '.eprof', function(){
+             var id = $(this).attr('id');
+             window.location.href='/mans/edocs/'+id;
+        
+              });
+    
+            
+             var user_id;
+            
+             $(document).on('click', '.delete', function(){
+              user_id = $(this).attr('id');
+              $('.modal-title').text("Delete User");
+              $('#confirmModal').modal('show');
+             });
+            
+             $('#ok_button').click(function(){
+              $.ajax({
+                url:"{% url 'deleteuser' 1 %}".replace('1', user_id),
+               beforeSend:function(){
+                $('#ok_button').text('Deleting...');
+               },
+               success:function(data)
+               {
+                setTimeout(function(){
+                 $('#confirmModal').modal('hide');
+                 $('#ok_button').text('OK');
+                 $('#users_table').load(' #users_table');
+                }, 2);
+               }
+              })
+             });
+           
+          });
+        </script>
+    
+
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+      {{ ptitle }}
+    </div>
+    <!-- /.card-footer-->
+  </div>
+  <!-- /.card -->
+  {% endblock %}
